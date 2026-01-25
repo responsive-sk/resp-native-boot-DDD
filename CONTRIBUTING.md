@@ -17,12 +17,9 @@ Thank you for contributing — please follow these simple rules to keep the proj
 
 3. Git hooks
    - This repository includes a commit-msg hook that enforces English-only commit messages by rejecting messages that contain Slovak diacritics.
-   - To install the hook locally, run from the repository root:
-
-     ```bash
-     ./scripts/install-git-hooks.sh
-     ```
-
+   - Git is already configured to use hooks from `.githooks/` directory automatically via `git config core.hooksPath .githooks`.
+   - If you clone the repository fresh and hooks don't work, run: `git config core.hooksPath .githooks`
+   - Alternatively, you can manually install hooks by copying: `./scripts/install-git-hooks.sh`
    - The hook is intentionally simple (heuristic check for diacritics). If it blocks a legitimate message, use `--no-verify` and explain in the PR why it was necessary.
 
 4. Documentation

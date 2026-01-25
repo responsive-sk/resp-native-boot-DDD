@@ -218,32 +218,32 @@ Frontend code is intentionally isolated from backend concerns:
 
 ## Getting Started
 
-Rýchly štart (lokálne vývojové prostredie):
+Quick start (local development environment):
 
-- Klonujte repozitár a nainštalujte závislosti:
+- Clone the repository and install dependencies:
 
   ```bash
   git clone <repository>
-  cd packages/blog
+  cd resp-native-boot-DDD
   composer install
-  pnpm install   # ak používate frontend časti
+  pnpm install   # if using frontend parts
   ```
 
-- Spustenie DDD backendu (spustiteľné z koreňa domény):
+- Run the DDD backend (executable from repository root):
 
   ```bash
-  # z packages/blog
+  # From repository root
   php -S 127.0.0.1:8000 -t public public/index.php
   ```
 
-  Alternatívne (ak chcete slúžiť zo `public` adresára):
+  Alternative (if you want to serve from the `public` directory):
 
   ```bash
-  cd packages/blog/public
+  cd public
   php -S 127.0.0.1:8000
   ```
 
-- Spustenie Moonshine admin panelu (Laravel):
+- Run the Moonshine admin panel (Laravel) - if packages/mark exists:
 
   ```bash
   cd packages/mark
@@ -251,7 +251,7 @@ Rýchly štart (lokálne vývojové prostredie):
   php artisan serve --port=8001
   ```
 
-Tieto príkazy sú pripravené pre PHP 8.3 a predpokladajú, že SQLite súbory sú prítomné v `packages/blog/data`.
+These commands are ready for PHP 8.3 and assume SQLite files are present in the `data/` directory.
 
 ### Access Points
 
@@ -259,12 +259,15 @@ Tieto príkazy sú pripravené pre PHP 8.3 a predpokladajú, že SQLite súbory 
 - Frontend: http://127.0.0.1:8000
 - API: http://127.0.0.1:8000/api/articles
 - Mark Dashboard: http://127.0.0.1:8000/mark
-- Credentials: `admin@admin.com` / `admin123`  
-  (NOTE: see Security section — unify dev credentials)
+- Development credentials: `admin@admin.com` / `admin123`
+  
+  ⚠️ **Security Note:** These are development-only credentials. Change them before deploying to production.
 
-**Moonshine Admin Panel:**
+**Moonshine Admin Panel (if using packages/mark):**
 - Admin Panel: http://127.0.0.1:8001/mark
-- Credentials: `mark@admin.com` / `admin123`
+- Development credentials: `mark@admin.com` / `admin123`
+  
+  Create new admin user: `cd packages/mark && php artisan moonshine:user`
 
 ### API Endpoints
 
@@ -419,22 +422,22 @@ php artisan cache:clear
 
 ## Operational notes: DB files & permissions
 
-- Lokácie DB súborov (blog):
-  - `packages/blog/data/articles.db`
-  - `packages/blog/data/users.db`
-- Lokácia Moonshine meta DB:
+- DB file locations (blog domain):
+  - `data/articles.db`
+  - `data/users.db`
+- Moonshine meta DB location (if using packages/mark):
   - `packages/mark/database/database.sqlite`
 
-- Ak súbory chýbajú, vytvorte adresár a nastavte práva (lokálne):
+- If files are missing, create the directory and set permissions (local development):
 
 ```bash
-mkdir -p packages/blog/data
-touch packages/blog/data/articles.db packages/blog/data/users.db
-chmod 664 packages/blog/data/*.db
-chown $(whoami):$(whoami) packages/blog/data/*.db
+mkdir -p data
+touch data/articles.db data/users.db
+chmod 664 data/*.db
+chown $(whoami):$(whoami) data/*.db
 ```
 
-- Pri webovom serveri (lokálne) sa uistite, že proces má právo zapisovať do týchto súborov. Pre Docker alebo CI môže byť potrebné prispôsobiť vlastníctvo (UID/GID).
+- When using a web server (locally), ensure the process has write access to these files. For Docker or CI, you may need to adjust ownership (UID/GID).
 
 ---
 
@@ -448,9 +451,9 @@ chown $(whoami):$(whoami) packages/blog/data/*.db
 
 ## Troubleshooting (common issues)
 
-- "PDOException: unable to open database file": skontrolujte práva a vlastníctvo súboru v `packages/blog/data`.
-- "Address already in use": port je obsadený — zvoľte iný port pre `php -S` alebo zabite bežiaci proces.
-- "Unsupported PHP version": overte `php -v` a prepnite na PHP 8.3 (napr. pomocou phpbrew, docker alebo systémového sprievodcu).
+- "PDOException: unable to open database file": check file permissions and ownership in `data/`.
+- "Address already in use": port is occupied — choose a different port for `php -S` or kill the running process.
+- "Unsupported PHP version": verify with `php -v` and switch to PHP 8.3 (e.g., using phpbrew, docker, or system package manager).
 
 ---
 
