@@ -1,0 +1,67 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background gradient -->
+    <radialGradient id="bgGradient" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" style="stop-color:#1a1f2e;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#0d1119;stop-opacity:1"/>
+    </radialGradient>
+    
+    <!-- Logo gradient -->
+    <radialGradient id="logoGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#F93904;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:1"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  
+  <!-- Grid pattern -->
+  <g opacity="0.03">
+    <defs>
+      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="1"/>
+      </pattern>
+    </defs>
+    <rect width="1200" height="630" fill="url(#grid)"/>
+  </g>
+  
+  <!-- Logo -->
+  <g transform="translate(150, 200)">
+    <!-- Inner circle -->
+    <circle cx="115" cy="115" r="45" fill="#F93904"/>
+    <!-- Outer ring -->
+    <path d="M200 115C200 51.144 148.856 0 85 0C21.144 0 0 51.144 0 115C0 178.856 51.144 230 115 230V280C51.472 280 0 228.528 0 165C0 101.472 51.472 50 115 50C178.528 50 230 101.472 230 165C230 228.528 178.528 280 115 280V230C148.856 230 200 178.856 200 115Z" fill="white"/>
+  </g>
+  
+  <!-- Main text -->
+  <text x="400" y="280" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-size="64" font-weight="600" fill="white">
+    Boson PHP
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="400" y="340" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-size="32" font-weight="400" fill="rgba(255,255,255,0.8)">
+    Familiar PHP. Now for desktop applications.
+  </text>
+  
+  <!-- Features -->
+  <g transform="translate(400, 380)">
+    <text x="0" y="30" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="400" fill="rgba(255,255,255,0.6)">
+      ✓ Cross-platform desktop apps
+    </text>
+    <text x="0" y="60" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="400" fill="rgba(255,255,255,0.6)">
+      ✓ Native performance
+    </text>
+    <text x="0" y="90" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="400" fill="rgba(255,255,255,0.6)">
+      ✓ Lightweight alternative to Electron
+    </text>
+  </g>
+  
+  <!-- Brand accent -->
+  <rect x="400" y="520" width="60" height="4" fill="#F93904"/>
+  
+  <!-- URL -->
+  <text x="400" y="560" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="400" fill="rgba(255,255,255,0.5)">
+    mark.responsive.sk
+  </text>
+</svg>

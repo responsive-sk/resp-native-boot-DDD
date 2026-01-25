@@ -1,0 +1,80 @@
+<?php
+declare(strict_types=1);
+
+namespace Blog\Infrastructure\Http\Controller\Web;
+
+use Blog\Application\Blog\CreateArticle;
+use Blog\Domain\Blog\Repository\ArticleRepository;
+use Blog\Infrastructure\View\ViewRenderer;
+use Psr\Http\Message\ServerRequestInterface;
+use Nyholm\Psr7\Response;
+
+final readonly class ArticleController
+{
+    public function __construct(
+        private ArticleRepository $articleRepository,
+        private CreateArticle $createArticle,
+        private ViewRenderer $viewRenderer
+    ) {}
+
+    public function createForm(ServerRequestInterface $request): Response
+    {
+        return $this->viewRenderer->renderResponse('article.create');
+    }
+
+    public function create(ServerRequestInterface $request): Response
+    {
+        $data = $request->getParsedBody();
+        
+        try {
+            $articleId = ($this->createArticle)(
+                $data['title'] ?? '',
+                $data['content'] ?? '',
+                (int) ($data['author_id'] ?? 1)
+            );
+            
+            // Redirect to the new article
+            return new Response(302, ['Location' => '/blog/' . $articleId->toInt()]);
+            
+        } catch (\Exception $e) {
+            return $this->viewRenderer->renderResponse('article.create', [
+                'error' => $e->getMessage(),
+                'title' => $data['title'] ?? '',
+                'content' => $data['content'] ?? '',
+            ], 400);
+        }
+    }
+
+    public function editForm(ServerRequestInterface $request): Response
+    {
+        $id = (int) $request->getAttribute('id');
+        $article = $this->articleRepository->getById($id);
+        
+        if (!$article) {
+            return new Response(404, ['Content-Type' => 'text/html'], 'Article not found');
+        }
+
+        return $this->viewRenderer->renderResponse('article.edit', [
+            'article' => $article,
+        ]);
+    }
+
+    public function update(ServerRequestInterface $request): Response
+    {
+        $id = (int) $request->getAttribute('id');
+        $data = $request->getParsedBody();
+        
+        // TODO: Implement update logic
+        // For now, redirect back
+        return new Response(302, ['Location' => '/blog/' . $id]);
+    }
+
+    public function delete(ServerRequestInterface $request): Response
+    {
+        $id = (int) $request->getAttribute('id');
+        
+        // TODO: Implement delete logic
+        // For now, redirect to blog index
+        return new Response(302, ['Location' => '/blog']);
+    }
+}
