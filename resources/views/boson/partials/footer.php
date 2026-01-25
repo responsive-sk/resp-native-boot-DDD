@@ -35,6 +35,6 @@
     <?php endif; ?> -->
 
     <small slot="copyright">
-        BOSON PHP © 2025. All Rights Reversed.
+        responsive.sk <span class="heart">♥</span> © 2025. All Rights Reversed.
     </small>
 </boson-footer>

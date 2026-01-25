@@ -62,16 +62,22 @@ $this->layout('layout::master', [
                 <article class="search-result">
                     <hgroup>
                         <h2>
-                            <span class="category"><?= $this->escapeHtml($item->category) ?></span>
-                            &raquo;
-                            <a href="/docs/<?= $this->escapeHtml($version) ?>/<?= $this->escapeHtml($item->uri) ?>">
-                                <?= $this->escapeHtml($item->title) ?>
+                            <a href="<?= $this->url('blog_show_slug', ['slug' => $item->getUri()]) ?>">
+                                <?= $this->escapeHtml($item->getTitle()->toString()) ?>
                             </a>
                         </h2>
                     </hgroup>
 
                     <p class="content-preview">
-                        <?= $this->escapeHtml($item->content) ?>
+                        <?php
+                        // Show first 200 characters of content
+                        $contentPreview = $item->getContent()->toString();
+                        $contentPreview = strip_tags($contentPreview);
+                        if (mb_strlen($contentPreview) > 200) {
+                            $contentPreview = mb_substr($contentPreview, 0, 200) . '...';
+                        }
+                        echo $this->escapeHtml($contentPreview);
+                        ?>
                     </p>
                 </article>
             <?php endforeach; ?>

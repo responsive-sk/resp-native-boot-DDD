@@ -21,7 +21,7 @@ final class Article
         private ?ArticleId        $id,
         private Title             $title,
         private Content           $content,
-        private UserId            $authorId,
+        private readonly UserId   $authorId,
         private ArticleStatus     $status,
         private DateTimeImmutable $createdAt,
         private DateTimeImmutable $updatedAt,

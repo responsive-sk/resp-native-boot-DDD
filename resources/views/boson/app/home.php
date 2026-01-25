@@ -94,9 +94,9 @@
         </p>
     </segment-section>
 
-    <how-it-works-section></how-it-works-section>
+<!--    <how-it-works-section></how-it-works-section>-->
 
-    <right-choice-section></right-choice-section>
+<!--    <right-choice-section></right-choice-section>-->
 
     <mobile-development-section>
         <segment-section type="vertical">

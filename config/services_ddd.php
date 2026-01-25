@@ -2,10 +2,12 @@
 // config/services_ddd.php - COMPLETE WORKING VERSION WITH API ROUTES
 declare(strict_types=1);
 
+
 use Blog\Database\Database;
 use Blog\Database\DatabaseManager;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Domain\User\Repository\UserRepositoryInterface;
+use Blog\Infrastructure\Http\Controller\Web\SearchController;
 use Blog\Infrastructure\Persistence\Doctrine\DoctrineArticleRepository;
 use Blog\Infrastructure\Persistence\Doctrine\DoctrineUserRepository;
 
@@ -14,6 +16,7 @@ use Blog\Application\Blog\CreateArticle;
 use Blog\Application\Blog\GetAllArticles;
 use Blog\Application\Blog\UpdateArticle;
 use Blog\Application\Blog\DeleteArticle;
+use Blog\Application\Blog\SearchArticles;
 use Blog\Application\User\LoginUser;
 use Blog\Application\User\RegisterUser;
 
@@ -48,7 +51,7 @@ return [
     // === FACTORIES ===
     Psr17Factory::class => fn() => new Psr17Factory(),
 
-    Database::class => fn() => DatabaseManager::getConnection('app'),
+    Database::class => fn() => DatabaseManager::getConnection(),
 
     // === VIEW RENDERER ===
     PlatesRenderer::class => fn() => new PlatesRenderer(
@@ -94,6 +97,10 @@ return [
         $c->get(UserRepositoryInterface::class)
     ),
 
+    SearchArticles::class => fn(ContainerInterface $c) => new SearchArticles(
+        $c->get(ArticleRepository::class)
+    ),
+
     // === CONTROLLERS ===
     // Web
     BlogController::class => fn(ContainerInterface $c) => new BlogController(
@@ -110,6 +117,11 @@ return [
     AuthController::class => fn(ContainerInterface $c) => new AuthController(
         $c->get(LoginUser::class),
         $c->get(RegisterUser::class),
+        $c->get(ViewRenderer::class)
+    ),
+
+    SearchController::class => fn(ContainerInterface $c) => new SearchController(
+        $c->get(SearchArticles::class),
         $c->get(ViewRenderer::class)
     ),
 
@@ -148,7 +160,8 @@ return [
         $router->get('/blog', 'blog_index', fn($req) => $c->get(BlogController::class)->index($req));
         $router->get('/blog/{id:[0-9]+}', 'blog_show', fn($req) => $c->get(BlogController::class)->show($req));
         $router->get('/blog/{slug:[a-z0-9\-]+}', 'blog_show_slug', fn($req) => $c->get(BlogController::class)->showBySlug($req));
-        
+        $router->get('/search', 'search_index', fn($req) => $c->get(SearchController::class)->index($req));
+
         // === AUTH WEB ROUTES ===
         $router->get('/login', 'login_form', fn($req) => $c->get(AuthController::class)->loginForm($req));
         $router->post('/login', 'login', fn($req) => $c->get(AuthController::class)->login($req));

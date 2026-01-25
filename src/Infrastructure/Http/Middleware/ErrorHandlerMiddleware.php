@@ -9,8 +9,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Nyholm\Psr7\Response;
+use Throwable;
 
-final class ErrorHandlerMiddleware implements MiddlewareInterface
+final readonly class ErrorHandlerMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private string $env
@@ -53,7 +54,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
 
             return $response;
 
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Production: Generic error page
             if ($this->env === 'production') {
                 $html = <<<HTML

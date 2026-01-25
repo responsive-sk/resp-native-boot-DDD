@@ -22,6 +22,11 @@ return [
         'description' => '%s',
         'template' => 'boson::modules/blog/article-show',
     ],
+    'search.index' => [
+        'title' => 'Search - ChubbyBlog',
+        'description' => 'Search through blog articles',
+        'template' => 'boson::modules/search/index',
+    ],
 
     // === AUTH ROUTES ===
     'auth.login' => [

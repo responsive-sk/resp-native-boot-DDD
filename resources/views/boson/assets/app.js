@@ -6,6 +6,7 @@ import './components/ui/button.js';
 import './components/ui/header.js';
 import './components/ui/footer.js';
 import './components/ui/logos/logo.js';
+import './components/ui/search-input.js';
 
 // Critical above-the-fold components (prevent layout shift)
 import './components/sections/hero-section.js';
@@ -44,9 +45,9 @@ const lazyLoadSections = {
     'call-to-action-section': () => import('./components/sections/call-to-action-section.js'),
     'how-it-works-section': () => import('./components/sections/how-it-works-section.js'),
     'mobile-development-section': () => import('./components/sections/mobile-development-section.js'),
-    'nativeness-section': () => import('./components/sections/nativeness-section.js'),
+    // 'nativeness-section': () => import('./components/sections/nativeness-section.js'),
     'right-choice-section': () => import('./components/sections/right-choice-section.js'),
-    'solves-section': () => import('./components/sections/solves-section.js'),
+    // 'solves-section': () => import('./components/sections/solves-section.js'),
     'testimonials-section': () => import('./components/sections/testimonials-section.js'),
     'docs-toc': () => import('./components/sections/docs-toc.js')
 };
@@ -59,7 +60,6 @@ const lazyLoadUI = {
     'dots-container': () => import('./components/ui/dots-container.js'),
     'horizontal-accordion': () => import('./components/ui/horizontal-accordion.js'),
     'boson-slider': () => import('./components/ui/slider.js'),
-    'search-input': () => import('./components/ui/search-input.js'),
     'boson-subtitle': () => import('./components/ui/subtitle.js'),
     'boson-page-title': () => import('./components/ui/page-title.js')
 };

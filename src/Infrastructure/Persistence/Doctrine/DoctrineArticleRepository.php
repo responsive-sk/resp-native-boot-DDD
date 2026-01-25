@@ -10,7 +10,7 @@ use Blog\Domain\Blog\ValueObject\ArticleId;
 use Blog\Domain\Blog\ValueObject\Slug;
 use Doctrine\DBAL\Connection;
 
-final class DoctrineArticleRepository implements ArticleRepository
+final readonly class DoctrineArticleRepository implements ArticleRepository
 {
     public function __construct(
         private Connection $connection
@@ -24,7 +24,7 @@ final class DoctrineArticleRepository implements ArticleRepository
             // INSERT new article
             $this->connection->insert('articles', [
                 'title' => $article->title()->toString(),
-                'slug' => $article->slug() ? $article->slug()->toString() : null,
+                'slug' => $article->slug()?->toString(),
                 'content' => $article->content()->toString(),
                 'user_id' => $article->authorId()->toInt(),  // ← user_id, nie author_id
                 'status' => $article->status()->toString(),
@@ -40,7 +40,7 @@ final class DoctrineArticleRepository implements ArticleRepository
             // UPDATE existing article
             $this->connection->update('articles', [
                 'title' => $article->title()->toString(),
-                'slug' => $article->slug() ? $article->slug()->toString() : null,
+                'slug' => $article->slug()?->toString(),
                 'content' => $article->content()->toString(),
                 'user_id' => $article->authorId()->toInt(),  // ← user_id
                 'status' => $article->status()->toString(),
@@ -94,6 +94,36 @@ final class DoctrineArticleRepository implements ArticleRepository
         );
 
         return array_map([$this, 'hydrate'], $rows);
+    }
+
+    public function search(string $query): array
+    {
+        if (empty(trim($query))) {
+            return [];
+        }
+
+        // Split query into terms and add * wildcard to each for prefix matching
+        $terms = array_filter(explode(' ', trim($query)));
+        $ftsQuery = implode(' ', array_map(fn($term) => $term . '*', $terms));
+
+        // Use FTS5 virtual table for full-text search
+        $sql = "
+            SELECT a.*
+            FROM articles a
+            INNER JOIN articles_fts fts ON a.id = fts.rowid
+            WHERE articles_fts MATCH :query
+            ORDER BY rank
+            LIMIT 50
+        ";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue('query', $ftsQuery);
+        $result = $stmt->executeQuery();
+
+        return array_map(
+            [$this, 'hydrate'],
+            $result->fetchAllAssociative()
+        );
     }
 
     public function getCategories(): array

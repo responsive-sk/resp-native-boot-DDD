@@ -38,6 +38,7 @@ final class PlatesRenderer
             'blog_index' => '/blog',
             'blog_show' => '/blog/{id}',
             'blog_show_slug' => '/blog/{slug}',
+            'search_index' => '/search',
             'login_form' => '/login',
             'login' => '/login',
             'register_form' => '/register',
@@ -82,7 +83,20 @@ final class PlatesRenderer
 
         // Register route() function (alias for url)
         $this->plates->registerFunction('route', function (string $name, array $params = []) {
-            return $this->plates->getFunction('url')->call($this, $name, $params);
+            // If it's a known route name, use the mapped path
+            if (isset($this->routeMap[$name])) {
+                $path = $this->routeMap[$name];
+
+                // Replace parameters in path
+                foreach ($params as $key => $value) {
+                    $path = str_replace('{' . $key . '}', (string) $value, $path);
+                }
+
+                return $path;
+            }
+
+            // Otherwise treat as direct path
+            return '/' . ltrim($name, '/');
         });
     }
 
@@ -91,14 +105,4 @@ final class PlatesRenderer
         return $this->plates->render($template, $data);
     }
 
-    public function renderToString(string $template, array $data = []): string
-    {
-        return $this->render($template, $data);
-    }
-
-    public function getEngine(): Engine
-    {
-        return $this->plates;
-    }
 }
-

@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'resp-app/blog-backend',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => 'd1b4d6e01f648778ba6077ddeb5f4c3079fe9932',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -236,9 +236,9 @@
             'dev_requirement' => false,
         ),
         'resp-app/blog-backend' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => 'd1b4d6e01f648778ba6077ddeb5f4c3079fe9932',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

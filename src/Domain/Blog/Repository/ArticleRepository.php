@@ -23,7 +23,12 @@ interface ArticleRepository
     /**
     * @return Article[]
     */
-    
+
     public function getAll(): array;
+
+    /**
+     * @return Article[]
+     */
+    public function search(string $query): array;
 
 }

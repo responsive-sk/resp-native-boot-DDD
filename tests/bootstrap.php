@@ -5,7 +5,7 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 // Ensure per-model DB files are initialized for tests
-use App\Database\DatabaseManager;
+use Blog\Database\DatabaseManager;
 
 // Create users and posts DBs (DatabaseManager will create tables if missing)
 DatabaseManager::getConnection('users');

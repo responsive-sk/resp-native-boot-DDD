@@ -12,6 +12,7 @@ export class BosonDropdown extends LitElement {
             justify-content: center;
             margin: 0;
             padding: 0;
+            height: 100%;
         }
 
         .dropdown {
@@ -19,6 +20,7 @@ export class BosonDropdown extends LitElement {
             display: block;
             line-height: var(--height-ui);
             position: relative;
+            height: 100%;
         }
 
         .dropdown-list {
@@ -30,7 +32,7 @@ export class BosonDropdown extends LitElement {
             transform-origin: 0 0;
             opacity: 0;
             transform: scaleY(.5) scaleX(.5);
-            min-width: 100%;
+            min-width: max(100%, 200px);
             z-index: 99;
         }
 
@@ -75,6 +77,14 @@ export class BosonDropdown extends LitElement {
             text-transform: uppercase;
             font-weight: 300;
             color: var(--color-text-secondary);
+        }
+
+        .dropdown-summary {
+            height: 100%;
+        }
+
+        .dropdown-summary ::slotted(boson-button) {
+            height: 100%;
         }
 
         .dropdown:hover > .dropdown-summary ::slotted(boson-button) {

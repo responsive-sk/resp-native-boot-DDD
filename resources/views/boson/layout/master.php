@@ -132,18 +132,15 @@
     </script>
 </head>
 <body lang="<?= substr($locale ?? 'sk', 0, 2) ?>">
-    <a href="#main-content" class="skip-link">Skip to main content</a>
-
-    <?php if (!isset($showHeader) || $showHeader): ?>
-        <?php $this->insert('partials::header', [
-            'blogCategories' => $blogCategories ?? [],
-            'docsVersion' => $docsVersion ?? null,
-            'docsCategories' => $docsCategories ?? [],
-            'currentRoute' => $currentRoute ?? '',
-            'searchQuery' => $searchQuery ?? '',
-        ]) ?>
-    <?php endif; ?>
-
+<?php if (!isset($showHeader) || $showHeader): ?>
+    <?php $this->insert('partials::header', [
+        'blogCategories' => $blogCategories ?? [],
+        'docsVersion' => $docsVersion ?? null,
+        'docsCategories' => $docsCategories ?? [],
+        'currentRoute' => $currentRoute ?? '',
+        'searchQuery' => $searchQuery ?? '',
+    ]) ?>
+<?php endif; ?>
     <main id="main-content">
         <?= $this->section('main') ?>
     </main>
