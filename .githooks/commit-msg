@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# commit-msg hook: rejects commit messages that contain Slovak diacritics to enforce English-only messages.
+
+MSG_FILE="$1"
+if [ -z "$MSG_FILE" ]; then
+  echo "commit-msg hook requires a file path"
+  exit 0
+fi
+
+MSG_CONTENT=$(cat "$MSG_FILE")
+# Check for common Slovak diacritics (both lowercase and uppercase)
+if echo "$MSG_CONTENT" | grep -P '[čďěľňŕšťžýáíéôúäČĎĚĽŇŔŠŤŽÝÁÍÉÔÚÄ]' >/dev/null; then
+  echo "\nERROR: Commit message contains characters with diacritics (Č, ľ, š, ť, ž, ý, á, í, é, ô, ú, ä)."
+  echo "Please write commit messages in English. If you must use a non-English message, use --no-verify and explain in the PR."
+  exit 1
+fi
+
+exit 0

@@ -1,6 +1,6 @@
 # Responsive Blog System
 
-Experimental blog platform built with **PHP 8.2 - 8.5**, focused on **Clean Architecture, DDD principles, testability and fast iteration**.
+Experimental blog platform built with **PHP 8.3**, focused on **Clean Architecture, DDD principles, testability and fast iteration**.
 
 This repository is intentionally opinionated and serves as a foundation for a larger modular system.
 
@@ -96,7 +96,7 @@ The system provides two admin interfaces for managing content:
 - **Authentication:** Separate Moonshine admin users (not connected to blog users)
 - **Status:** Active, production-ready
 
-**Default Moonshine Credentials:**
+**Default Moonshine Credentials (development only):**
 ```
 Email: mark@admin.com
 Password: admin123
@@ -218,35 +218,52 @@ Frontend code is intentionally isolated from backend concerns:
 
 ## Getting Started
 
-```bash
-# Clone and install dependencies
-git clone <repository>
-composer install
-pnpm install
+Rýchly štart (lokálne vývojové prostredie):
 
-# Run the DDD backend (Blog API)
-cd packages/blog/public
-php -S localhost:8000
+- Klonujte repozitár a nainštalujte závislosti:
 
-# Run Moonshine admin panel
-cd packages/mark
-php artisan serve --port=8001
+  ```bash
+  git clone <repository>
+  cd packages/blog
+  composer install
+  pnpm install   # ak používate frontend časti
+  ```
 
-# Run frontend development (optional)
-cd packages/mark-web
-pnpm dev
-```
+- Spustenie DDD backendu (spustiteľné z koreňa domény):
+
+  ```bash
+  # z packages/blog
+  php -S 127.0.0.1:8000 -t public public/index.php
+  ```
+
+  Alternatívne (ak chcete slúžiť zo `public` adresára):
+
+  ```bash
+  cd packages/blog/public
+  php -S 127.0.0.1:8000
+  ```
+
+- Spustenie Moonshine admin panelu (Laravel):
+
+  ```bash
+  cd packages/mark
+  composer install
+  php artisan serve --port=8001
+  ```
+
+Tieto príkazy sú pripravené pre PHP 8.3 a predpokladajú, že SQLite súbory sú prítomné v `packages/blog/data`.
 
 ### Access Points
 
 **Blog DDD Backend:**
-- Frontend: http://localhost:8000
-- API: http://localhost:8000/api/articles
-- Mark Dashboard: http://localhost:8000/mark
-- Credentials: `admin@admin.com` / `admin123`
+- Frontend: http://127.0.0.1:8000
+- API: http://127.0.0.1:8000/api/articles
+- Mark Dashboard: http://127.0.0.1:8000/mark
+- Credentials: `admin@admin.com` / `admin123`  
+  (NOTE: see Security section — unify dev credentials)
 
 **Moonshine Admin Panel:**
-- Admin Panel: http://localhost:8001/mark
+- Admin Panel: http://127.0.0.1:8001/mark
 - Credentials: `mark@admin.com` / `admin123`
 
 ### API Endpoints
@@ -363,8 +380,9 @@ CREATE TABLE moonshine_users (
 composer install
 pnpm install
 
-# Run backend
-cd packages/blog/public && php -S localhost:8000
+# Run backend (recommended)
+cd packages/blog
+php -S 127.0.0.1:8000 -t public public/index.php
 
 # Run tests
 composer test
@@ -396,6 +414,43 @@ php artisan migrate
 php artisan config:clear
 php artisan cache:clear
 ```
+
+---
+
+## Operational notes: DB files & permissions
+
+- Lokácie DB súborov (blog):
+  - `packages/blog/data/articles.db`
+  - `packages/blog/data/users.db`
+- Lokácia Moonshine meta DB:
+  - `packages/mark/database/database.sqlite`
+
+- Ak súbory chýbajú, vytvorte adresár a nastavte práva (lokálne):
+
+```bash
+mkdir -p packages/blog/data
+touch packages/blog/data/articles.db packages/blog/data/users.db
+chmod 664 packages/blog/data/*.db
+chown $(whoami):$(whoami) packages/blog/data/*.db
+```
+
+- Pri webovom serveri (lokálne) sa uistite, že proces má právo zapisovať do týchto súborov. Pre Docker alebo CI môže byť potrebné prispôsobiť vlastníctvo (UID/GID).
+
+---
+
+## Ports (local development)
+
+- DDD backend (Blog): `127.0.0.1:8000`
+- Moonshine admin (Laravel): `127.0.0.1:8001`
+- Frontend dev (SvelteKit): typically `5173`
+
+---
+
+## Troubleshooting (common issues)
+
+- "PDOException: unable to open database file": skontrolujte práva a vlastníctvo súboru v `packages/blog/data`.
+- "Address already in use": port je obsadený — zvoľte iný port pre `php -S` alebo zabite bežiaci proces.
+- "Unsupported PHP version": overte `php -v` a prepnite na PHP 8.3 (napr. pomocou phpbrew, docker alebo systémového sprievodcu).
 
 ---
 
@@ -436,6 +491,7 @@ See `docs/DEPLOYMENT.md` for detailed instructions.
 - Write tests for all new functionality
 - Keep documentation updated
 - No emojis in documentation or commit messages
+- Write README files and git commit messages in English only. This ensures consistency across the project and helps contributors from different regions collaborate effectively.
 
 ---
 
