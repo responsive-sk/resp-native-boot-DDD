@@ -9,9 +9,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 
 /**
- * Native PHP Application - nahradza Chubbyphp\Framework\Application
+ * Native PHP Application - replaces Chubbyphp\Framework\Application
  * 
- * Spracováva HTTP request cez middleware stack a emituje response.
+ * Processes HTTP request through middleware stack and emits response.
  */
 final class Application
 {
@@ -26,7 +26,7 @@ final class Application
     }
 
     /**
-     * Spracuje HTTP request cez middleware stack
+     * Process HTTP request through middleware stack
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {

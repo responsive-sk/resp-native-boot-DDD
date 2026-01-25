@@ -34,6 +34,6 @@ final class RegisterUser
         // 4. Persist
         $this->users->save($user);  // ← Zmena (save namiesto add)!
         
-        return $user->id();  // ← Pozor! id() môže vrátiť null!
+        return $user->id();  // ← Warning! id() may return null!
     }
 }

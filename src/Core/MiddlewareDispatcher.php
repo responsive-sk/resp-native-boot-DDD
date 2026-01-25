@@ -11,10 +11,10 @@ use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
 
 /**
- * Middleware Dispatcher - spracováva middleware stack
+ * Middleware Dispatcher - processes middleware stack
  * 
- * Implementuje PSR-15 RequestHandlerInterface a postupne
- * volá všetky middleware v poradí.
+ * Implements PSR-15 RequestHandlerInterface and sequentially
+ * calls all middleware in order.
  */
 final class MiddlewareDispatcher implements RequestHandlerInterface
 {
@@ -34,7 +34,7 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
     }
 
     /**
-     * Spracuje request cez ďalší middleware v stacku
+     * Process request through the next middleware in stack
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {

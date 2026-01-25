@@ -19,16 +19,16 @@ final class AuthMiddleware implements MiddlewareInterface
     ): ResponseInterface {
         $path = $request->getUri()->getPath();
 
-        // Pridaj user do requestu (môže byť null ak nie je prihlásený)
+        // Add user to request (may be null if not logged in)
         $request = $request->withAttribute('user', Authorization::getUser());
 
-        // Chránené cesty ktoré vyžadujú autentifikáciu
+        // Protected paths that require authentication
         $protectedPrefixes = [
             '/article/',  // CRUD operácie s článkami
             '/mark/',     // Mark admin panel
         ];
 
-        // Kontroluj, či je to chránená cesta
+        // Check if this is a protected path
         $isProtected = false;
         foreach ($protectedPrefixes as $prefix) {
             if (str_starts_with($path, $prefix)) {
@@ -37,17 +37,17 @@ final class AuthMiddleware implements MiddlewareInterface
             }
         }
 
-        // Ak nie je chránená, pokračuj bez kontroly
+        // If not protected, continue without checks
         if (!$isProtected) {
             return $handler->handle($request);
         }
 
-        // Pre chránené cesty - kontroluj autentifikáciu
+        // For protected paths - check authentication
         if ($redirect = Authorization::requireAuth()) {
             return $redirect;
         }
 
-        // Kontrola ROLE_MARK pre /mark/*
+        // Check ROLE_MARK for /mark/*
         if (str_starts_with($path, '/mark') && $redirect = Authorization::requireMark()) {
             return $redirect;
         }

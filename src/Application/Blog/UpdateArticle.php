@@ -31,10 +31,10 @@ final readonly class UpdateArticle
             throw new DomainException('Article not found');
         }
 
-        // 2. Aktualizovať článok
+        // 2. Update article
         $article->update($title, $content);
         
-        // 3. Aktualizovať slug (ak je zadaný)
+        // 3. Update slug (if provided)
         if ($slug !== null) {
             $article->setSlug($slug);
             

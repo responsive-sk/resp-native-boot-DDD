@@ -39,7 +39,7 @@ final class User
             createdAt: new DateTimeImmutable()
         );
 
-        // Event bude mať null ID, nastavíme ho po uložení
+        // Event will have null ID, we'll set it after saving
         return $user;
     }
 
@@ -99,11 +99,11 @@ final class User
     public function setId(UserId $id): void
     {
         if ($this->id !== null) {
-            throw new LogicException('User ID už bolo nastavené');
+            throw new LogicException('User ID has already been set');
         }
         $this->id = $id;
 
-        // Teraz môžeme vytvoriť event s ID
+        // Now we can create event with ID
         $this->recordEvent(new UserRegisteredEvent($this->id, $this->email));
     }
 
