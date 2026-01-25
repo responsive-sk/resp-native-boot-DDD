@@ -30,4 +30,4 @@ public/build
 
 # Codeception C3
 c3.php
-.env
+.env/vendor/
