@@ -114,18 +114,6 @@ class Paths
         return $real !== false ? $real : $candidate;
     }
 
-        // Allow legacy env var fallback
-        $env = getenv('APP_BASE_PATH');
-        if ($env && $env !== '') {
-            return rtrim($env, DIRECTORY_SEPARATOR);
-        }
-
-        // Project root: src/Infrastructure/Paths.php, go up 2 levels
-        $candidate = dirname(__DIR__, 2);
-        $real = realpath($candidate);
-        return $real !== false ? $real : $candidate;
-    }
-
     /**
      * Return data directory path under project base.
      */

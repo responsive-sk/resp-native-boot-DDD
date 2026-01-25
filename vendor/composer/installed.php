@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'resp-app/blog-backend',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-copilot/fix-php-issues-readme-updates',
+        'version' => 'dev-copilot/fix-php-issues-readme-updates',
+        'reference' => 'e987ca43b2cb2b04db498a92c2ec5db0ee7473e5',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -236,9 +236,9 @@
             'dev_requirement' => false,
         ),
         'resp-app/blog-backend' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-copilot/fix-php-issues-readme-updates',
+            'version' => 'dev-copilot/fix-php-issues-readme-updates',
+            'reference' => 'e987ca43b2cb2b04db498a92c2ec5db0ee7473e5',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
