@@ -2,6 +2,13 @@
 
 Experimental blog platform built with **PHP 8.3**, focused on **Clean Architecture, DDD principles, testability and fast iteration**.
 
+> NOTE: For consistency and wider collaboration, please write README files and git commit messages in English only. See `CONTRIBUTING.md` for details and the local commit hook.
+
++ Quick notes:
+  - README files and commit messages: English only.
+  - Run dev server: `php -S 127.0.0.1:8000 -t public public/index.php` from `packages/blog`.
+  - Cache recommendation: serve fingerprinted static assets with long TTL (1 year).
+
 This repository is intentionally opinionated and serves as a foundation for a larger modular system.
 
 ---
@@ -334,7 +341,7 @@ packages/mark/database/
 
 ### Database Schema
 
-```sql
+```bash
 -- articles table (articles.db)
 CREATE TABLE articles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
