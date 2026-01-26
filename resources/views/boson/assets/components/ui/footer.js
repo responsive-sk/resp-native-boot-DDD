@@ -200,8 +200,8 @@ export class BosonFooter extends LitElement {
                     </div>
                 </div>
                 <div class="credits">
-                    <a target="_blank" href="https://cutcode.dev/project-making" class="credits-link">
-                        <img src="/images/credits.png" alt="credits" width="120" height="24"/>
+                    <a target="_blank" href="https://responsive.sk" class="credits-link">
+<!--                        <img src="/images/credits.png" alt="credits" width="120" height="24"/>-->
                     </a>
                 </div>
             </footer>

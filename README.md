@@ -1,5 +1,7 @@
 # Responsive Blog System
 
+Repository convention: Use English for README files and git commit messages to keep collaboration consistent.
+
 Experimental blog platform built with **PHP 8.3**, focused on **Clean Architecture, DDD principles, testability and fast iteration**.
 
 > NOTE: For consistency and wider collaboration, please write README files and git commit messages in English only. See `CONTRIBUTING.md` for details and the local commit hook.

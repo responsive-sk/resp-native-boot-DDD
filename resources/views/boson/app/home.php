@@ -40,7 +40,7 @@
         </span>
 
         <p>
-            "What makes you think PHP is only for the web?"<br />
+            "What makes you think PHP is only for the web?"<br>
             – Boson is changing the rules of the game!
         </p>
     </segment-section>
@@ -53,7 +53,7 @@
         </span>
 
         <span slot="title">
-            What you <span class="emphasis">can do</span> with <br/>
+            What you <span class="emphasis">can do</span> with <br>
             Boson?
         </span>
 
@@ -138,9 +138,9 @@
 
     <call-to-action-section>
         <h3>
-            If you are a PHP developer, you can already <br />
-            make native cross-platform applications.<br />
-            Boson PHP makes it possible!<br />
+            If you are a PHP developer, you can already <br>
+            make native cross-platform applications.<br>
+            Boson PHP makes it possible!<br>
         </h3>
 
         <h4 class="red">Get started right now!</h4>

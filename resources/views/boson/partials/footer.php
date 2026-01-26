@@ -11,29 +11,6 @@
         <img src="/images/icons/telegram.svg" alt="Follow Boson PHP on Telegram" loading="lazy" width="24" height="24"/>
     </a>
 
-    <!-- TODO: Implement documentation routes -->
-    <!-- <?php if ($docsVersion ?? null): ?>
-    <a href="<?= $this->url('doc.show', ['version' => $docsVersion->getName(), 'page' => 'introduction']) ?>" slot="aside-link">
-        Get started
-    </a>
-    <?php endif; ?>
-
-    <!-- TODO: Add documentation link when routes are implemented -->
-
-    <?php if ($docsVersion ?? null): ?>
-    <a href="<?= $this->url('doc.show', ['version' => $docsVersion->getName(), 'page' => 'contribution']) ?>" slot="secondary-link">
-        Contribution Guide
-    </a>
-
-    <a href="<?= $this->url('doc.show', ['version' => $docsVersion->getName(), 'page' => 'license']) ?>" slot="secondary-link">
-        License
-    </a>
-
-    <a href="<?= $this->url('doc.show', ['version' => $docsVersion->getName(), 'page' => 'release-notes']) ?>" slot="secondary-link">
-        Release Notes
-    </a>
-    <?php endif; ?> -->
-
     <small slot="copyright">
         responsive.sk <span class="heart">♥</span> © 2025. All Rights Reversed.
     </small>

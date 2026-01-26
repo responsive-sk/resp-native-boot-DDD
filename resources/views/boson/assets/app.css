@@ -3,7 +3,7 @@
 @import url("./styles/fonts.css");
 @import url("./styles/layout.css");
 @import url("./styles/typography.css");
-@import url("./styles/docs.css");
+/*@import url("./styles/docs.css");*/
 
 /**
  * Naming:
@@ -156,3 +156,21 @@
     display: none;
   }
 }
+
+/* Pridaj do tvojho global CSS */
+/*boson-landing-layout {*/
+/*  display: block;*/
+/*  min-height: 100vh;*/
+/*}*/
+
+/*boson-landing-layout main {*/
+/*  display: block;*/
+/*  min-height: 700px; !* Odhad výšky hero sekcie *!*/
+/*}*/
+
+/*!* Ak máš obrázky v main *!*/
+/*boson-landing-layout main img {*/
+/*  width: 100%;*/
+/*  height: auto;*/
+/*  aspect-ratio: 16 / 9; !* Alebo konkrétny pomer *!*/
+/*}*/
