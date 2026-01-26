@@ -56,10 +56,15 @@
     <?php if (isset($cssUrl) && $cssUrl): ?>
         <link rel="preload" href="<?= $cssUrl ?>" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="<?= $cssUrl ?>"></noscript>
+    <?php else: ?>
+        <!-- Fallback: preload main app CSS if $cssUrl is not set -->
+        <link rel="preload" href="/css/app.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/css/app.css"></noscript>
     <?php endif; ?>
 
     <!-- Fonts are now self-hosted and loaded via CSS @font-face declarations -->
-    
+    <!-- Ensure font files use font-display: swap in your CSS to reduce FOIT/FOUT -->
+
     <!-- Styles are preloaded above -->
     
     <link rel="icon" type="image/png" sizes="16x16" href="/images/logo.png">
