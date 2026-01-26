@@ -49,7 +49,7 @@ const lazyLoadSections = {
     'right-choice-section': () => import('./components/sections/right-choice-section.js'),
     // 'solves-section': () => import('./components/sections/solves-section.js'),
     'testimonials-section': () => import('./components/sections/testimonials-section.js'),
-    'docs-toc': () => import('./components/sections/docs-toc.js')
+    // 'docs-toc': () => import('./components/sections/docs-toc.js')
 };
 
 // Lazy load UI components only when needed

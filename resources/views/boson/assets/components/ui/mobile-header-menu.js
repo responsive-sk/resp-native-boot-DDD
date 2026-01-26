@@ -216,8 +216,6 @@ export class MobileHeaderMenu extends LitElement {
                             <slot name="references"></slot>
                         </div>
                     </div>
-
-                    <!--
                     <div class="menu-section collapsible">
                         <div class="menu-title clickable ${this.expandedSections['blog'] ? 'expanded' : ''}"
                              @click="${() => this.toggleSection('blog')}">
@@ -227,9 +225,6 @@ export class MobileHeaderMenu extends LitElement {
                             <slot name="blog"></slot>
                         </div>
                     </div>
-                    -->
-
-
                 </div>
             </div>
         `;
