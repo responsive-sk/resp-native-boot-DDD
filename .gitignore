@@ -26,12 +26,18 @@ vendor
 node_modules
 
 # vite builds
-public/build
+/public/build/
 
 # Codeception C3
 c3.php
-.env/vendor/
+
+.env
+
+/vendor/
 
 .idea/
 
 .githooks/
+
+.*
+
