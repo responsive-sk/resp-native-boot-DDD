@@ -54,7 +54,7 @@
 
     <!-- 4. Link na full CSS -->
     <?php if (isset($cssUrl) && $cssUrl): ?>
-        <link rel="stylesheet" href="<?= $cssUrl ?>">
+        <link rel="stylesheet" href="<?= $cssUrl ?>" fetchpriority="high">
     <?php endif; ?>
 </head>
 <body>
