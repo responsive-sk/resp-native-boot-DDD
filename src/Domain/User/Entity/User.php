@@ -19,27 +19,30 @@ final class User
     private array $domainEvents = [];
 
     private function __construct(
-        private ?UserId           $id,
-        private readonly Email    $email,
-        private HashedPassword    $password,
-        private UserRole          $role,
+        private ?UserId $id,
+        private readonly Email $email,
+        private HashedPassword $password,
+        private UserRole $role,
         private readonly DateTimeImmutable $createdAt
-    ) {}
+    ) {
+    }
 
     public static function register(
         Email $email,
         HashedPassword $password,
         ?UserRole $role = null
     ): self {
+        $id = UserId::generate();
         $user = new self(
-            id: null,
+            id: $id,
             email: $email,
             password: $password,
             role: $role ?? UserRole::user(),
             createdAt: new DateTimeImmutable()
         );
 
-        // Event bude mať null ID, nastavíme ho po uložení
+        $user->recordEvent(new UserRegisteredEvent($id, $email));
+
         return $user;
     }
 
@@ -53,59 +56,6 @@ final class User
         return new self($id, $email, $password, $role, $createdAt);
     }
 
-    public function verifyPassword(string $plainPassword): bool
-    {
-        return $this->password->verify($plainPassword);
-    }
-
-    public function changePassword(HashedPassword $newPassword): void
-    {
-        $this->password = $newPassword;
-    }
-
-    public function promoteToMark(): void
-    {
-        $this->role = UserRole::mark();
-    }
-
-    public function demoteToUser(): void
-    {
-        $this->role = UserRole::user();
-    }
-
-    // Getters
-    public function id(): ?UserId
-    {
-        return $this->id;
-    }
-    public function email(): Email
-    {
-        return $this->email;
-    }
-    public function password(): HashedPassword
-    {
-        return $this->password;
-    }
-    public function role(): UserRole
-    {
-        return $this->role;
-    }
-    public function createdAt(): DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    // For persistence layer to set ID after insert
-    public function setId(UserId $id): void
-    {
-        if ($this->id !== null) {
-            throw new LogicException('User ID už bolo nastavené');
-        }
-        $this->id = $id;
-
-        // Teraz môžeme vytvoriť event s ID
-        $this->recordEvent(new UserRegisteredEvent($this->id, $this->email));
-    }
 
     // Domain Events
     private function recordEvent(DomainEvent $event): void

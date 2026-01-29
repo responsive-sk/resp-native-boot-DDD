@@ -17,13 +17,14 @@ final readonly class DoctrineUserRepository implements UserRepositoryInterface
 {
     public function __construct(
         private Connection $connection
-    ) {}
+    ) {
+    }
 
     public function findById(UserId $id): ?User
     {
         $row = $this->connection->fetchAssociative(
             'SELECT * FROM users WHERE id = ?',
-            [$id->toInt()]
+            [$id->toBytes()]
         );
 
         return $row ? $this->hydrate($row) : null;
@@ -41,10 +42,17 @@ final readonly class DoctrineUserRepository implements UserRepositoryInterface
 
     public function save(User $user): void
     {
-        if ($user->id() === null) {
-            $this->insert($user);
-        } else {
+        // Simple check: if exists update, else insert
+        // Since we generate UUIDs in the domain, we might need to check existence if we are not sure
+        // But typically for 'save' in DDD, we can use UPSERT or check if we loaded it.
+        // For simplicity: check if exists by ID.
+
+        $exists = $this->connection->fetchOne('SELECT 1 FROM users WHERE id = ?', [$user->id()->toBytes()]);
+
+        if ($exists) {
             $this->update($user);
+        } else {
+            $this->insert($user);
         }
     }
 
@@ -61,14 +69,12 @@ final readonly class DoctrineUserRepository implements UserRepositoryInterface
     private function insert(User $user): void
     {
         $this->connection->insert('users', [
+            'id' => $user->id()->toBytes(),
             'email' => $user->email()->toString(),
             'password' => $user->password()->toString(),
             'role' => $user->role()->toString(),
             'created_at' => $user->createdAt()->format('Y-m-d H:i:s'),
         ]);
-
-        $id = (int) $this->connection->lastInsertId();
-        $user->setId(UserId::fromInt($id));
     }
 
     private function update(User $user): void
@@ -78,14 +84,14 @@ final readonly class DoctrineUserRepository implements UserRepositoryInterface
             'password' => $user->password()->toString(),
             'role' => $user->role()->toString(),
         ], [
-            'id' => $user->id()->toInt(),
+            'id' => $user->id()->toBytes(),
         ]);
     }
 
     private function hydrate(array $row): User
     {
         return User::reconstitute(
-            UserId::fromInt((int) $row['id']),
+            UserId::fromBytes($row['id']),
             Email::fromString($row['email']),
             HashedPassword::fromHash($row['password']),
             UserRole::fromString($row['role']),
