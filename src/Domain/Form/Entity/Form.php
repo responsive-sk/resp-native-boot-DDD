@@ -13,7 +13,7 @@ final class Form
      * @param array<int, mixed> $fields
      */
     private function __construct(
-        private ?FormId $id,
+        private FormId $id,
         private string $title,
         private string $slug,
         private array $fields,
@@ -28,7 +28,8 @@ final class Form
     public static function create(string $title, string $slug, array $fields): self
     {
         $now = new DateTimeImmutable();
-        return new self(null, $title, $slug, $fields, $now, $now);
+        $id = FormId::generate();
+        return new self($id, $title, $slug, $fields, $now, $now);
     }
 
     /**
@@ -45,17 +46,9 @@ final class Form
         return new self($id, $title, $slug, $fields, $createdAt, $updatedAt);
     }
 
-    public function id(): ?FormId
+    public function id(): FormId
     {
         return $this->id;
-    }
-
-    public function setId(FormId $id): void
-    {
-        if ($this->id !== null) {
-            throw new \LogicException('ID already set');
-        }
-        $this->id = $id;
     }
 
     public function title(): string

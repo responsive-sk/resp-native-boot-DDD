@@ -26,7 +26,7 @@ final readonly class DoctrineFormRepository implements FormRepositoryInterface
         if (!$schemaManager->tablesExist(['forms'])) {
             $sql = <<<SQL
                 CREATE TABLE forms (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id BLOB PRIMARY KEY,
                     title TEXT NOT NULL,
                     slug TEXT NOT NULL UNIQUE,
                     fields TEXT NOT NULL, -- JSON
@@ -41,6 +41,7 @@ SQL;
     public function save(Form $form): void
     {
         $data = [
+            'id' => $form->id()->toBytes(),
             'title' => $form->title(),
             'slug' => $form->slug(),
             'fields' => json_encode($form->fields()),
@@ -48,11 +49,18 @@ SQL;
             'updated_at' => $form->updatedAt()->format('Y-m-d H:i:s'),
         ];
 
-        if ($form->id() === null) {
-            $this->connection->insert('forms', $data);
-            $form->setId(FormId::fromInt((int) $this->connection->lastInsertId()));
+        // Check if exists
+        $exists = $this->connection->fetchOne(
+            'SELECT 1 FROM forms WHERE id = ?',
+            [$form->id()->toBytes()]
+        );
+
+        if ($exists) {
+            // Update
+            $this->connection->update('forms', $data, ['id' => $form->id()->toBytes()]);
         } else {
-            $this->connection->update('forms', $data, ['id' => $form->id()->toInt()]);
+            // Insert
+            $this->connection->insert('forms', $data);
         }
     }
 
@@ -60,7 +68,7 @@ SQL;
     {
         $data = $this->connection->fetchAssociative(
             'SELECT * FROM forms WHERE id = ?',
-            [$id->toInt()]
+            [$id->toBytes()]
         );
 
         return $data ? $this->mapToEntity($data) : null;
@@ -88,14 +96,14 @@ SQL;
 
     public function delete(FormId $id): void
     {
-        $this->connection->delete('forms', ['id' => $id->toInt()]);
+        $this->connection->delete('forms', ['id' => $id->toBytes()]);
     }
 
     private function mapToEntity(array $row): Form
     {
         try {
             return Form::reconstitute(
-                FormId::fromInt((int) $row['id']),
+                FormId::fromBytes($row['id']),
                 $row['title'],
                 $row['slug'],
                 json_decode($row['fields'], true) ?? [],
