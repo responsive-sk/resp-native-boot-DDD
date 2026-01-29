@@ -1,33 +1,100 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Blog\Infrastructure;
 
+use ResponsiveSk\Slim4Paths\Paths as Slim4Paths;
+
+/**
+ * Paths wrapper for responsive-sk/slim4-paths
+ * Provides backward compatibility with legacy Blog\Infrastructure\Paths API
+ */
 class Paths
 {
+    private static ?Slim4Paths $instance = null;
+
     /**
-     * Very small path helper: returns a path for a named route or raw path.
-     * This vendored helper is intentionally minimal; replace with full package API later.
+     * Get or create Slim4Paths instance
      */
-    public static function path(string $nameOrPath, array $params = []): string
+    private static function getInstance(): Slim4Paths
     {
-        // If it's an absolute URL, return as-is
-        if (preg_match('#^[a-zA-Z]+://#', $nameOrPath) === 1) {
-            return $nameOrPath;
+        if (self::$instance === null) {
+            $basePath = self::detectBasePath();
+
+            // Initialize with custom paths
+            self::$instance = new Slim4Paths($basePath, [
+                'data' => $basePath . '/data',
+                'config' => $basePath . '/config',
+                'public' => $basePath . '/public',
+                'resources' => $basePath . '/resources',
+                'src' => $basePath . '/src',
+                'vendor' => $basePath . '/vendor',
+            ]);
         }
 
-        // If looks like a route name (no leading slash), keep as-is but ensure leading slash
-        $path = strpos($nameOrPath, '/') === 0 ? $nameOrPath : '/' . ltrim($nameOrPath, '/');
-
-        if (!empty($params)) {
-            $qs = http_build_query($params);
-            return self::join($path, '') . '?' . $qs;
-        }
-
-        return self::join($path, '');
+        return self::$instance;
     }
 
     /**
-     * Safely join two path segments ensuring a single directory separator.
+     * Detect application base path
+     */
+    private static function detectBasePath(): string
+    {
+        // Check environment variable
+        $envPath = $_ENV['APP_BASE_PATH'] ?? getenv('APP_BASE_PATH');
+        if ($envPath && $envPath !== '') {
+            return rtrim($envPath, DIRECTORY_SEPARATOR);
+        }
+
+        // Default: from current file location (src/Infrastructure/Paths.php)
+        $candidate = dirname(__DIR__, 2);
+        $real = realpath($candidate);
+        return $real !== false ? $real : $candidate;
+    }
+
+    /**
+     * Return the project base path
+     */
+    public static function basePath(): string
+    {
+        return self::getInstance()->getPath('base');
+    }
+
+    /**
+     * Return data directory path
+     */
+    public static function dataPath(): string
+    {
+        return self::getInstance()->getPath('data');
+    }
+
+    /**
+     * Return config directory path
+     */
+    public static function configPath(): string
+    {
+        return self::getInstance()->getPath('config');
+    }
+
+    /**
+     * Return public directory path
+     */
+    public static function publicPath(): string
+    {
+        return self::getInstance()->getPath('public');
+    }
+
+    /**
+     * Return resources directory path
+     */
+    public static function resourcesPath(): string
+    {
+        return self::getInstance()->getPath('resources');
+    }
+
+    /**
+     * Join path segments (legacy compatibility)
      */
     public static function join(string $left, string $right): string
     {
@@ -42,100 +109,55 @@ class Paths
     }
 
     /**
-     * Internal config cache
-     * @var array|null
+     * Generate URL path with query parameters (legacy compatibility)
      */
-    private static $config = null;
-
-    /**
-     * Set runtime config overrides.
-     */
-    public static function setConfig(array $config): void
+    public static function path(string $nameOrPath, array $params = []): string
     {
-        self::$config = $config + (self::$config ?? []);
+        // If it's an absolute URL, return as-is
+        if (preg_match('#^[a-zA-Z]+://#', $nameOrPath) === 1) {
+            return $nameOrPath;
+        }
+
+        // Ensure leading slash
+        $path = strpos($nameOrPath, '/') === 0 ? $nameOrPath : '/' . ltrim($nameOrPath, '/');
+
+        if (!empty($params)) {
+            $qs = http_build_query($params);
+            return $path . '?' . $qs;
+        }
+
+        return $path;
     }
 
     /**
-     * Get merged config (file + env + runtime overrides)
+     * Get custom path by name
      */
-    public static function getConfig(): array
+    public static function get(string $name, string $fallback = ''): string
     {
-        if (self::$config !== null) {
-            return self::$config;
-        }
-
-        $config = [];
-
-        // load config file if present
-        $cfgFile = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'paths.php';
-        if (file_exists($cfgFile)) {
-            $fileCfg = include $cfgFile;
-            if (is_array($fileCfg)) {
-                $config = $fileCfg;
-            }
-        }
-
-        // environment overrides
-        $envBase = getenv('APP_BASE_PATH');
-        if ($envBase && $envBase !== '') {
-            $config['base_path'] = rtrim($envBase, DIRECTORY_SEPARATOR);
-        }
-        $envData = getenv('APP_DATA_PATH');
-        if ($envData && $envData !== '') {
-            $config['data_path'] = rtrim($envData, DIRECTORY_SEPARATOR);
-        }
-
-        self::$config = $config;
-        return self::$config;
+        return self::getInstance()->getPath($name, $fallback);
     }
 
     /**
-     * Return the project base path.
+     * Set custom path
      */
-        /**
-     * Return the project base path.
-     */
-    public static function basePath(): string
+    public static function set(string $name, string $path): void
     {
-        $cfg = self::getConfig();
-        if (!empty($cfg['base_path'])) {
-            return rtrim($cfg['base_path'], DIRECTORY_SEPARATOR);
-        }
-
-        // Allow legacy env var fallback
-        $env = getenv('APP_BASE_PATH');
-        if ($env && $env !== '') {
-            return rtrim($env, DIRECTORY_SEPARATOR);
-        }
-
-        // Default: from current file location (src/Infrastructure/Paths.php)
-        $candidate = dirname(__DIR__, 2);
-        $real = realpath($candidate);
-        return $real !== false ? $real : $candidate;
-    }
-
-        // Allow legacy env var fallback
-        $env = getenv('APP_BASE_PATH');
-        if ($env && $env !== '') {
-            return rtrim($env, DIRECTORY_SEPARATOR);
-        }
-
-        // Project root: src/Infrastructure/Paths.php, go up 2 levels
-        $candidate = dirname(__DIR__, 2);
-        $real = realpath($candidate);
-        return $real !== false ? $real : $candidate;
+        self::getInstance()->setPath($name, $path);
     }
 
     /**
-     * Return data directory path under project base.
+     * Get all paths
      */
-    public static function dataPath(): string
+    public static function all(): array
     {
-        $cfg = self::getConfig();
-        if (!empty($cfg['data_path'])) {
-            return rtrim($cfg['data_path'], DIRECTORY_SEPARATOR);
-        }
+        return self::getInstance()->all();
+    }
 
-        return self::basePath() . DIRECTORY_SEPARATOR . 'data';
+    /**
+     * Get underlying Slim4Paths instance for advanced usage
+     */
+    public static function slim4(): Slim4Paths
+    {
+        return self::getInstance();
     }
 }
