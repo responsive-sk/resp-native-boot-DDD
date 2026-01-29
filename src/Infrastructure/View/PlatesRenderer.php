@@ -10,16 +10,22 @@ final class PlatesRenderer
 {
     private Engine $plates;
     private array $routeMap = [];
+    private string $theme;
 
     public function __construct(string $templatesPath)
     {
+        // Get theme from environment (default: boson)
+        $this->theme = $_ENV['THEME_NAME'] ?? 'boson';
+
         $this->plates = new Engine($templatesPath);
 
-        // Register folders for namespaced templates
-        $this->plates->addFolder('boson', $templatesPath . '/boson');
-        $this->plates->addFolder('partials', $templatesPath . '/boson/partials');
-        $this->plates->addFolder('layout', $templatesPath . '/boson/layout');
-        $this->plates->addFolder('mark', $templatesPath . '/boson/mark');
+        // Register folders for namespaced templates using theme
+        $themePath = $templatesPath . '/' . $this->theme;
+        $this->plates->addFolder($this->theme, $themePath);
+        $this->plates->addFolder('partials', $themePath . '/partials');
+        $this->plates->addFolder('layout', $themePath . '/layout');
+        $this->plates->addFolder('mark', $themePath . '/mark');
+        $this->plates->addFolder('error', $themePath . '/error');
 
         // Initialize route map
         $this->initializeRouteMap();
