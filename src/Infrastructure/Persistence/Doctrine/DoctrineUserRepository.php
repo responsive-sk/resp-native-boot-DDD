@@ -71,7 +71,7 @@ final readonly class DoctrineUserRepository implements UserRepositoryInterface
         $this->connection->insert('users', [
             'id' => $user->id()->toBytes(),
             'email' => $user->email()->toString(),
-            'password' => $user->password()->toString(),
+            'password_hash' => $user->password()->toString(),
             'role' => $user->role()->toString(),
             'created_at' => $user->createdAt()->format('Y-m-d H:i:s'),
         ]);
@@ -81,7 +81,7 @@ final readonly class DoctrineUserRepository implements UserRepositoryInterface
     {
         $this->connection->update('users', [
             'email' => $user->email()->toString(),
-            'password' => $user->password()->toString(),
+            'password_hash' => $user->password()->toString(),
             'role' => $user->role()->toString(),
         ], [
             'id' => $user->id()->toBytes(),
@@ -93,7 +93,7 @@ final readonly class DoctrineUserRepository implements UserRepositoryInterface
         return User::reconstitute(
             UserId::fromBytes($row['id']),
             Email::fromString($row['email']),
-            HashedPassword::fromHash($row['password']),
+            HashedPassword::fromHash($row['password_hash']),
             UserRole::fromString($row['role']),
             new DateTimeImmutable($row['created_at'])
         );

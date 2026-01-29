@@ -56,6 +56,51 @@ final class User
         return new self($id, $email, $password, $role, $createdAt);
     }
 
+    public function verifyPassword(string $plainPassword): bool
+    {
+        return $this->password->verify($plainPassword);
+    }
+
+    public function changePassword(HashedPassword $newPassword): void
+    {
+        $this->password = $newPassword;
+    }
+
+    public function promoteToMark(): void
+    {
+        $this->role = UserRole::mark();
+    }
+
+    public function demoteToUser(): void
+    {
+        $this->role = UserRole::user();
+    }
+
+    // Getters
+    public function id(): UserId
+    {
+        return $this->id;
+    }
+
+    public function email(): Email
+    {
+        return $this->email;
+    }
+
+    public function password(): HashedPassword
+    {
+        return $this->password;
+    }
+
+    public function role(): UserRole
+    {
+        return $this->role;
+    }
+
+    public function createdAt(): DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
 
     // Domain Events
     private function recordEvent(DomainEvent $event): void
