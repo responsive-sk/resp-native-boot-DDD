@@ -14,25 +14,26 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
 {
     public function __construct(
         private Connection $connection
-    ) {}
+    ) {
+    }
 
     public function add(Article $article): void
     {
         $id = $article->id();
-        
+
         if ($id === null) {
             // INSERT new article
             $this->connection->insert('articles', [
                 'title' => $article->title()->toString(),
                 'slug' => $article->slug()?->toString(),
                 'content' => $article->content()->toString(),
-                'user_id' => $article->authorId()->toInt(),  // ← user_id, nie author_id
+                'user_id' => $article->authorId()->toBytes(),  // ← user_id as bytes
                 'status' => $article->status()->toString(),
                 'created_at' => $article->createdAt()->format('Y-m-d H:i:s'),
                 'updated_at' => $article->updatedAt()->format('Y-m-d H:i:s'),
-                'category' => null, // prázdny category stĺpec
+                'category' => null,
             ]);
-            
+
             // Set the generated ID
             $generatedId = (int) $this->connection->lastInsertId();
             $article->setId(ArticleId::fromInt($generatedId));
@@ -42,7 +43,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
                 'title' => $article->title()->toString(),
                 'slug' => $article->slug()?->toString(),
                 'content' => $article->content()->toString(),
-                'user_id' => $article->authorId()->toInt(),  // ← user_id
+                'user_id' => $article->authorId()->toBytes(),  // ← user_id as bytes
                 'status' => $article->status()->toString(),
                 'updated_at' => $article->updatedAt()->format('Y-m-d H:i:s'),
             ], ['id' => $id->toInt()]);
@@ -137,7 +138,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
             ArticleId::fromInt((int) $row['id']),
             \Blog\Domain\Blog\ValueObject\Title::fromString($row['title']),
             \Blog\Domain\Blog\ValueObject\Content::fromString($row['content']),
-            \Blog\Domain\User\ValueObject\UserId::fromInt((int) $row['user_id']), // ← user_id
+            \Blog\Domain\User\ValueObject\UserId::fromBytes($row['user_id']), // ← user_id from bytes
             \Blog\Domain\Blog\ValueObject\ArticleStatus::fromString($row['status']),
             new \DateTimeImmutable($row['created_at']),
             new \DateTimeImmutable($row['updated_at']),
