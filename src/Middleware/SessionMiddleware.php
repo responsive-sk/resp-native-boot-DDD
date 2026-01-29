@@ -16,12 +16,19 @@ final class SessionMiddleware implements MiddlewareInterface
         RequestHandlerInterface $handler
     ): ResponseInterface {
         if (session_status() === PHP_SESSION_NONE) {
+            // Set session name from environment
+            $sessionName = $_ENV['SESSION_NAME'] ?? 'blog_session';
+            session_name($sessionName);
+
+            // Get session lifetime from environment (default 1 hour)
+            $sessionLifetime = (int) ($_ENV['SESSION_LIFETIME'] ?? 3600);
+
             session_start([
-                'cookie_secure'   => isset($_SERVER['HTTPS']),
+                'cookie_secure' => isset($_SERVER['HTTPS']),
                 'cookie_httponly' => true,
                 'cookie_samesite' => 'Lax',
                 'use_strict_mode' => true,
-                'cookie_lifetime' => 86400 * 7, // 7 dní
+                'cookie_lifetime' => $sessionLifetime,
             ]);
         }
 
