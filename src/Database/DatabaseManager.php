@@ -13,12 +13,20 @@ class DatabaseManager
     {
         // Use Paths API for base directory
         $dataPath = \Blog\Infrastructure\Paths::dataPath();
+        $basePath = \Blog\Infrastructure\Paths::basePath();
 
         // Get database paths from environment or use defaults
-        $appDb = $_ENV['DB_PATH_APP'] ?? $dataPath . '/app.db';
-        $articlesDb = $_ENV['DB_PATH_ARTICLES'] ?? $dataPath . '/articles.db';
-        $usersDb = $_ENV['DB_PATH_USERS'] ?? $dataPath . '/users.db';
-        $formsDb = $_ENV['DB_PATH_FORMS'] ?? $dataPath . '/forms.db';
+        // Convert relative paths to absolute
+        $appDb = $_ENV['DB_PATH_APP'] ?? 'data/app.db';
+        $articlesDb = $_ENV['DB_PATH_ARTICLES'] ?? 'data/articles.db';
+        $usersDb = $_ENV['DB_PATH_USERS'] ?? 'data/users.db';
+        $formsDb = $_ENV['DB_PATH_FORMS'] ?? 'data/forms.db';
+
+        // Make paths absolute if they're relative
+        $appDb = self::makeAbsolutePath($appDb, $basePath);
+        $articlesDb = self::makeAbsolutePath($articlesDb, $basePath);
+        $usersDb = self::makeAbsolutePath($usersDb, $basePath);
+        $formsDb = self::makeAbsolutePath($formsDb, $basePath);
 
         return [
             'connections' => [
@@ -75,5 +83,19 @@ class DatabaseManager
     public static function closeAllConnections(): void
     {
         self::$connections = [];
+    }
+
+    /**
+     * Convert relative path to absolute path
+     */
+    private static function makeAbsolutePath(string $path, string $basePath): string
+    {
+        // If path is already absolute, return as-is
+        if (str_starts_with($path, '/') || preg_match('/^[A-Z]:/i', $path)) {
+            return $path;
+        }
+
+        // Otherwise, make it relative to basePath
+        return $basePath . '/' . $path;
     }
 }
