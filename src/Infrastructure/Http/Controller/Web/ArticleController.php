@@ -15,7 +15,8 @@ final readonly class ArticleController
         private ArticleRepository $articleRepository,
         private CreateArticle $createArticle,
         private ViewRenderer $viewRenderer
-    ) {}
+    ) {
+    }
 
     public function createForm(ServerRequestInterface $request): Response
     {
@@ -25,17 +26,20 @@ final readonly class ArticleController
     public function create(ServerRequestInterface $request): Response
     {
         $data = $request->getParsedBody();
-        
+
         try {
+            // Get author ID from session (UUID string)
+            $authorId = $_SESSION['user_id'] ?? throw new \Exception('User not authenticated');
+
             $articleId = ($this->createArticle)(
                 $data['title'] ?? '',
                 $data['content'] ?? '',
-                (int) ($data['author_id'] ?? 1)
+                $authorId
             );
-            
+
             // Redirect to the new article
             return new Response(302, ['Location' => '/blog/' . $articleId->toInt()]);
-            
+
         } catch (\Exception $e) {
             return $this->viewRenderer->renderResponse('article.create', [
                 'error' => $e->getMessage(),
@@ -49,7 +53,7 @@ final readonly class ArticleController
     {
         $id = (int) $request->getAttribute('id');
         $article = $this->articleRepository->getById($id);
-        
+
         if (!$article) {
             return new Response(404, ['Content-Type' => 'text/html'], 'Article not found');
         }
@@ -63,7 +67,7 @@ final readonly class ArticleController
     {
         $id = (int) $request->getAttribute('id');
         $data = $request->getParsedBody();
-        
+
         // TODO: Implement update logic
         // For now, redirect back
         return new Response(302, ['Location' => '/blog/' . $id]);
@@ -72,7 +76,7 @@ final readonly class ArticleController
     public function delete(ServerRequestInterface $request): Response
     {
         $id = (int) $request->getAttribute('id');
-        
+
         // TODO: Implement delete logic
         // For now, redirect to blog index
         return new Response(302, ['Location' => '/blog']);

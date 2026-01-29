@@ -16,12 +16,13 @@ final readonly class CreateArticle
 {
     public function __construct(
         private ArticleRepository $articles
-    ) {}
+    ) {
+    }
 
     public function __invoke(
         string $title,
         string $content,
-        int $authorId
+        string $authorId
     ): \Blog\Domain\Blog\ValueObject\ArticleId {
         // 1. Vytvor Slug priamo z titulu - Slug trieda sa postará o normalizáciu
         $slug = new Slug($title);
@@ -30,9 +31,9 @@ final readonly class CreateArticle
         $article = Article::create(
             Title::fromString($title),
             Content::fromString($content),
-            UserId::fromInt($authorId)
+            UserId::fromString($authorId)
         );
-        
+
         // Nastav slug
         $article->setSlug($slug);
 

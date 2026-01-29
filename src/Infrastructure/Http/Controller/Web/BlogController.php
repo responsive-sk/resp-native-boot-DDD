@@ -30,6 +30,11 @@ final readonly class BlogController
         return $this->viewRenderer->renderResponse('about');
     }
 
+    public function contact(ServerRequestInterface $request): ResponseInterface
+    {
+        return $this->viewRenderer->renderResponse('contact');
+    }
+
     public function index(ServerRequestInterface $request): ResponseInterface
     {
         $articles = $this->articleRepository->getAll();

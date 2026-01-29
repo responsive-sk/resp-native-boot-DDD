@@ -25,16 +25,17 @@ final readonly class ArticleApiController
         private CreateArticle $createArticle,
         private UpdateArticle $updateArticle,
         private DeleteArticle $deleteArticle
-    ) {}
+    ) {
+    }
 
     public function index(ServerRequestInterface $request): ResponseInterface
     {
         $articles = $this->getAllArticles->__invoke();
-        
+
         $articleData = array_map(function ($article) {
             return $this->articleToArray($article);
         }, $articles);
-        
+
         return $this->jsonResponse($articleData);
     }
 
@@ -45,11 +46,11 @@ final readonly class ArticleApiController
         try {
             $articleId = ArticleId::fromInt($id);
             $article = $this->articleRepository->getById($articleId);
-            
+
             if (!$article) {
                 return $this->jsonResponse(['error' => 'Article not found'], 404);
             }
-            
+
             return $this->jsonResponse($this->articleToArray($article));
         } catch (\Exception $e) {
             return $this->jsonResponse(['error' => $e->getMessage()], 404);
@@ -63,11 +64,12 @@ final readonly class ArticleApiController
         try {
             $title = Title::fromString($data['title'] ?? '');
             $content = Content::fromString($data['content'] ?? '');
-            $authorId = (int) ($data['authorId'] ?? 1);
+            // Author ID should be UUID string from session or request
+            $authorId = $data['authorId'] ?? $_SESSION['user_id'] ?? throw new \Exception('Author ID required');
 
             $articleId = $this->createArticle->__invoke(
-                $title->toString(), 
-                $content->toString(), 
+                $title->toString(),
+                $content->toString(),
                 $authorId
             );
 
@@ -75,9 +77,9 @@ final readonly class ArticleApiController
 
             return $this->jsonResponse(
                 [
-                    'message' => 'Article created', 
+                    'message' => 'Article created',
                     'article' => $this->articleToArray($article)
-                ], 
+                ],
                 201
             );
         } catch (\Exception $e) {
@@ -94,7 +96,7 @@ final readonly class ArticleApiController
             $articleId = ArticleId::fromInt($id);
             $title = Title::fromString($data['title'] ?? '');
             $content = Content::fromString($data['content'] ?? '');
-            
+
             // Optional slug
             $slug = isset($data['slug']) ? new Slug($data['slug']) : null;
 
@@ -138,14 +140,14 @@ final readonly class ArticleApiController
     {
         $id = $article->id();
         $slug = $article->slug();
-        
+
         return [
             'id' => $id ? $id->toInt() : null,
             'title' => $article->title()->toString(),
             'slug' => $slug ? $slug->toString() : null,
             'content' => $article->content()->toString(),
             'status' => $article->status()->toString(),
-            'author_id' => $article->authorId()->toInt(),
+            'author_id' => $article->authorId()->toString(),  // UUID as string
             'created_at' => $article->createdAt()->format('Y-m-d H:i:s'),
             'updated_at' => $article->updatedAt()->format('Y-m-d H:i:s'),
             'uri' => $article->getUri(),

@@ -8,7 +8,7 @@ Experimental blog platform built with **PHP 8.3**, focused on **Clean Architectu
 
 + Quick notes:
   - README files and commit messages: English only.
-  - Run dev server: `php -S 127.0.0.1:8000 -t public public/index.php` from `packages/blog`.
+  - Run dev server: `php -S 127.0.0.1:8000 -t public` from `packages/blog`.
   - Cache recommendation: serve fingerprinted static assets with long TTL (1 year).
 
 This repository is intentionally opinionated and serves as a foundation for a larger modular system.

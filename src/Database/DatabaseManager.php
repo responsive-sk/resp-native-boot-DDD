@@ -13,7 +13,7 @@ class DatabaseManager
     {
         // Simple hardcoded configuration
         $baseDir = dirname(__DIR__, 2);
-        
+
         return [
             'connections' => [
                 'app' => [
@@ -28,6 +28,10 @@ class DatabaseManager
                     'driver' => 'pdo_sqlite',
                     'path' => $baseDir . '/data/users.db',
                 ],
+                'forms' => [
+                    'driver' => 'pdo_sqlite',
+                    'path' => $baseDir . '/data/forms.db',
+                ],
             ]
         ];
     }
@@ -36,13 +40,13 @@ class DatabaseManager
     {
         if (!isset(self::$connections[$name])) {
             $config = self::getConfig();
-            
+
             if (!isset($config['connections'][$name])) {
                 throw new InvalidArgumentException("Database connection '$name' not configured.");
             }
 
             $connectionConfig = $config['connections'][$name];
-            
+
             // Ensure directory exists for SQLite
             if (isset($connectionConfig['path'])) {
                 $dir = dirname($connectionConfig['path']);

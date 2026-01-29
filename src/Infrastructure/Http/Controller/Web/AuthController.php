@@ -18,7 +18,8 @@ final readonly class AuthController
         private LoginUser $loginUser,
         private RegisterUser $registerUser,
         private ViewRenderer $viewRenderer
-    ) {}
+    ) {
+    }
 
     public function loginForm(ServerRequestInterface $request): ResponseInterface
     {
@@ -36,7 +37,7 @@ final readonly class AuthController
             $user = ($this->loginUser)($emailString, $password);
 
             session_regenerate_id(true);
-            $_SESSION['user_id'] = $user->id()->toInt();
+            $_SESSION['user_id'] = $user->id()->toString();
             $_SESSION['user_role'] = $user->role()->toString();
             $_SESSION['last_activity'] = time();
 
@@ -74,7 +75,7 @@ final readonly class AuthController
             $userId = ($this->registerUser)($emailRaw, $password);
 
             session_regenerate_id(true);
-            $_SESSION['user_id'] = $userId->toInt();
+            $_SESSION['user_id'] = $userId->toString();
             $_SESSION['user_email'] = $emailRaw;
 
             $redirect = $request->getQueryParams()['redirect'] ?? '/blog';

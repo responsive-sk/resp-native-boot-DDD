@@ -34,6 +34,7 @@ final class PlatesRenderer
         $this->routeMap = [
             'home' => '/',
             'about' => '/about',
+            'contact' => '/contact',
             'blog.index' => '/blog',
             'blog_index' => '/blog',
             'blog_show' => '/blog/{id}',

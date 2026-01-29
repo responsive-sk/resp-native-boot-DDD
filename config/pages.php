@@ -12,6 +12,11 @@ return [
         'description' => 'Informácie o architektúre a technológiách použitých v ChubbyBlog',
         'template' => 'boson::app/about',
     ],
+    'contact' => [
+        'title' => 'Contact Us - ChubbyBlog',
+        'description' => 'Get in touch with the ChubbyBlog team.',
+        'template' => 'boson::app/contact',
+    ],
     'blog.index' => [
         'title' => 'Blog - ChubbyBlog',
         'description' => 'Read our latest articles about programming, architecture and software development',
