@@ -142,7 +142,7 @@ class Paths
      */
     public static function set(string $name, string $path): void
     {
-        self::getInstance()->setPath($name, $path);
+        self::getInstance()->set($name, $path);
     }
 
     /**

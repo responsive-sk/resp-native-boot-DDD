@@ -11,26 +11,32 @@ class DatabaseManager
 
     private static function getConfig(): array
     {
-        // Simple hardcoded configuration
-        $baseDir = dirname(__DIR__, 2);
+        // Use Paths API for base directory
+        $dataPath = \Blog\Infrastructure\Paths::dataPath();
+
+        // Get database paths from environment or use defaults
+        $appDb = $_ENV['DB_PATH_APP'] ?? $dataPath . '/app.db';
+        $articlesDb = $_ENV['DB_PATH_ARTICLES'] ?? $dataPath . '/articles.db';
+        $usersDb = $_ENV['DB_PATH_USERS'] ?? $dataPath . '/users.db';
+        $formsDb = $_ENV['DB_PATH_FORMS'] ?? $dataPath . '/forms.db';
 
         return [
             'connections' => [
                 'app' => [
                     'driver' => 'pdo_sqlite',
-                    'path' => $baseDir . '/data/app.db',
+                    'path' => $appDb,
                 ],
                 'articles' => [
                     'driver' => 'pdo_sqlite',
-                    'path' => $baseDir . '/data/articles.db',
+                    'path' => $articlesDb,
                 ],
                 'users' => [
                     'driver' => 'pdo_sqlite',
-                    'path' => $baseDir . '/data/users.db',
+                    'path' => $usersDb,
                 ],
                 'forms' => [
                     'driver' => 'pdo_sqlite',
-                    'path' => $baseDir . '/data/forms.db',
+                    'path' => $formsDb,
                 ],
             ]
         ];

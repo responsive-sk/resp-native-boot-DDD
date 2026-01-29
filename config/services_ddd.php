@@ -55,7 +55,7 @@ return [
 
         // === VIEW RENDERER ===
     PlatesRenderer::class => fn() => new PlatesRenderer(
-        __DIR__ . '/../resources/views'
+        \Blog\Infrastructure\Paths::resourcesPath() . '/views'
     ),
 
     ViewRenderer::class => fn(ContainerInterface $c) => new ViewRenderer(
