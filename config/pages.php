@@ -5,72 +5,72 @@ return [
     'home' => [
         'title' => 'ChubbyBlog - Modern PHP Blog',
         'description' => 'Modern blog built with DDD + Hexagonal Architecture',
-        'template' => 'boson::app/home',
+        'template' => 'resp-front::app/home',
     ],
     'about' => [
         'title' => 'O projekte - ChubbyBlog',
         'description' => 'Informácie o architektúre a technológiách použitých v ChubbyBlog',
-        'template' => 'boson::app/about',
+        'template' => 'resp-front::app/about',
     ],
     'contact' => [
         'title' => 'Contact Us - ChubbyBlog',
         'description' => 'Get in touch with the ChubbyBlog team.',
-        'template' => 'boson::app/contact',
+        'template' => 'resp-front::app/contact',
     ],
     'blog.index' => [
         'title' => 'Blog - ChubbyBlog',
         'description' => 'Read our latest articles about programming, architecture and software development',
-        'template' => 'boson::modules/blog/index',
+        'template' => 'resp-front::modules/blog/index',
     ],
     'blog.show' => [
         'title' => '%s - ChubbyBlog',
         'description' => '%s',
-        'template' => 'boson::modules/blog/article-show',
+        'template' => 'resp-front::modules/blog/article-show',
     ],
     'search.index' => [
         'title' => 'Search - ChubbyBlog',
         'description' => 'Search through blog articles',
-        'template' => 'boson::modules/search/index',
+        'template' => 'resp-front::modules/search/index',
     ],
 
     // === AUTH ROUTES ===
     'auth.login' => [
         'title' => 'Login - ChubbyBlog',
         'description' => 'Login to your ChubbyBlog account',
-        'template' => 'boson::auth/login',
+        'template' => 'resp-front::auth/login',
     ],
     'auth.register' => [
         'title' => 'Register - ChubbyBlog',
         'description' => 'Create a new ChubbyBlog account',
-        'template' => 'boson::auth/register',
+        'template' => 'resp-front::auth/register',
     ],
 
     // === ARTICLE ROUTES ===
     'article.create' => [
         'title' => 'Create Article - ChubbyBlog',
         'description' => 'Create a new article',
-        'template' => 'boson::article/create',
+        'template' => 'resp-front::article/create',
     ],
     'article.edit' => [
         'title' => 'Edit Article - ChubbyBlog',
         'description' => 'Edit article',
-        'template' => 'boson::article/edit',
+        'template' => 'resp-front::article/edit',
     ],
 
     // === MARK ROUTES ===
     'mark.dashboard' => [
         'title' => 'Mark Dashboard - ChubbyBlog',
         'description' => 'Mark dashboard for managing blog content',
-        'template' => 'boson::mark/dashboard',
+        'template' => 'resp-front::mark/dashboard',
     ],
     'mark.articles.index' => [
         'title' => 'Manage Articles - ChubbyBlog Mark',
         'description' => 'Manage blog articles in the Mark panel',
-        'template' => 'boson::mark/articles/index',
+        'template' => 'resp-front::mark/articles/index',
     ],
     'mark.articles.show' => [
         'title' => '%s - Edit Article',
         'description' => 'Edit article details',
-        'template' => 'boson::mark/articles/show',
+        'template' => 'resp-front::mark/articles/show',
     ],
 ];

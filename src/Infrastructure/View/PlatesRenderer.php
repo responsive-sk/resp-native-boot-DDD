@@ -14,8 +14,8 @@ final class PlatesRenderer
 
     public function __construct(string $templatesPath)
     {
-        // Get theme from environment (default: boson)
-        $this->theme = $_ENV['THEME_NAME'] ?? 'boson';
+        // Get theme from environment (default: resp-front)
+        $this->theme = $_ENV['THEME_NAME'] ?? 'resp-front';
 
         $this->plates = new Engine($templatesPath);
 
