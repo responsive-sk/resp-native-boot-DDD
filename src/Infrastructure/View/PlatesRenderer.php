@@ -15,13 +15,25 @@ final class PlatesRenderer
     public function __construct(string $templatesPath)
     {
         // Get theme from environment (default: resp-front)
-        $this->theme = $_ENV['THEME_NAME'] ?? 'resp-front';
+        $requestedTheme = $_ENV['THEME_NAME'] ?? 'resp-front';
+
+        // Validate theme exists
+        $this->theme = $this->findAvailableTheme($templatesPath, $requestedTheme);
 
         $this->plates = new Engine($templatesPath);
 
         // Register folders for namespaced templates using theme
         $themePath = $templatesPath . '/' . $this->theme;
+
+        // Register theme folder with multiple aliases for compatibility
         $this->plates->addFolder($this->theme, $themePath);
+
+        // Also register common aliases to prevent errors
+        // This helps during migrations (e.g., boson -> resp-front)
+        if ($this->theme === 'resp-front') {
+            $this->plates->addFolder('boson', $themePath); // Backward compatibility
+        }
+
         $this->plates->addFolder('partials', $themePath . '/partials');
         $this->plates->addFolder('layout', $themePath . '/layout');
         $this->plates->addFolder('mark', $themePath . '/mark');
@@ -32,6 +44,70 @@ final class PlatesRenderer
 
         // Register custom functions
         $this->registerFunctions();
+    }
+
+    /**
+     * Find available theme with fallback support
+     */
+    private function findAvailableTheme(string $templatesPath, string $requestedTheme): string
+    {
+        $themePath = $templatesPath . '/' . $requestedTheme;
+
+        // Check if requested theme exists
+        if (is_dir($themePath)) {
+            return $requestedTheme;
+        }
+
+        // Try fallback themes
+        $fallbacks = ['resp-front', 'boson', 'default'];
+
+        foreach ($fallbacks as $fallback) {
+            $fallbackPath = $templatesPath . '/' . $fallback;
+            if (is_dir($fallbackPath)) {
+                // Log warning but continue
+                error_log(sprintf(
+                    'PlatesRenderer: Theme "%s" not found, using fallback "%s"',
+                    $requestedTheme,
+                    $fallback
+                ));
+                return $fallback;
+            }
+        }
+
+        // If no theme found, throw helpful error
+        $available = $this->listAvailableThemes($templatesPath);
+        throw new \RuntimeException(sprintf(
+            'PlatesRenderer: No theme found! Requested "%s", templates path: "%s". Available themes: %s. Please check THEME_NAME in .env or create symlink.',
+            $requestedTheme,
+            $templatesPath,
+            empty($available) ? 'none' : implode(', ', $available)
+        ));
+    }
+
+    /**
+     * List available themes in templates directory
+     */
+    private function listAvailableThemes(string $templatesPath): array
+    {
+        if (!is_dir($templatesPath)) {
+            return [];
+        }
+
+        $themes = [];
+        $items = scandir($templatesPath);
+
+        foreach ($items as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+
+            $fullPath = $templatesPath . '/' . $item;
+            if (is_dir($fullPath)) {
+                $themes[] = $item;
+            }
+        }
+
+        return $themes;
     }
 
     private function initializeRouteMap(): void
