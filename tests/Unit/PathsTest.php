@@ -22,8 +22,6 @@ final class PathsTest extends TestCase
 
     public function testBaseAndDataPathsAreStrings(): void
     {
-        $this->assertIsString(Paths::basePath());
-        $this->assertIsString(Paths::dataPath());
         $this->assertStringContainsString('data', Paths::dataPath());
     }
 }

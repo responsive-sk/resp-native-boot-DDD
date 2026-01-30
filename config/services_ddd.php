@@ -105,6 +105,10 @@ return [
         $c->get(ArticleRepository::class)
     ),
 
+    \Blog\Application\Blog\GetArticleBySlug::class => fn(ContainerInterface $c) => new \Blog\Application\Blog\GetArticleBySlug(
+        $c->get(ArticleRepository::class)
+    ),
+
     \Blog\Application\Form\CreateForm::class => fn(ContainerInterface $c) => new \Blog\Application\Form\CreateForm(
         $c->get(\Blog\Domain\Form\Repository\FormRepositoryInterface::class)
     ),

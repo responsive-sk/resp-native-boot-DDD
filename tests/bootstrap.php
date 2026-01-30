@@ -7,12 +7,13 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // Ensure per-model DB files are initialized for tests
 use Blog\Database\DatabaseManager;
+use ResponsiveSk\Slim4Paths\Paths as Slim4Paths;
 
 // Create users and posts DBs (DatabaseManager will create tables if missing)
 DatabaseManager::getConnection('users');
-DatabaseManager::getConnection('posts');
+DatabaseManager::getConnection('articles');
 
 // Optionally set writable paths for tests
-@mkdir(base_path('var'), 0777, true);
+@mkdir(\Blog\Infrastructure\Paths::basePath() . '/var', 0777, true);
 
 echo "PHPUnit bootstrap: per-model DBs initialized\n";

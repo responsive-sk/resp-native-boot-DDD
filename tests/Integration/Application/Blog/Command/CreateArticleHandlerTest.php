@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Application\Blog\Command;
 
-use Blog\Application\Blog\Command\CreateArticle\CreateArticleCommand;
-use Blog\Application\Blog\Command\CreateArticle\CreateArticleHandler;
+use Blog\Application\Blog\CreateArticle;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Infrastructure\Persistence\Doctrine\DoctrineArticleRepository;
 use PHPUnit\Framework\TestCase;
@@ -13,43 +12,35 @@ use PHPUnit\Framework\TestCase;
 final class CreateArticleHandlerTest extends TestCase
 {
     private ArticleRepository $articleRepository;
-    private CreateArticleHandler $handler;
+    private CreateArticle $handler;
 
     protected function setUp(): void
     {
         $connection = \Blog\Database\DatabaseManager::getConnection('articles');
         $this->articleRepository = new DoctrineArticleRepository($connection);
-        $this->handler = new CreateArticleHandler($this->articleRepository);
+        $this->handler = new CreateArticle($this->articleRepository);
     }
 
     public function test_creates_article_successfully(): void
     {
-        $articlesCountBefore = count($this->articleRepository->findAll());
+        $title = 'Testovací článok';
+        $content = 'Toto je obsah testovacieho článku.';
+        $authorId = '00000000-0000-0000-0000-000000000001';
 
-        $command = new CreateArticleCommand(
-            'Testovací článok',
-            'Toto je obsah testovacieho článku.',
-            1
+        $articleId = ($this->handler)(
+            $title,
+            $content,
+            $authorId
         );
 
-        $this->handler->handle($command);
+        $this->assertInstanceOf(\Blog\Domain\Blog\ValueObject\ArticleId::class, $articleId);
 
-        $articles = $this->articleRepository->findAll();
-        $this->assertCount($articlesCountBefore + 1, $articles);
-
-        // Nájdeme náš nový article
-        $newArticle = null;
-        foreach ($articles as $article) {
-            if ($article->title()->toString() === 'Testovací článok') {
-                $newArticle = $article;
-                break;
-            }
-        }
+        $newArticle = $this->articleRepository->getById($articleId);
 
         $this->assertNotNull($newArticle, 'Nový article nebol nájdený');
         $this->assertSame('Testovací článok', $newArticle->title()->toString());
         $this->assertSame('Toto je obsah testovacieho článku.', $newArticle->content()->toString());
-        $this->assertSame(1, $newArticle->authorId()->toInt());
+        $this->assertSame($authorId, $newArticle->authorId()->toString());
         $this->assertSame('draft', $newArticle->status()->toString());
     }
 
@@ -58,13 +49,15 @@ final class CreateArticleHandlerTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Titulok musí mať aspoň 3 znaky');
 
-        $command = new CreateArticleCommand(
-            'ab',
-            'Toto je obsah testovacieho článku.',
-            1
-        );
+        $title = 'ab';
+        $content = 'Toto je obsah testovacieho článku.';
+        $authorId = '00000000-0000-0000-0000-000000000001';
 
-        $this->handler->handle($command);
+        ($this->handler)(
+            $title,
+            $content,
+            $authorId
+        );
     }
 
     public function test_throws_exception_for_invalid_content(): void
@@ -72,12 +65,14 @@ final class CreateArticleHandlerTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Obsah musí mať aspoň 10 znakov');
 
-        $command = new CreateArticleCommand(
-            'Testovací článok',
-            'Krátke',
-            1
-        );
+        $title = 'Testovací článok';
+        $content = 'Krátke';
+        $authorId = '00000000-0000-0000-0000-000000000001';
 
-        $this->handler->handle($command);
+        ($this->handler)(
+            $title,
+            $content,
+            $authorId
+        );
     }
 }

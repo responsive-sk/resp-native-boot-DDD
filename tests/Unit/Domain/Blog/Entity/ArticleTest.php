@@ -25,7 +25,7 @@ final class ArticleTest extends TestCase
         $this->assertInstanceOf(Article::class, $article);
         $this->assertSame('Môj článok', $article->title()->toString());
         $this->assertSame('Toto je obsah článku.', $article->content()->toString());
-        $this->assertSame(1, $article->authorId()->toInt());
+        $this->assertSame('00000000-0000-0000-0000-000000000001', $article->authorId()->toString());
         $this->assertSame('draft', $article->status()->toString());
     }
 
@@ -33,6 +33,7 @@ final class ArticleTest extends TestCase
     {
         $article = Article::create(
             Title::fromString('Starý titulok'),
+            Content::fromString('Starý obsah článku.'),
             UserId::fromString('00000000-0000-0000-0000-000000000001')
         );
 
@@ -60,6 +61,8 @@ final class ArticleTest extends TestCase
         $this->assertSame('published', $article->status()->toString());
     }
 
+    public function test_archives_published_article(): void
+    {
         $article = Article::create(
             Title::fromString('Môj článok'),
             Content::fromString('Toto je obsah článku.'),

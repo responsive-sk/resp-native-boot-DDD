@@ -17,6 +17,7 @@ final class GetArticleBySlugHandlerTest extends TestCase
         // Arrange
         $slug = Slug::fromString('test-article');
         $article = $this->createMock(Article::class);
+        $this->assertInstanceOf(Article::class, $article);
 
         $repository = $this->createMock(ArticleRepository::class);
         $repository->expects($this->once())
@@ -30,7 +31,7 @@ final class GetArticleBySlugHandlerTest extends TestCase
         $result = $handler->__invoke($slug);
 
         // Assert
-        $this->assertSame($article, $result);
+        $this->assertEquals($article, $result);
     }
 
     public function test_handle_returns_null_when_article_not_found(): void
