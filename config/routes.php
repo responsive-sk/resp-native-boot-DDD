@@ -61,5 +61,10 @@ return function (ContainerInterface $c): Router {
     $router->post('/api/auth/login', 'api_auth_login', fn($req) => $c->get(AuthApiController::class)->login($req));
     $router->post('/api/auth/register', 'api_auth_register', fn($req) => $c->get(AuthApiController::class)->register($req));
 
+    // === FORM API ROUTES ===
+    $router->post('/api/forms', 'api_forms_create', fn($req) => $c->get(\Blog\Infrastructure\Http\Controller\Form\FormController::class)->create($req));
+    $router->get('/api/forms/{slug:[a-z0-9\-]+}', 'api_forms_get', fn($req, $slug) => $c->get(\Blog\Infrastructure\Http\Controller\Form\FormController::class)->get($req, $slug));
+
+
     return $router;
 };

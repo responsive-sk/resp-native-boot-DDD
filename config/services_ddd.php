@@ -162,6 +162,11 @@ return [
         $c->get(RegisterUser::class)
     ),
 
+    \Blog\Infrastructure\Http\Controller\Form\FormController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Form\FormController(
+        $c->get(\Blog\Application\Form\CreateForm::class),
+        $c->get(\Blog\Application\Form\GetForm::class)
+    ),
+
         // === ROUTER ===
     Router::class => fn(ContainerInterface $c) => (require __DIR__ . '/routes.php')($c),
 
@@ -173,7 +178,7 @@ return [
 
     ExceptionMiddleware::class => fn(ContainerInterface $c) => new ExceptionMiddleware(
         $c->get(Psr17Factory::class),
-        true
+        $c->get(ViewRenderer::class)
     ),
 
     AuthMiddleware::class => fn() => new AuthMiddleware(),

@@ -32,10 +32,9 @@ return static function (?string $env = null) {
 
     // Get middlewares from container
     $middlewares = $container->get('middlewares');
-    
+
     // Register routes (this adds them to router in container)
-    $routes = require __DIR__ . '/src/routes.php';
-    $routes($container->get(Application::class), $container);
+
 
     // Create Application with middleware stack
     $app = new Application($middlewares);

@@ -19,15 +19,19 @@
     0% {
         background-position: -200% center;
     }
+
     100% {
         background-position: 200% center;
     }
 }
 
 @keyframes pulse {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.6;
     }
@@ -43,12 +47,10 @@ resp-header:not(:defined) {
     visibility: visible;
     display: block;
     height: 80px;
-    background: linear-gradient(
-        90deg,
-        var(--color-surface, #1a1f2e) 25%,
-        rgba(255, 255, 255, 0.05) 50%,
-        var(--color-surface, #1a1f2e) 75%
-    );
+    background: linear-gradient(90deg,
+            var(--color-surface, #1a1f2e) 25%,
+            rgba(255, 255, 255, 0.05) 50%,
+            var(--color-surface, #1a1f2e) 75%);
     background-size: 200% 100%;
     animation: shimmer 2s infinite;
 }
@@ -86,11 +88,9 @@ hero-section:not(:defined) {
     display: block;
     min-height: 600px;
     padding: 4rem 2rem;
-    background: linear-gradient(
-        135deg,
-        var(--color-background, #0d1119) 0%,
-        var(--color-surface, #1a1f2e) 100%
-    );
+    background: linear-gradient(135deg,
+            var(--color-background, #0d1119) 0%,
+            var(--color-surface, #1a1f2e) 100%);
 }
 
 /* Call to Action */
@@ -129,11 +129,9 @@ boson-button:not(:defined) {
     height: 48px;
     padding: 0 24px;
     border-radius: 8px;
-    background: linear-gradient(
-        90deg,
-        rgba(249, 57, 4, 0.8) 0%,
-        rgba(249, 57, 4, 0.6) 100%
-    );
+    background: linear-gradient(90deg,
+            rgba(249, 57, 4, 0.8) 0%,
+            rgba(249, 57, 4, 0.6) 100%);
     animation: pulse 2s infinite;
 }
 
@@ -185,7 +183,7 @@ article-list-section {
         min-height: 500px;
         padding: 2rem 1rem;
     }
-    
+
     boson-header:not(:defined),
     resp-header:not(:defined) {
         height: 64px;
@@ -205,7 +203,7 @@ article-list-section {
    DEBUG MODE: See skeleton in action
    Uncomment to visualize skeleton screens
    ============================================ */
-/*
+
 *:not(:defined) {
     outline: 2px dashed red !important;
     outline-offset: -2px;
@@ -221,4 +219,3 @@ article-list-section {
     background: yellow;
     padding: 2px 4px;
 }
-*/

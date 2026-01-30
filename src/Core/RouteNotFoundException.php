@@ -11,5 +11,9 @@ use RuntimeException;
  */
 final class RouteNotFoundException extends RuntimeException
 {
+    public function getStatusCode(): int
+    {
+        return 404;
+    }
 }
 

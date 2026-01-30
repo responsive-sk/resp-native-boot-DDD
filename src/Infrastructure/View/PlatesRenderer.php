@@ -138,7 +138,7 @@ final class PlatesRenderer
     {
         // Register escapeHtml as alias for e()
         $this->plates->registerFunction('escapeHtml', function ($string) {
-            return htmlspecialchars($string ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            return htmlspecialchars((string) ($string ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         });
 
         // Register url() function for generating URLs from route names
