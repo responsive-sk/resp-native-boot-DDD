@@ -17,7 +17,7 @@ final class GetAllArticlesHandlerTest extends TestCase
 
     protected function setUp(): void
     {
-        $connection = \App\Database\DatabaseManager::getConnection('articles');
+        $connection = \Blog\Database\DatabaseManager::getConnection('articles');
         $this->articleRepository = new DoctrineArticleRepository($connection);
         $this->handler = new GetAllArticlesHandler($this->articleRepository);
     }

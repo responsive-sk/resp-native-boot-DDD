@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-use App\Database\DatabaseManager;
+use Blog\Database\DatabaseManager;
 
-require \App\Infrastructure\Paths::basePath() . '/vendor/autoload.php';
+require \Blog\Infrastructure\Paths::basePath() . '/vendor/autoload.php';
 
 echo "Starting split: move posts table to data/posts.db\n";
 
 $appConn = DatabaseManager::getConnection('app');
-$postsPath = \App\Infrastructure\Paths::dataPath() . '/posts.db';
+$postsPath = \Blog\Infrastructure\Paths::dataPath() . '/posts.db';
 
 if (file_exists($postsPath)) {
     echo "posts.db already exists at {$postsPath} - aborting to avoid overwrite.\n";

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-use App\Database\DatabaseManager;
-use App\Infrastructure\Paths;
+use Blog\Database\DatabaseManager;
+use Blog\Infrastructure\Paths;
 
-require \App\Infrastructure\Paths::basePath() . '/vendor/autoload.php';
+require \Blog\Infrastructure\Paths::basePath() . '/vendor/autoload.php';
 
 echo "Starting split: move users table to data/users.db\n";
 
-$usersPath = \App\Infrastructure\Paths::dataPath() . '/users.db';
+$usersPath = \Blog\Infrastructure\Paths::dataPath() . '/users.db';
 
 $appConn = DatabaseManager::getConnection('app');
 
@@ -21,7 +21,7 @@ if (file_exists($usersPath)) {
 // Attach new DB to current connection and copy the users table
 try {
     echo "Attaching new SQLite file and copying users table...\n";
-    $attach = sprintf("ATTACH DATABASE '%s' AS users_db", addslashes(realpath(\App\Infrastructure\Paths::dataPath()) . '/users.db'));
+    $attach = sprintf("ATTACH DATABASE '%s' AS users_db", addslashes(realpath(\Blog\Infrastructure\Paths::dataPath()) . '/users.db'));
     // Since Doctrine/DBAL uses real PDO, use underlying connection
     $pdo = $appConn->getNativeConnection();
     // Create or open the target file by using sqlite3 command via exec is simpler

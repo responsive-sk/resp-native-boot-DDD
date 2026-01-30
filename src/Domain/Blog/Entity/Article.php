@@ -178,7 +178,7 @@ final class Article
     }
 
     /**
-     * @return array<int, \App\Domain\Common\DomainEvent>
+     * @return array<int, \Blog\Domain\Common\DomainEvent>
      */
     public function releaseEvents(): array
     {

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Blog\Entity;
 
-use App\Domain\Blog\Entity\Article;
-use App\Domain\Blog\ValueObject\ArticleId;
-use App\Domain\Blog\ValueObject\ArticleStatus;
-use App\Domain\Blog\ValueObject\Content;
-use App\Domain\Blog\ValueObject\Title;
-use App\Domain\User\ValueObject\UserId;
+use Blog\Domain\Blog\Entity\Article;
+use Blog\Domain\Blog\ValueObject\ArticleId;
+use Blog\Domain\Blog\ValueObject\ArticleStatus;
+use Blog\Domain\Blog\ValueObject\Content;
+use Blog\Domain\Blog\ValueObject\Title;
+use Blog\Domain\User\ValueObject\UserId;
 use PHPUnit\Framework\TestCase;
 
 final class ArticleTest extends TestCase

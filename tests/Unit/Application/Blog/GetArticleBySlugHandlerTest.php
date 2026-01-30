@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Application\Blog;
 
-use App\Application\Blog\GetArticleBySlug;
-use App\Domain\Blog\Entity\Article;
-use App\Domain\Blog\Repository\ArticleRepository;
-use App\Domain\Blog\ValueObject\Slug;
+use Blog\Application\Blog\GetArticleBySlug;
+use Blog\Domain\Blog\Entity\Article;
+use Blog\Domain\Blog\Repository\ArticleRepository;
+use Blog\Domain\Blog\ValueObject\Slug;
 use PHPUnit\Framework\TestCase;
 
 final class GetArticleBySlugHandlerTest extends TestCase

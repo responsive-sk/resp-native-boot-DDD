@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Database\Database;
+use Blog\Database\Database;
 
-$require = require \App\Infrastructure\Paths::basePath() . '/vendor/autoload.php';
+$require = require \Blog\Infrastructure\Paths::basePath() . '/vendor/autoload.php';
 
 echo "Starting rollback: remove slug column and index from posts\n";
 
-$connection = \App\Database\DatabaseManager::getConnection('posts');
+$connection = \Blog\Database\DatabaseManager::getConnection('posts');
 $platform = $connection->getDatabasePlatform()->getName();
 
 echo "Detected platform: {$platform}\n";

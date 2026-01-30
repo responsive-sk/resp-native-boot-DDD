@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Http;
 
-use App\Application\Blog\Query\GetAllArticles\GetAllArticlesHandler;
-use App\Application\Blog\Query\GetArticle\GetArticleHandler;
-use App\Application\Blog\Query\GetArticleBySlug\GetArticleBySlugHandler;
-use App\Domain\Blog\Entity\Article;
-use App\Domain\Blog\Repository\ArticleRepository;
-use App\Domain\Blog\ValueObject\Content;
-use App\Domain\Blog\ValueObject\Title;
-use App\Domain\User\ValueObject\UserId;
-use App\Infrastructure\Http\Controller\BlogController;
+use Blog\Application\Blog\Query\GetAllArticles\GetAllArticlesHandler;
+use Blog\Application\Blog\Query\GetArticle\GetArticleHandler;
+use Blog\Application\Blog\Query\GetArticleBySlug\GetArticleBySlugHandler;
+use Blog\Domain\Blog\Entity\Article;
+use Blog\Domain\Blog\Repository\ArticleRepository;
+use Blog\Domain\Blog\ValueObject\Content;
+use Blog\Domain\Blog\ValueObject\Title;
+use Blog\Domain\User\ValueObject\UserId;
+use Blog\Infrastructure\Http\Controller\BlogController;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;

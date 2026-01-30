@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Application\Blog\Command;
 
-use App\Application\Blog\Command\CreateArticle\CreateArticleCommand;
-use App\Application\Blog\Command\CreateArticle\CreateArticleHandler;
-use App\Domain\Blog\Repository\ArticleRepository;
-use App\Infrastructure\Persistence\Doctrine\DoctrineArticleRepository;
+use Blog\Application\Blog\Command\CreateArticle\CreateArticleCommand;
+use Blog\Application\Blog\Command\CreateArticle\CreateArticleHandler;
+use Blog\Domain\Blog\Repository\ArticleRepository;
+use Blog\Infrastructure\Persistence\Doctrine\DoctrineArticleRepository;
 use PHPUnit\Framework\TestCase;
 
 final class CreateArticleHandlerTest extends TestCase
@@ -17,7 +17,7 @@ final class CreateArticleHandlerTest extends TestCase
 
     protected function setUp(): void
     {
-        $connection = \App\Database\DatabaseManager::getConnection('articles');
+        $connection = \Blog\Database\DatabaseManager::getConnection('articles');
         $this->articleRepository = new DoctrineArticleRepository($connection);
         $this->handler = new CreateArticleHandler($this->articleRepository);
     }

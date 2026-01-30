@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-use App\Database\Database;
-use App\Domain\Blog\ValueObject\Slug;
+use Blog\Database\Database;
+use Blog\Domain\Blog\ValueObject\Slug;
 
-require \App\Infrastructure\Paths::basePath() . '/vendor/autoload.php';
+require \Blog\Infrastructure\Paths::basePath() . '/vendor/autoload.php';
 
 echo "Starting migration: add slug column and backfill posts\n";
 
-$connection = \App\Database\DatabaseManager::getConnection('posts');
+$connection = \Blog\Database\DatabaseManager::getConnection('posts');
 $schema = $connection->createSchemaManager();
 
 $columns = array_keys($schema->listTableColumns('posts'));

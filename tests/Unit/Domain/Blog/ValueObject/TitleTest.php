@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Blog\ValueObject;
 
-use App\Domain\Blog\ValueObject\Title;
+use Blog\Domain\Blog\ValueObject\Title;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
