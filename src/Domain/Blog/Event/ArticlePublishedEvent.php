@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Blog\Domain\Blog\Event;
 
-use Blog\Domain\Common\DomainEvent;
 use Blog\Domain\Blog\ValueObject\ArticleId;
+use Blog\Domain\Common\DomainEvent;
 use DateTimeImmutable;
 
 final readonly class ArticlePublishedEvent implements DomainEvent
@@ -33,4 +33,3 @@ final readonly class ArticlePublishedEvent implements DomainEvent
         return 'article.published';
     }
 }
-

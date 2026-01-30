@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Middleware;
 
+use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Nyholm\Psr7\Response;
 use Throwable;
 
 final readonly class ErrorHandlerMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private string $env
-    ) {}
+    ) {
+    }
 
     public function process(
         ServerRequestInterface $request,

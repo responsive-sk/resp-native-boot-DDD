@@ -8,7 +8,9 @@ use InvalidArgumentException;
 
 final readonly class Email
 {
-    private function __construct(private string $value) {}
+    private function __construct(private string $value)
+    {
+    }
 
     /**
      * @throws InvalidArgumentException

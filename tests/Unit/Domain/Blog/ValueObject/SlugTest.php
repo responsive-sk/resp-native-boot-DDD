@@ -33,7 +33,7 @@ final class SlugTest extends TestCase
         $slug = new Slug('  HELLO World 123  ');
         $this->assertSame('hello-world-123', $slug->toString());
     }
-    
+
     public function test_diacritics_removal(): void
     {
         $slug = new Slug('Článok s diakritikou');

@@ -17,7 +17,8 @@ final readonly class ArticleResponse
         public string $status,
         public string $createdAt,
         public string $updatedAt
-    ) {}
+    ) {
+    }
 
     public static function fromEntity(Article $article): self
     {
@@ -47,4 +48,3 @@ final readonly class ArticleResponse
         ];
     }
 }
-

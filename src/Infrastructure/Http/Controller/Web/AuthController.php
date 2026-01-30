@@ -6,11 +6,10 @@ namespace Blog\Infrastructure\Http\Controller\Web;
 
 use Blog\Application\User\LoginUser;
 use Blog\Application\User\RegisterUser;
-use Blog\Domain\User\ValueObject\Email;
 use Blog\Infrastructure\View\ViewRenderer;
+use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Nyholm\Psr7\Response;
 
 final readonly class AuthController
 {

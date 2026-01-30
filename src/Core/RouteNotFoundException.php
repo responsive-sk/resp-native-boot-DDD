@@ -16,4 +16,3 @@ final class RouteNotFoundException extends RuntimeException
         return 404;
     }
 }
-

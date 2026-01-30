@@ -10,7 +10,9 @@ final readonly class Content
 {
     private const MIN_LENGTH = 10;
 
-    private function __construct(private string $value) {}
+    private function __construct(private string $value)
+    {
+    }
 
     public static function fromString(string $value): self
     {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Blog\Core;
 
-use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -12,7 +11,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * RouterMiddleware - middleware ktorý matchuje route a volá handler
- * 
+ *
  * Nahradza Chubbyphp\Framework\Middleware\RouteMatcherMiddleware
  */
 final readonly class RouterMiddleware implements MiddlewareInterface
@@ -40,4 +39,3 @@ final readonly class RouterMiddleware implements MiddlewareInterface
         return $routeHandler($request);
     }
 }
-

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Mark;
@@ -13,7 +14,8 @@ final readonly class ArticlesController
     public function __construct(
         private ArticleRepository $articleRepository,
         private ViewRenderer $viewRenderer
-    ) {}
+    ) {
+    }
 
     public function index(ServerRequestInterface $request): ResponseInterface
     {

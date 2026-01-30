@@ -8,14 +8,14 @@ use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Infrastructure\View\ViewRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Nyholm\Psr7\Response;
 
 final readonly class DashboardController
 {
     public function __construct(
         private ArticleRepository $articleRepository,
         private ViewRenderer $viewRenderer
-    ) {}
+    ) {
+    }
 
     public function index(ServerRequestInterface $request): ResponseInterface
     {

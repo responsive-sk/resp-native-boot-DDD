@@ -18,7 +18,7 @@ final class RequestContextMiddleware implements MiddlewareInterface
     {
         // Store request in global state so MoonShine RequestContract can access it
         $_SERVER['__PSR7_REQUEST'] = $request;
-        
+
         try {
             return $handler->handle($request);
         } finally {
@@ -27,4 +27,3 @@ final class RequestContextMiddleware implements MiddlewareInterface
         }
     }
 }
-

@@ -6,10 +6,9 @@ namespace Blog\Application\Blog;
 
 use Blog\Domain\Blog\Entity\Article;
 use Blog\Domain\Blog\Repository\ArticleRepository;
-use Blog\Domain\Blog\ValueObject\ArticleId;
-use Blog\Domain\Blog\ValueObject\Title;
 use Blog\Domain\Blog\ValueObject\Content;
 use Blog\Domain\Blog\ValueObject\Slug;
+use Blog\Domain\Blog\ValueObject\Title;
 use Blog\Domain\User\ValueObject\UserId;
 
 final readonly class CreateArticle

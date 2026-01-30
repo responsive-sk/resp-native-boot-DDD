@@ -11,13 +11,14 @@ final class DeleteArticle
 {
     public function __construct(
         private ArticleRepository $articles
-    ) {}
+    ) {
+    }
 
     public function __invoke(ArticleId $articleId): void
     {
         // 1. Skontrolovať, či článok existuje
         $article = $this->articles->getById($articleId);
-        
+
         if ($article === null) {
             throw new \DomainException('Article not found');
         }

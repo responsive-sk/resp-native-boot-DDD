@@ -11,7 +11,9 @@ final readonly class Title
     private const MIN_LENGTH = 3;
     private const MAX_LENGTH = 255;
 
-    private function __construct(private string $value) {}
+    private function __construct(private string $value)
+    {
+    }
 
     public static function fromString(string $value): self
     {

@@ -14,13 +14,14 @@ final readonly class SearchController
     public function __construct(
         private SearchArticles $searchArticles,
         private ViewRenderer $viewRenderer
-    ) {}
+    ) {
+    }
 
     public function index(ServerRequestInterface $request): ResponseInterface
     {
         $query = $request->getQueryParams()['q'] ?? '';
         $results = [];
-        
+
         if ($query !== '') {
             $results = ($this->searchArticles)($query);
         }
@@ -31,4 +32,3 @@ final readonly class SearchController
         ]);
     }
 }
-

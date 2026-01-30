@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Blog\Domain\Blog\Entity;
 
+use Blog\Domain\Blog\Event\ArticlePublishedEvent;
 use Blog\Domain\Blog\ValueObject\ArticleId;
-use Blog\Domain\Blog\ValueObject\Title;
+use Blog\Domain\Blog\ValueObject\ArticleStatus;
 use Blog\Domain\Blog\ValueObject\Content;
 use Blog\Domain\Blog\ValueObject\Slug;
-use Blog\Domain\Blog\ValueObject\ArticleStatus;
-use Blog\Domain\Blog\Event\ArticlePublishedEvent;
+use Blog\Domain\Blog\ValueObject\Title;
 use Blog\Domain\User\ValueObject\UserId;
 use DateTimeImmutable;
 
@@ -26,7 +26,8 @@ final class Article
         private DateTimeImmutable $createdAt,
         private DateTimeImmutable $updatedAt,
         private ?Slug             $slug = null
-    ) {}
+    ) {
+    }
 
     public static function create(
         Title $title,
@@ -186,4 +187,3 @@ final class Article
         return $events;
     }
 }
-

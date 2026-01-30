@@ -6,9 +6,9 @@ namespace Tests\Unit\Domain\Blog\Entity;
 
 use App\Domain\Blog\Entity\Article;
 use App\Domain\Blog\ValueObject\ArticleId;
-use App\Domain\Blog\ValueObject\Title;
-use App\Domain\Blog\ValueObject\Content;
 use App\Domain\Blog\ValueObject\ArticleStatus;
+use App\Domain\Blog\ValueObject\Content;
+use App\Domain\Blog\ValueObject\Title;
 use App\Domain\User\ValueObject\UserId;
 use PHPUnit\Framework\TestCase;
 

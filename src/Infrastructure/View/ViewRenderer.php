@@ -1,4 +1,5 @@
 <?php
+
 // src/Infrastructure/View/ViewRenderer.php
 declare(strict_types=1);
 

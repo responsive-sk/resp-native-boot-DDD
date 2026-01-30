@@ -10,16 +10,17 @@ use Blog\Domain\User\ValueObject\Email;
 use Blog\Domain\User\ValueObject\HashedPassword;
 use Blog\Domain\User\ValueObject\UserRole;
 use Blog\Infrastructure\Http\Response\UserResponse;
+use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Nyholm\Psr7\Response;
 
 final class AuthApiController
 {
     public function __construct(
         private LoginUser $loginUser,
         private RegisterUser $registerUser
-    ) {}
+    ) {
+    }
 
     public function register(ServerRequestInterface $request): ResponseInterface
     {

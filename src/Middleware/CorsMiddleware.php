@@ -4,24 +4,25 @@ declare(strict_types=1);
 
 namespace Blog\Middleware;
 
+use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Nyholm\Psr7\Response;
 
 final readonly class CorsMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private array $allowedOrigins = [
-            'http://localhost:5173', 
+            'http://localhost:5173',
             'http://localhost:3000',
             'http://127.0.0.1:5173',
             'http://127.0.0.1:3000'
         ],
         private array $allowedMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
         private array $allowedHeaders = ['Content-Type', 'Authorization', 'X-Requested-With']
-    ) {}
+    ) {
+    }
 
     public function process(
         ServerRequestInterface $request,
@@ -38,7 +39,7 @@ final readonly class CorsMiddleware implements MiddlewareInterface
     }
 
     private function addCorsHeaders(
-        ServerRequestInterface $request, 
+        ServerRequestInterface $request,
         ResponseInterface $response
     ): ResponseInterface {
         // Get the Origin header from request

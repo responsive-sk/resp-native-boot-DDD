@@ -10,11 +10,11 @@ final class SearchArticles
 {
     public function __construct(
         private ArticleRepository $articles
-    ) {}
+    ) {
+    }
 
     public function __invoke(string $query): array
     {
         return $this->articles->search($query);
     }
 }
-

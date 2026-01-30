@@ -6,12 +6,12 @@ namespace Blog\Infrastructure\Persistence\Doctrine;
 
 use Blog\Domain\User\Entity\User;
 use Blog\Domain\User\Repository\UserRepositoryInterface;
-use Blog\Domain\User\ValueObject\UserId;
 use Blog\Domain\User\ValueObject\Email;
 use Blog\Domain\User\ValueObject\HashedPassword;
+use Blog\Domain\User\ValueObject\UserId;
 use Blog\Domain\User\ValueObject\UserRole;
-use Doctrine\DBAL\Connection;
 use DateTimeImmutable;
+use Doctrine\DBAL\Connection;
 
 final readonly class DoctrineUserRepository implements UserRepositoryInterface
 {

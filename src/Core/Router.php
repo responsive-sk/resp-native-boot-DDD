@@ -6,12 +6,14 @@ namespace Blog\Core;
 
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
-use Psr\Http\Message\ServerRequestInterface;
+
 use function FastRoute\simpleDispatcher;
+
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Native PHP Router - wrapper pre FastRoute
- * 
+ *
  * Nahradza Chubbyphp\Framework\Router
  */
 final class Router
@@ -97,7 +99,7 @@ final class Router
         if ($routeInfo[0] === Dispatcher::FOUND) {
             $route = $routeInfo[1];
             $params = $routeInfo[2];
-            
+
             return new RouteMatch(
                 $route['name'],
                 $route['handler'],
@@ -127,12 +129,12 @@ final class Router
         if ($path !== '/' && str_ends_with($path, '/')) {
             $path = rtrim($path, '/');
         }
-        
+
         // Zabezpeč, že prázdna cesta je root
         if ($path === '') {
             $path = '/';
         }
-        
+
         return $path;
     }
 
@@ -165,4 +167,3 @@ final class Router
         }, $this->routes);
     }
 }
-

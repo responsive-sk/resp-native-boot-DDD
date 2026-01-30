@@ -10,7 +10,7 @@ use Psr\Http\Server\MiddlewareInterface;
 
 /**
  * Native PHP Application - nahradza Chubbyphp\Framework\Application
- * 
+ *
  * Spracováva HTTP request cez middleware stack a emituje response.
  */
 final class Application
@@ -54,4 +54,3 @@ final class Application
         echo (string) $response->getBody();
     }
 }
-

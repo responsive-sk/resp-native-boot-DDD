@@ -1,8 +1,9 @@
 <?php
+
 namespace Blog\Database;
 
-use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 use InvalidArgumentException;
 
 class DatabaseManager

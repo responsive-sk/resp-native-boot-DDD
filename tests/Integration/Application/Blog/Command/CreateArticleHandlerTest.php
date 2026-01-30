@@ -8,7 +8,6 @@ use App\Application\Blog\Command\CreateArticle\CreateArticleCommand;
 use App\Application\Blog\Command\CreateArticle\CreateArticleHandler;
 use App\Domain\Blog\Repository\ArticleRepository;
 use App\Infrastructure\Persistence\Doctrine\DoctrineArticleRepository;
-use App\Database\Database;
 use PHPUnit\Framework\TestCase;
 
 final class CreateArticleHandlerTest extends TestCase
@@ -82,4 +81,3 @@ final class CreateArticleHandlerTest extends TestCase
         $this->handler->handle($command);
     }
 }
-

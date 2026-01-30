@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use PHPUnit\Framework\TestCase;
 use App\Infrastructure\Paths as Paths;
+use PHPUnit\Framework\TestCase;
 
 final class PathsTest extends TestCase
 {

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Blog\Domain\User\Event;
 
 use Blog\Domain\Common\DomainEvent;
-use Blog\Domain\User\ValueObject\UserId;
 use Blog\Domain\User\ValueObject\Email;
+use Blog\Domain\User\ValueObject\UserId;
 use DateTimeImmutable;
 
 final readonly class UserRegisteredEvent implements DomainEvent

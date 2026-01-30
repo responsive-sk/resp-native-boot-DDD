@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Web;
@@ -6,8 +7,8 @@ namespace Blog\Infrastructure\Http\Controller\Web;
 use Blog\Application\Blog\CreateArticle;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Infrastructure\View\ViewRenderer;
-use Psr\Http\Message\ServerRequestInterface;
 use Nyholm\Psr7\Response;
+use Psr\Http\Message\ServerRequestInterface;
 
 final readonly class ArticleController
 {

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Blog\Domain\User\Repository;
 
 use Blog\Domain\User\Entity\User;
-use Blog\Domain\User\ValueObject\UserId;
 use Blog\Domain\User\ValueObject\Email;
+use Blog\Domain\User\ValueObject\UserId;
 
 interface UserRepositoryInterface
 {

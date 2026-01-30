@@ -14,7 +14,7 @@ use Throwable;
 
 /**
  * ExceptionMiddleware - zachytáva exceptions a konvertuje ich na HTTP response
- * 
+ *
  * Nahradza Chubbyphp\Framework\Middleware\ExceptionMiddleware
  */
 final readonly class ExceptionMiddleware implements MiddlewareInterface
@@ -146,4 +146,3 @@ final readonly class ExceptionMiddleware implements MiddlewareInterface
         HTML;
     }
 }
-

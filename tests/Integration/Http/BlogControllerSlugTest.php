@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Http;
 
-use App\Infrastructure\Http\Controller\BlogController;
 use App\Application\Blog\Query\GetAllArticles\GetAllArticlesHandler;
 use App\Application\Blog\Query\GetArticle\GetArticleHandler;
 use App\Application\Blog\Query\GetArticleBySlug\GetArticleBySlugHandler;
-use App\Domain\Blog\Repository\ArticleRepository;
 use App\Domain\Blog\Entity\Article;
-use App\Domain\Blog\ValueObject\Title;
+use App\Domain\Blog\Repository\ArticleRepository;
 use App\Domain\Blog\ValueObject\Content;
+use App\Domain\Blog\ValueObject\Title;
 use App\Domain\User\ValueObject\UserId;
+use App\Infrastructure\Http\Controller\BlogController;
 use Nyholm\Psr7\ServerRequest;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\TestCase;
 
 #[AllowMockObjectsWithoutExpectations]
 final class BlogControllerSlugTest extends TestCase

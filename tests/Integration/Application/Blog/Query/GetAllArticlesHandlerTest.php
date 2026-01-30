@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Application\Blog\Query;
 
-use Blog\Application\Blog\Query\GetAllArticles\GetAllArticlesQuery;
 use Blog\Application\Blog\Query\GetAllArticles\GetAllArticlesHandler;
+use Blog\Application\Blog\Query\GetAllArticles\GetAllArticlesQuery;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Infrastructure\Persistence\Doctrine\DoctrineArticleRepository;
-use Blog\Database\Database;
 use PHPUnit\Framework\TestCase;
 
 final class GetAllArticlesHandlerTest extends TestCase
@@ -37,4 +36,3 @@ final class GetAllArticlesHandlerTest extends TestCase
         }
     }
 }
-

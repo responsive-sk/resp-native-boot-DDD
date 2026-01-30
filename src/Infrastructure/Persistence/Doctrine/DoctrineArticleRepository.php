@@ -105,7 +105,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
 
         // Split query into terms and add * wildcard to each for prefix matching
         $terms = array_filter(explode(' ', trim($query)));
-        $ftsQuery = implode(' ', array_map(fn($term) => $term . '*', $terms));
+        $ftsQuery = implode(' ', array_map(fn ($term) => $term . '*', $terms));
 
         // Use FTS5 virtual table for full-text search
         $sql = "

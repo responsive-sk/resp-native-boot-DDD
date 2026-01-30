@@ -12,7 +12,7 @@ use RuntimeException;
 
 /**
  * Middleware Dispatcher - spracováva middleware stack
- * 
+ *
  * Implementuje PSR-15 RequestHandlerInterface a postupne
  * volá všetky middleware v poradí.
  */
@@ -57,4 +57,3 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
         return $this->handle($request);
     }
 }
-

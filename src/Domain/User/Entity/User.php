@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Blog\Domain\User\Entity;
 
 use Blog\Domain\Common\DomainEvent;
-use Blog\Domain\User\ValueObject\UserId;
+use Blog\Domain\User\Event\UserRegisteredEvent;
 use Blog\Domain\User\ValueObject\Email;
 use Blog\Domain\User\ValueObject\HashedPassword;
+use Blog\Domain\User\ValueObject\UserId;
 use Blog\Domain\User\ValueObject\UserRole;
-use Blog\Domain\User\Event\UserRegisteredEvent;
 use DateTimeImmutable;
-use LogicException;
 
 final class User
 {

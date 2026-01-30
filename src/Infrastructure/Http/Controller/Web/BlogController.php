@@ -8,9 +8,9 @@ use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Domain\Blog\ValueObject\ArticleId;
 use Blog\Domain\Blog\ValueObject\Slug;
 use Blog\Infrastructure\View\ViewRenderer;
+use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Nyholm\Psr7\Response;
 
 final readonly class BlogController
 {
