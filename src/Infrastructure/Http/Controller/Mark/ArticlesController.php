@@ -29,7 +29,7 @@ final readonly class ArticlesController
     public function show(ServerRequestInterface $request): ResponseInterface
     {
         $id = (int) $request->getAttribute('id');
-        $article = $this->articleRepository->getById($id);
+        $article = $this->articleRepository->getById(\Blog\Domain\Blog\ValueObject\ArticleId::fromInt($id));
 
         if (!$article) {
             // TODO: Return proper error response

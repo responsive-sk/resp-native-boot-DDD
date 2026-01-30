@@ -159,7 +159,8 @@ return [
 
     AuthApiController::class => fn(ContainerInterface $c) => new AuthApiController(
         $c->get(LoginUser::class),
-        $c->get(RegisterUser::class)
+        $c->get(RegisterUser::class),
+        $c->get(UserRepositoryInterface::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Form\FormController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Form\FormController(

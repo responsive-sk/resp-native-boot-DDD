@@ -13,7 +13,7 @@ final readonly class ArticleResponse
         public string $title,
         public string $content,
         public string $excerpt,
-        public int $authorId,
+        public string $authorId,
         public string $status,
         public string $createdAt,
         public string $updatedAt
@@ -27,7 +27,7 @@ final readonly class ArticleResponse
             title: $article->title()->toString(),
             content: $article->content()->toString(),
             excerpt: $article->content()->excerpt(200),
-            authorId: $article->authorId()->toInt(),
+            authorId: $article->authorId()->toString(),
             status: $article->status()->toString(),
             createdAt: $article->createdAt()->format('c'),
             updatedAt: $article->updatedAt()->format('c')

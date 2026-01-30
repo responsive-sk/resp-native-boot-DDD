@@ -23,7 +23,8 @@ final readonly class HashedPassword
 
         $hash = password_hash($plainPassword, PASSWORD_DEFAULT);
 
-        if ($hash === false) {
+        // @phpstan-ignore-next-line
+        if (!is_string($hash)) {
             throw new \RuntimeException('Nepodarilo sa zahašovať heslo');
         }
 

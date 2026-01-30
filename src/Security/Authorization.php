@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Blog\Security;
 
+use Blog\Security\Exception\AuthenticationException;
+use Blog\Security\Exception\AuthorizationException;
+
 class Authorization
 {
     private static function ensureSession(): void
@@ -46,8 +49,7 @@ class Authorization
     public static function requireAuth(): void
     {
         if (!self::isAuthenticated()) {
-            header('Location: /login');
-            exit;
+            throw AuthenticationException::notAuthenticated();
         }
     }
 
@@ -56,8 +58,7 @@ class Authorization
         self::requireAuth();
 
         if (!self::hasRole($role)) {
-            header('Location: /blog');
-            exit;
+            throw AuthorizationException::notAuthorized($role);
         }
     }
 

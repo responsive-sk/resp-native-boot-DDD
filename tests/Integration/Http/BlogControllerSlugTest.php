@@ -24,7 +24,7 @@ final class BlogControllerSlugTest extends TestCase
     {
         $title = Title::fromString('Integration Article');
         $content = Content::fromString('Integration content');
-        $authorId = UserId::fromInt(1);
+        $authorId = UserId::fromString('00000000-0000-0000-0000-000000000001');
 
         $article = Article::create($title, $content, $authorId);
 

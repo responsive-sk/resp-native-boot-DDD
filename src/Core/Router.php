@@ -56,7 +56,6 @@ final class Router
 
     /**
      * Pridá PUT route
-     * @phpstan-ignore-next-line method.unused
      */
     public function put(string $path, string $name, callable $handler): void
     {
@@ -154,7 +153,6 @@ final class Router
      * Vráti všetky routes (pre debugging)
      *
      * @return array<array{method: string, path: string, name: string}>
-     * @phpstan-ignore-next-line method.unused
      */
     public function getRoutes(): array
     {

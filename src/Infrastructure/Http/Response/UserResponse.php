@@ -9,7 +9,7 @@ use Blog\Domain\User\Entity\User;
 final readonly class UserResponse
 {
     public function __construct(
-        public int $id,
+        public string $id,
         public string $email,
         public string $role,
         public string $createdAt
@@ -19,7 +19,7 @@ final readonly class UserResponse
     public static function fromEntity(User $user): self
     {
         return new self(
-            id: $user->id()->toInt(),
+            id: $user->id()->toString(),
             email: $user->email()->toString(),
             role: $user->role()->toString(),
             createdAt: $user->createdAt()->format('c')

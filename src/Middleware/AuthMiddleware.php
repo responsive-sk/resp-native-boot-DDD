@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Blog\Middleware;
 
 use Blog\Security\Authorization;
+use Blog\Security\Exception\AuthenticationException;
+use Blog\Security\Exception\AuthorizationException;
+use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -42,13 +45,21 @@ final class AuthMiddleware implements MiddlewareInterface
         }
 
         // Pre chránené cesty - kontroluj autentifikáciu
-        if ($redirect = Authorization::requireAuth()) {
-            return $redirect;
+        try {
+            Authorization::requireAuth();
+        } catch (AuthenticationException $e) {
+            // Redirect to login page
+            return new Response(302, ['Location' => '/login']);
         }
 
         // Kontrola ROLE_MARK pre /mark/*
-        if (str_starts_with($path, '/mark') && $redirect = Authorization::requireMark()) {
-            return $redirect;
+        if (str_starts_with($path, '/mark')) {
+            try {
+                Authorization::requireMark();
+            } catch (AuthorizationException $e) {
+                // Redirect to a default authorized page (e.g., blog index)
+                return new Response(302, ['Location' => '/blog']);
+            }
         }
 
         return $handler->handle($request);

@@ -8,6 +8,7 @@ use Blog\Application\Blog\CreateArticle;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Infrastructure\View\ViewRenderer;
 use Nyholm\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final readonly class ArticleController
@@ -19,12 +20,12 @@ final readonly class ArticleController
     ) {
     }
 
-    public function createForm(ServerRequestInterface $request): Response
+    public function createForm(ServerRequestInterface $request): ResponseInterface
     {
         return $this->viewRenderer->renderResponse('article.create');
     }
 
-    public function create(ServerRequestInterface $request): Response
+    public function create(ServerRequestInterface $request): ResponseInterface
     {
         $data = $request->getParsedBody();
 
@@ -50,10 +51,10 @@ final readonly class ArticleController
         }
     }
 
-    public function editForm(ServerRequestInterface $request): Response
+    public function editForm(ServerRequestInterface $request): ResponseInterface
     {
         $id = (int) $request->getAttribute('id');
-        $article = $this->articleRepository->getById($id);
+        $article = $this->articleRepository->getById(\Blog\Domain\Blog\ValueObject\ArticleId::fromInt($id));
 
         if (!$article) {
             return new Response(404, ['Content-Type' => 'text/html'], 'Article not found');
@@ -64,7 +65,7 @@ final readonly class ArticleController
         ]);
     }
 
-    public function update(ServerRequestInterface $request): Response
+    public function update(ServerRequestInterface $request): ResponseInterface
     {
         $id = (int) $request->getAttribute('id');
         $data = $request->getParsedBody();
@@ -74,7 +75,7 @@ final readonly class ArticleController
         return new Response(302, ['Location' => '/blog/' . $id]);
     }
 
-    public function delete(ServerRequestInterface $request): Response
+    public function delete(ServerRequestInterface $request): ResponseInterface
     {
         $id = (int) $request->getAttribute('id');
 

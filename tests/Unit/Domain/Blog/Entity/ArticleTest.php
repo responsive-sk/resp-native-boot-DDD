@@ -18,7 +18,7 @@ final class ArticleTest extends TestCase
     {
         $title = Title::fromString('Môj článok');
         $content = Content::fromString('Toto je obsah článku.');
-        $authorId = UserId::fromInt(1);
+        $authorId = UserId::fromString('00000000-0000-0000-0000-000000000001');
 
         $article = Article::create($title, $content, $authorId);
 
@@ -33,8 +33,7 @@ final class ArticleTest extends TestCase
     {
         $article = Article::create(
             Title::fromString('Starý titulok'),
-            Content::fromString('Starý obsah článku.'),
-            UserId::fromInt(1)
+            UserId::fromString('00000000-0000-0000-0000-000000000001')
         );
 
         $newTitle = Title::fromString('Nový titulok');
@@ -51,7 +50,7 @@ final class ArticleTest extends TestCase
         $article = Article::create(
             Title::fromString('Môj článok'),
             Content::fromString('Toto je obsah článku.'),
-            UserId::fromInt(1)
+            UserId::fromString('00000000-0000-0000-0000-000000000001')
         );
 
         $this->assertSame('draft', $article->status()->toString());
@@ -61,12 +60,10 @@ final class ArticleTest extends TestCase
         $this->assertSame('published', $article->status()->toString());
     }
 
-    public function test_archives_published_article(): void
-    {
         $article = Article::create(
             Title::fromString('Môj článok'),
             Content::fromString('Toto je obsah článku.'),
-            UserId::fromInt(1)
+            UserId::fromString('00000000-0000-0000-0000-000000000001')
         );
 
         $article->publish();
@@ -77,7 +74,7 @@ final class ArticleTest extends TestCase
 
     public function test_is_owned_by_returns_true_for_author(): void
     {
-        $authorId = UserId::fromInt(1);
+        $authorId = UserId::fromString('00000000-0000-0000-0000-000000000001');
         $article = Article::create(
             Title::fromString('Môj článok'),
             Content::fromString('Toto je obsah článku.'),
@@ -92,10 +89,10 @@ final class ArticleTest extends TestCase
         $article = Article::create(
             Title::fromString('Môj článok'),
             Content::fromString('Toto je obsah článku.'),
-            UserId::fromInt(1)
+            UserId::fromString('00000000-0000-0000-0000-000000000001')
         );
 
-        $otherUserId = UserId::fromInt(2);
+        $otherUserId = UserId::fromString('00000000-0000-0000-0000-000000000002');
 
         $this->assertFalse($article->isOwnedBy($otherUserId));
     }
@@ -106,7 +103,7 @@ final class ArticleTest extends TestCase
             ArticleId::fromInt(1),
             Title::fromString('Môj článok'),
             Content::fromString('Toto je obsah článku.'),
-            UserId::fromInt(1),
+            UserId::fromString('00000000-0000-0000-0000-000000000001'),
             ArticleStatus::fromString('published'),
             new \DateTimeImmutable('2024-01-01 10:00:00'),
             new \DateTimeImmutable('2024-01-02 15:30:00')

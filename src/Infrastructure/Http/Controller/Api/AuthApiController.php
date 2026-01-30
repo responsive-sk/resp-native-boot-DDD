@@ -6,6 +6,7 @@ namespace Blog\Infrastructure\Http\Controller\Api;
 
 use Blog\Application\User\LoginUser;
 use Blog\Application\User\RegisterUser;
+use Blog\Domain\User\Repository\UserRepositoryInterface;
 use Blog\Domain\User\ValueObject\Email;
 use Blog\Domain\User\ValueObject\HashedPassword;
 use Blog\Domain\User\ValueObject\UserRole;
@@ -18,7 +19,8 @@ final class AuthApiController
 {
     public function __construct(
         private LoginUser $loginUser,
-        private RegisterUser $registerUser
+        private RegisterUser $registerUser,
+        private UserRepositoryInterface $userRepository
     ) {
     }
 
@@ -27,15 +29,23 @@ final class AuthApiController
         $data = json_decode((string) $request->getBody(), true);
 
         try {
-            $email = new Email($data['email'] ?? '');
+            $email = Email::fromString($data['email'] ?? '');
             $password = HashedPassword::fromPlainPassword($data['password'] ?? '');
             $role = isset($data['role']) ? UserRole::fromString($data['role']) : null;
 
-            $user = $this->registerUser->execute($email, $password, $role);
+            $userId = ($this->registerUser)($email->toString(), $password->toString());
+
+            // Fetch the full User entity after registration
+            $userEntity = $this->userRepository->findById($userId);
+
+            if (!$userEntity) {
+                // This should theoretically not happen if registration was successful
+                throw new \RuntimeException('Registered user not found.');
+            }
 
             return $this->jsonResponse([
                 'message' => 'User registered successfully',
-                'user' => UserResponse::fromEntity($user)->toArray(),
+                'user' => UserResponse::fromEntity($userEntity)->toArray(),
             ], 201);
         } catch (\Exception $e) {
             return $this->jsonResponse(['error' => $e->getMessage()], 400);
@@ -47,16 +57,16 @@ final class AuthApiController
         $data = json_decode((string) $request->getBody(), true);
 
         try {
-            $email = new Email($data['email'] ?? '');
+            $email = Email::fromString($data['email'] ?? '');
             $password = $data['password'] ?? '';
 
-            $user = $this->loginUser->execute($email, $password);
+            $user = ($this->loginUser)($email->toString(), $password);
 
             // V reálnej aplikácii by tu bol JWT token
             return $this->jsonResponse([
                 'message' => 'Login successful',
                 'user' => UserResponse::fromEntity($user)->toArray(),
-                'token' => 'mock-token-for-user-' . $user->id()->toInt(),
+                'token' => 'mock-token-for-user-' . $user->id()->toString(),
             ]);
         } catch (\Exception $e) {
             return $this->jsonResponse(['error' => $e->getMessage()], 401);

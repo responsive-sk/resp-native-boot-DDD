@@ -43,7 +43,7 @@ class Paths
     {
         // Check environment variable
         $envPath = $_ENV['APP_BASE_PATH'] ?? getenv('APP_BASE_PATH');
-        if ($envPath && $envPath !== '') {
+        if (is_string($envPath) && $envPath !== '') {
             return rtrim($envPath, DIRECTORY_SEPARATOR);
         }
 
