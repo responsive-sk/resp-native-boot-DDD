@@ -48,6 +48,11 @@ final readonly class CreateArticle
         // 4. Uložiť
         $this->articles->add($article);
 
-        return $article->id();
+        $id = $article->id();
+        if ($id === null) {
+            throw new \RuntimeException('Article ID could not be generated.');
+        }
+
+        return $id;
     }
 }

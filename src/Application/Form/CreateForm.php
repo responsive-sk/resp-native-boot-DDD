@@ -14,6 +14,9 @@ final readonly class CreateForm
     ) {
     }
 
+    /**
+     * @param array<int, mixed> $fields
+     */
     public function execute(string $title, string $slug, array $fields): Form
     {
         // Here we could check if slug exists, etc.

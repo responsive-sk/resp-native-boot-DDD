@@ -13,6 +13,9 @@ final class SearchArticles
     ) {
     }
 
+    /**
+     * @return array<\Blog\Domain\Blog\Entity\Article>
+     */
     public function __invoke(string $query): array
     {
         return $this->articles->search($query);

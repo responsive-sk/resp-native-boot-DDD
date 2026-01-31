@@ -61,6 +61,9 @@ final class Form
         return $this->slug;
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     public function fields(): array
     {
         return $this->fields;

@@ -78,6 +78,9 @@ final class User
     // Getters
     public function id(): UserId
     {
+        if ($this->id === null) {
+            throw new \RuntimeException('User ID should not be null');
+        }
         return $this->id;
     }
 

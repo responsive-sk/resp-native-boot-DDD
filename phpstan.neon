@@ -2,7 +2,7 @@ includes:
     - vendor/phpstan/phpstan/conf/bleedingEdge.neon
 
 parameters:
-    level: 5 # A reasonable starting level. Increase over time.
+    level: max # A reasonable starting level. Increase over time.
     paths:
         - src
         - tests

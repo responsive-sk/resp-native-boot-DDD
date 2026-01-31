@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Api;
 
+use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Nyholm\Psr7\Response;
 
 class SessionPingController
 {

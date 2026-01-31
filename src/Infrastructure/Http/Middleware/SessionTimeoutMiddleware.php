@@ -1,13 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Middleware;
 
+use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Nyholm\Psr7\Response;
 
 class SessionTimeoutMiddleware implements MiddlewareInterface
 {
@@ -30,12 +31,12 @@ class SessionTimeoutMiddleware implements MiddlewareInterface
         $path = $request->getUri()->getPath();
 
         // Determine timeout based on path
-        $timeout = 3600; // Default 60 min
+        $timeout = $this->timeout; // Default from config (30m or 60m)
         if (str_starts_with($path, '/mark')) {
-            $timeout = 1800; // Mark admin 30 min
+            $timeout = 1800; // Mark admin always 30 min
         }
 
-        // If configured via constructor, use that as base? 
+        // If configured via constructor, use that as base?
         // We typically override via path.
         // For now hardcoded per user instructions or configurable.
         // Let's rely on the path logic.

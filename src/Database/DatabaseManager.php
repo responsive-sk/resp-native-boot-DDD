@@ -8,8 +8,12 @@ use InvalidArgumentException;
 
 class DatabaseManager
 {
+    /** @var array<string, Connection> */
     private static array $connections = [];
 
+    /**
+     * @return array{connections: array<string, array{driver: string, path: string}>}
+     */
     private static function getConfig(): array
     {
         // Use Paths API for base directory

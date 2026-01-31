@@ -87,6 +87,10 @@ final class Router
             $this->buildDispatcher();
         }
 
+        if ($this->dispatcher === null) {
+            throw new \RuntimeException('Router dispatcher failed to initialize');
+        }
+
         // Normalizuj cestu
         $normalizedPath = $this->normalizePath($request->getUri()->getPath());
 

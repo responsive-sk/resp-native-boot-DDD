@@ -56,11 +56,14 @@ final readonly class ArticlesController
     {
         $data = (array) $request->getParsedBody();
 
-        if (empty($data['title']) || empty($data['content'])) {
+        $title = $data['title'] ?? '';
+        $content = $data['content'] ?? '';
+
+        if ($title === '' || $content === '') {
             return $this->viewRenderer->renderResponse('mark.articles.create', [
                 'error' => 'Title and content are required',
-                'title' => $data['title'] ?? '',
-                'content' => $data['content'] ?? ''
+                'title' => $title,
+                'content' => $content
             ]);
         }
 
@@ -77,8 +80,8 @@ final readonly class ArticlesController
         } catch (\InvalidArgumentException $e) {
             return $this->viewRenderer->renderResponse('mark.articles.create', [
                 'error' => $e->getMessage(),
-                'title' => $data['title'] ?? '',
-                'content' => $data['content'] ?? ''
+                'title' => $title,
+                'content' => $content
             ]);
         }
     }

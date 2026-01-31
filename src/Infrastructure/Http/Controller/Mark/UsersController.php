@@ -41,24 +41,28 @@ final readonly class UsersController
     {
         $data = (array) $request->getParsedBody();
 
-        if (empty($data['email']) || empty($data['password'])) {
+        $email = $data['email'] ?? '';
+        $role = $data['role'] ?? 'ROLE_USER';
+        $password = $data['password'] ?? '';
+
+        if ($email === '' || $password === '') {
             return $this->viewRenderer->renderResponse('mark.users.create', [
                 'error' => 'Email and password are required',
-                'email' => $data['email'] ?? '',
-                'role' => $data['role'] ?? 'ROLE_USER'
+                'email' => $email,
+                'role' => $role
             ]);
         }
 
         try {
-            $email = Email::fromString($data['email']);
-            if ($this->userRepository->emailExists($email)) {
+            $emailObj = Email::fromString($email);
+            if ($this->userRepository->emailExists($emailObj)) {
                 throw new \InvalidArgumentException('Email is already registered.');
             }
 
-            $password = HashedPassword::fromPlainPassword($data['password']);
-            $role = UserRole::fromString($data['role'] ?? 'ROLE_USER');
+            $passwordObj = HashedPassword::fromPlainPassword($password);
+            $roleObj = UserRole::fromString($role);
 
-            $user = User::register($email, $password, $role);
+            $user = User::register($emailObj, $passwordObj, $roleObj);
             $this->userRepository->save($user);
 
             return new Response(302, ['Location' => '/mark/users']);
@@ -66,8 +70,8 @@ final readonly class UsersController
         } catch (\InvalidArgumentException | \RuntimeException $e) {
             return $this->viewRenderer->renderResponse('mark.users.create', [
                 'error' => $e->getMessage(),
-                'email' => $data['email'] ?? '',
-                'role' => $data['role'] ?? 'ROLE_USER'
+                'email' => $email,
+                'role' => $role
             ]);
         }
     }
@@ -127,7 +131,7 @@ final readonly class UsersController
 
             // Note: Email update is tricky because of unique constraint check vs self, skipping for basic implementation or adding check if changed.
             // For now, let's assume email is read-only or we need to implement changeEmail domain logic which isn't there yet fully exposed?
-            // User entity has generic constructor but no changeEmail method? 
+            // User entity has generic constructor but no changeEmail method?
             // Checking Entity... no changeEmail method. So we skip email update for now or add it later.
 
             $this->userRepository->save($user);

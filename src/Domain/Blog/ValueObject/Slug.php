@@ -35,10 +35,13 @@ final readonly class Slug
         $slug = self::transliterate($slug);
 
         // 4. Až TERAZ odstrániť diakritiku pomocou iconv (zvyšok)
-        $slug = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $slug);
+        $converted = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $slug);
+        if ($converted !== false) {
+            $slug = $converted;
+        }
 
         // 5. Nahradiť všetky znaky okrem a-z, 0-9 a - pomlčkou
-        $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+        $slug = (string) preg_replace('/[^a-z0-9]+/', '-', $slug);
 
         // 6. Odstrániť začiatok a koniec pomlčiek
         $slug = trim($slug, '-');
@@ -61,30 +64,67 @@ final readonly class Slug
     {
         $replacements = [
             // Slovenské
-            'á' => 'a', 'ä' => 'a', 'č' => 'c', 'ď' => 'd',
-            'é' => 'e', 'ě' => 'e', 'í' => 'i', 'ĺ' => 'l',
-            'ľ' => 'l', 'ň' => 'n', 'ó' => 'o', 'ô' => 'o',
-            'ŕ' => 'r', 'š' => 's', 'ť' => 't', 'ú' => 'u',
-            'ý' => 'y', 'ž' => 'z',
+            'á' => 'a',
+            'ä' => 'a',
+            'č' => 'c',
+            'ď' => 'd',
+            'é' => 'e',
+            'ě' => 'e',
+            'í' => 'i',
+            'ĺ' => 'l',
+            'ľ' => 'l',
+            'ň' => 'n',
+            'ó' => 'o',
+            'ô' => 'o',
+            'ŕ' => 'r',
+            'š' => 's',
+            'ť' => 't',
+            'ú' => 'u',
+            'ý' => 'y',
+            'ž' => 'z',
 
             // Veľké slovenské
-            'Á' => 'a', 'Ä' => 'a', 'Č' => 'c', 'Ď' => 'd',
-            'É' => 'e', 'Ě' => 'e', 'Í' => 'i', 'Ĺ' => 'l',
-            'Ľ' => 'l', 'Ň' => 'n', 'Ó' => 'o', 'Ô' => 'o',
-            'Ŕ' => 'r', 'Š' => 's', 'Ť' => 't', 'Ú' => 'u',
-            'Ý' => 'y', 'Ž' => 'z',
+            'Á' => 'a',
+            'Ä' => 'a',
+            'Č' => 'c',
+            'Ď' => 'd',
+            'É' => 'e',
+            'Ě' => 'e',
+            'Í' => 'i',
+            'Ĺ' => 'l',
+            'Ľ' => 'l',
+            'Ň' => 'n',
+            'Ó' => 'o',
+            'Ô' => 'o',
+            'Ŕ' => 'r',
+            'Š' => 's',
+            'Ť' => 't',
+            'Ú' => 'u',
+            'Ý' => 'y',
+            'Ž' => 'z',
 
             // České (odstránené duplicitné, ktoré už boli v slovenských)
-            'ř' => 'r', 'Ř' => 'r', 'ů' => 'u', 'Ů' => 'u',
+            'ř' => 'r',
+            'Ř' => 'r',
+            'ů' => 'u',
+            'Ů' => 'u',
 
             // Polské (pre kompatibilitu)
-            'ą' => 'a', 'ć' => 'c', 'ę' => 'e', 'ł' => 'l',
+            'ą' => 'a',
+            'ć' => 'c',
+            'ę' => 'e',
+            'ł' => 'l',
             'ń' => 'n',
-            'ś' => 's', 'ź' => 'z',
+            'ś' => 's',
+            'ź' => 'z',
             'ż' => 'z',
-            'Ą' => 'a', 'Ć' => 'c', 'Ę' => 'e', 'Ł' => 'l',
+            'Ą' => 'a',
+            'Ć' => 'c',
+            'Ę' => 'e',
+            'Ł' => 'l',
             'Ń' => 'n',
-            'Ś' => 's', 'Ź' => 'z',
+            'Ś' => 's',
+            'Ź' => 'z',
             'Ż' => 'z',
         ];
 

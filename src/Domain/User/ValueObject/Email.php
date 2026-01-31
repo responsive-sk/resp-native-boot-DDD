@@ -45,12 +45,14 @@ final readonly class Email
 
     public function domain(): string
     {
-        return substr($this->value, strpos($this->value, '@') + 1);
+        $parts = explode('@', $this->value);
+        return $parts[1] ?? '';
     }
 
     public function localPart(): string
     {
-        return substr($this->value, 0, strpos($this->value, '@'));
+        $parts = explode('@', $this->value);
+        return $parts[0];
     }
 
     public function __toString(): string
