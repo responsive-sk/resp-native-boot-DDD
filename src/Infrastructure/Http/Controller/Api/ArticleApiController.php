@@ -41,7 +41,7 @@ final readonly class ArticleApiController
 
     public function show(ServerRequestInterface $request): ResponseInterface
     {
-        $id = (int) $request->getAttribute('id');
+        $id = (int) filter_var($request->getAttribute('id'), FILTER_VALIDATE_INT);
 
         try {
             $articleId = ArticleId::fromInt($id);
@@ -59,13 +59,26 @@ final readonly class ArticleApiController
 
     public function create(ServerRequestInterface $request): ResponseInterface
     {
-        $data = json_decode((string) $request->getBody(), true);
+        $body = (string) $request->getBody();
+        $data = json_decode($body, true);
+
+        if (!is_array($data)) {
+            return $this->jsonResponse(['error' => 'Invalid JSON'], 400);
+        }
 
         try {
-            $title = Title::fromString($data['title'] ?? '');
-            $content = Content::fromString($data['content'] ?? '');
+            $titleStr = (string) ($data['title'] ?? '');
+            $contentStr = (string) ($data['content'] ?? '');
+
+            $title = Title::fromString($titleStr);
+            $content = Content::fromString($contentStr);
+
             // Author ID should be UUID string from session or request
-            $authorId = $data['authorId'] ?? $_SESSION['user_id'] ?? throw new \Exception('Author ID required');
+            $authorId = (string) ($data['authorId'] ?? $_SESSION['user_id'] ?? '');
+
+            if ($authorId === '') {
+                throw new \Exception('Author ID required');
+            }
 
             $articleId = $this->createArticle->__invoke(
                 $title->toString(),
@@ -74,6 +87,10 @@ final readonly class ArticleApiController
             );
 
             $article = $this->articleRepository->getById($articleId);
+
+            if (!$article) {
+                throw new \Exception('Failed to retrieve created article');
+            }
 
             return $this->jsonResponse(
                 [
@@ -89,16 +106,26 @@ final readonly class ArticleApiController
 
     public function update(ServerRequestInterface $request): ResponseInterface
     {
-        $id = (int) $request->getAttribute('id');
-        $data = json_decode((string) $request->getBody(), true);
+        $id = (int) filter_var($request->getAttribute('id'), FILTER_VALIDATE_INT);
+        $body = (string) $request->getBody();
+        $data = json_decode($body, true);
+
+        if (!is_array($data)) {
+            return $this->jsonResponse(['error' => 'Invalid JSON'], 400);
+        }
 
         try {
             $articleId = ArticleId::fromInt($id);
-            $title = Title::fromString($data['title'] ?? '');
-            $content = Content::fromString($data['content'] ?? '');
+
+            $titleStr = (string) ($data['title'] ?? '');
+            $contentStr = (string) ($data['content'] ?? '');
+
+            $title = Title::fromString($titleStr);
+            $content = Content::fromString($contentStr);
 
             // Optional slug
-            $slug = isset($data['slug']) ? new Slug($data['slug']) : null;
+            $slugStr = isset($data['slug']) ? (string) $data['slug'] : null;
+            $slug = $slugStr ? new Slug($slugStr) : null;
 
             $article = $this->updateArticle->__invoke($articleId, $title, $content, $slug);
 
@@ -117,7 +144,7 @@ final readonly class ArticleApiController
 
     public function delete(ServerRequestInterface $request): ResponseInterface
     {
-        $id = (int) $request->getAttribute('id');
+        $id = (int) filter_var($request->getAttribute('id'), FILTER_VALIDATE_INT);
 
         try {
             $articleId = ArticleId::fromInt($id);
@@ -135,8 +162,10 @@ final readonly class ArticleApiController
 
     /**
      * Helper method to convert Article to array
+     * 
+     * @return array<string, mixed>
      */
-    private function articleToArray($article): array
+    private function articleToArray(\Blog\Domain\Blog\Entity\Article $article): array
     {
         $id = $article->id();
         $slug = $article->slug();
@@ -154,6 +183,9 @@ final readonly class ArticleApiController
         ];
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     private function jsonResponse(array $data, int $status = 200): ResponseInterface
     {
         return new Response(
