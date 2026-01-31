@@ -17,4 +17,11 @@ interface UserRepositoryInterface
     public function save(User $user): void;
 
     public function emailExists(Email $email): bool;
+
+    /**
+     * @return User[]
+     */
+    public function findAll(): array;
+
+    public function remove(UserId $id): void;
 }

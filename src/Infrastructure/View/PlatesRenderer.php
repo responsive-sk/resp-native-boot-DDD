@@ -20,10 +20,13 @@ final class PlatesRenderer
         // Validate theme exists
         $this->theme = $this->findAvailableTheme($templatesPath, $requestedTheme);
 
-        $this->plates = new Engine($templatesPath);
+        // Calculate theme path first
+        $themePath = $templatesPath . '/' . $this->theme;
+
+        // Initialize engine with theme path as base
+        $this->plates = new Engine($themePath);
 
         // Register folders for namespaced templates using theme
-        $themePath = $templatesPath . '/' . $this->theme;
 
         // Register theme folder with multiple aliases for compatibility
         $this->plates->addFolder($this->theme, $themePath);
@@ -117,20 +120,46 @@ final class PlatesRenderer
             'home' => '/',
             'about' => '/about',
             'contact' => '/contact',
+
+            // Public Blog
             'blog.index' => '/blog',
-            'blog_index' => '/blog',
-            'blog_show' => '/blog/{id}',
-            'blog_show_slug' => '/blog/{slug}',
-            'search_index' => '/search',
-            'login_form' => '/login',
-            'login' => '/login',
-            'register_form' => '/register',
-            'register' => '/register',
-            'admin_dashboard' => '/admin',
-            'admin.posts' => '/admin/posts',
-            'post_create_form' => '/post/create',
-            'post_edit_form' => '/post/{id}/edit',
-            'post_delete' => '/post/{id}/delete',
+            'blog.show' => '/blog/{id}',
+            'blog.show.slug' => '/blog/{slug}',
+            'search.index' => '/search',
+
+            // Auth
+            'auth.login.form' => '/login',
+            'auth.login' => '/login',
+            'auth.register.form' => '/register',
+            'auth.register' => '/register',
+            'auth.logout' => '/logout',
+
+            // Article Management (Legacy/Web user?)
+            'article.create.form' => '/article/create',
+            'article.store' => '/article/create',
+            'article.edit' => '/article/{id}/edit',
+            'article.update' => '/article/{id}/edit',
+            'article.delete' => '/article/{id}/delete',
+
+            // Mark Dashboard
+            'mark.dashboard' => '/mark',
+            'mark.dashboard.alias' => '/mark/dashboard',
+
+            // Mark Articles
+            'mark.articles.index' => '/mark/articles',
+            'mark.articles.create' => '/mark/articles/create',
+            'mark.articles.store' => '/mark/articles/create',
+            'mark.articles.edit' => '/mark/articles/{id}/edit',
+            'mark.articles.update' => '/mark/articles/{id}/edit',
+            'mark.articles.delete' => '/mark/articles/{id}/delete',
+
+            // Mark Users
+            'mark.users.index' => '/mark/users',
+            'mark.users.create' => '/mark/users/create',
+            'mark.users.store' => '/mark/users/create',
+            'mark.users.edit' => '/mark/users/{id}/edit',
+            'mark.users.update' => '/mark/users/{id}/edit',
+            'mark.users.delete' => '/mark/users/{id}/delete',
         ];
     }
 

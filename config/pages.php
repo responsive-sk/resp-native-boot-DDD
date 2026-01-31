@@ -69,8 +69,33 @@ return [
         'template' => 'resp-front::mark/articles/index',
     ],
     'mark.articles.show' => [
-        'title' => '%s - Edit Article',
-        'description' => 'Edit article details',
+        'title' => '%s - Article Details',
+        'description' => 'View article details',
         'template' => 'resp-front::mark/articles/show',
+    ],
+    'mark.articles.create' => [
+        'title' => 'Create Article - Mark',
+        'description' => 'Create a new article',
+        'template' => 'resp-front::mark/articles/create',
+    ],
+    'mark.articles.edit' => [
+        'title' => 'Edit Article - Mark',
+        'description' => 'Edit article',
+        'template' => 'resp-front::mark/articles/edit',
+    ],
+    'mark.users.index' => [
+        'title' => 'Manage Users - ChubbyBlog Mark',
+        'description' => 'Manage system users',
+        'template' => 'resp-front::mark/users/index',
+    ],
+    'mark.users.create' => [
+        'title' => 'Create User - ChubbyBlog Mark',
+        'description' => 'Create a new user',
+        'template' => 'resp-front::mark/users/create',
+    ],
+    'mark.users.edit' => [
+        'title' => 'Edit User - ChubbyBlog Mark',
+        'description' => 'Edit user details',
+        'template' => 'resp-front::mark/users/edit',
     ],
 ];

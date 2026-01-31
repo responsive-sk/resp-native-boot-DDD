@@ -49,11 +49,23 @@ final readonly class ExceptionMiddleware implements MiddlewareInterface
             return $response->withHeader('Content-Type', 'text/html');
         }
 
-        // Production mode: použi ViewRenderer na vyrenderovanie peknej error page
-        // Message zobrazíme len ak to nie je 500 (security) alebo ak sme si istí
-        $message = $statusCode === 500 ? 'Interná chyba servera' : $e->getMessage();
+        // Production/Template mode: použi ViewRenderer na vyrenderovanie peknej error page
+        $data = [];
+        $env = $_ENV['APP_ENV'] ?? getenv('APP_ENV') ?: 'production';
 
-        return $this->viewRenderer->renderErrorResponse($statusCode, $message);
+        // V dev prostredí (aj keď debug=false) chceme vidieť trace v šablóne
+        if ($env === 'dev') {
+            $message = $e->getMessage();
+            $data['trace'] = $e->getTraceAsString();
+            $data['exception_class'] = get_class($e);
+            $data['file'] = $e->getFile();
+            $data['line'] = $e->getLine();
+        } else {
+            // Message zobrazíme len ak to nie je 500 (security) alebo ak sme si istí
+            $message = $statusCode === 500 ? 'Interná chyba servera' : $e->getMessage();
+        }
+
+        return $this->viewRenderer->renderErrorResponse($statusCode, $message, $data);
     }
 
     private function getStatusCode(Throwable $e): int

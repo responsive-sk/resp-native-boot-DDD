@@ -78,6 +78,7 @@ final readonly class ViewRenderer
         // Prepare error data
         $errorData = array_merge([
             'status_code' => $statusCode,
+            'status' => $statusCode,
             'message' => $message ?: $this->getDefaultErrorMessage($statusCode),
             'title' => $this->getErrorTitle($statusCode),
         ], $data);

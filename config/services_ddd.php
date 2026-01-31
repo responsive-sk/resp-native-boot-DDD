@@ -35,6 +35,10 @@ use Blog\Middleware\AuthMiddleware;
 use Blog\Middleware\CorsMiddleware;
 use Blog\Infrastructure\Http\Middleware\ErrorHandlerMiddleware;
 use Blog\Infrastructure\Http\Middleware\RequestContextMiddleware;
+use Blog\Infrastructure\Http\Middleware\SessionTimeoutMiddleware;
+use Blog\Infrastructure\Http\Controller\Api\SessionPingController;
+
+
 
 // === CORE ===
 use Blog\Core\Router;
@@ -152,6 +156,11 @@ return [
         $c->get(ViewRenderer::class)
     ),
 
+    \Blog\Infrastructure\Http\Controller\Mark\UsersController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Mark\UsersController(
+        $c->get(UserRepositoryInterface::class),
+        $c->get(ViewRenderer::class)
+    ),
+
         // API
     ArticleApiController::class => fn(ContainerInterface $c) => new ArticleApiController(
         $c->get(ArticleRepository::class),
@@ -172,6 +181,8 @@ return [
         $c->get(\Blog\Application\Form\GetForm::class)
     ),
 
+    SessionPingController::class => fn() => new SessionPingController(),
+
         // === ROUTER ===
     Router::class => fn(ContainerInterface $c) => (require __DIR__ . '/routes.php')($c),
 
@@ -190,6 +201,7 @@ return [
     ErrorHandlerMiddleware::class => fn() => new ErrorHandlerMiddleware(getenv('APP_ENV') ?: 'dev'),
     RequestContextMiddleware::class => fn() => new RequestContextMiddleware(),
     SessionMiddleware::class => fn() => new SessionMiddleware(),
+    SessionTimeoutMiddleware::class => fn() => new SessionTimeoutMiddleware(),
     CorsMiddleware::class => fn() => new CorsMiddleware(),
 
     'middlewares' => fn(ContainerInterface $c) => [
@@ -198,6 +210,7 @@ return [
         $c->get(CorsMiddleware::class),
         $c->get(RequestContextMiddleware::class),
         $c->get(SessionMiddleware::class),
+        $c->get(SessionTimeoutMiddleware::class),
         $c->get(AuthMiddleware::class),
         $c->get(RouterMiddleware::class),
     ],

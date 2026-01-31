@@ -40,6 +40,18 @@ final readonly class DoctrineUserRepository implements UserRepositoryInterface
         return $row ? $this->hydrate($row) : null;
     }
 
+    public function findAll(): array
+    {
+        $rows = $this->connection->fetchAllAssociative('SELECT * FROM users ORDER BY created_at DESC');
+
+        $users = [];
+        foreach ($rows as $row) {
+            $users[] = $this->hydrate($row);
+        }
+
+        return $users;
+    }
+
     public function save(User $user): void
     {
         // Simple check: if exists update, else insert
@@ -64,6 +76,11 @@ final readonly class DoctrineUserRepository implements UserRepositoryInterface
         );
 
         return $count > 0;
+    }
+
+    public function remove(UserId $id): void
+    {
+        $this->connection->delete('users', ['id' => $id->toBytes()]);
     }
 
     private function insert(User $user): void
