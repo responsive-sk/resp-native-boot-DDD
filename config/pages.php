@@ -18,41 +18,41 @@ return [
         'template' => 'resp-front::app/contact',
     ],
     'blog.index' => [
-        'title' => 'Blog - ChubbyBlog',
+        'title' => 'Blog',
         'description' => 'Read our latest articles about programming, architecture and software development',
         'template' => 'resp-front::modules/blog/index',
     ],
     'blog.show' => [
-        'title' => '%s - ChubbyBlog',
+        'title' => '%s - Blog',
         'description' => '%s',
         'template' => 'resp-front::modules/blog/article-show',
     ],
     'search.index' => [
-        'title' => 'Search - ChubbyBlog',
+        'title' => 'Search - Blog',
         'description' => 'Search through blog articles',
         'template' => 'resp-front::modules/search/index',
     ],
 
     // === AUTH ROUTES ===
     'auth.login' => [
-        'title' => 'Login - ChubbyBlog',
-        'description' => 'Login to your ChubbyBlog account',
+        'title' => 'Login - Blog',
+        'description' => 'Login to your Blog account',
         'template' => 'resp-front::auth/login',
     ],
     'auth.register' => [
-        'title' => 'Register - ChubbyBlog',
-        'description' => 'Create a new ChubbyBlog account',
+        'title' => 'Register - Blog',
+        'description' => 'Create a new Blog account',
         'template' => 'resp-front::auth/register',
     ],
 
     // === ARTICLE ROUTES ===
     'article.create' => [
-        'title' => 'Create Article - ChubbyBlog',
+        'title' => 'Create Article - Blog',
         'description' => 'Create a new article',
         'template' => 'resp-front::article/create',
     ],
     'article.edit' => [
-        'title' => 'Edit Article - ChubbyBlog',
+        'title' => 'Edit Article - Blog',
         'description' => 'Edit article',
         'template' => 'resp-front::article/edit',
     ],

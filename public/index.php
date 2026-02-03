@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -8,16 +7,7 @@ require __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->safeLoad();
 
-// Initialize application
-$appFactory = require __DIR__ . '/../web.php';
-
-// Get environment
-$env = getenv('APP_ENV') ?: 'production';
-
-// Create application
-$app = $appFactory($env);
-
-// Create request from globals
+// Create request FIRST
 $psr17Factory = new Nyholm\Psr7\Factory\Psr17Factory();
 $creator = new Nyholm\Psr7Server\ServerRequestCreator(
     $psr17Factory, // ServerRequestFactory
@@ -27,6 +17,12 @@ $creator = new Nyholm\Psr7Server\ServerRequestCreator(
 );
 
 $request = $creator->fromGlobals();
+
+$env = getenv('APP_ENV') ?: 'production';
+
+// Initialize application
+$appFactory = require __DIR__ . '/../web.php';
+$app = $appFactory($env);
 
 // Handle request through middleware stack
 $response = $app->handle($request);

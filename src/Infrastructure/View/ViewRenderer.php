@@ -76,12 +76,24 @@ final readonly class ViewRenderer
         };
 
         // Prepare error data
+        $debugData = [];
+        if (isset($data['exception']) && $data['exception'] instanceof \Throwable) {
+            $e = $data['exception'];
+            $debugData = [
+                'exception_class' => get_class($e),
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ];
+        }
+
         $errorData = array_merge([
             'status_code' => $statusCode,
             'status' => $statusCode,
             'message' => $message ?: $this->getDefaultErrorMessage($statusCode),
             'title' => $this->getErrorTitle($statusCode),
-        ], $data);
+        ], $debugData, $data); // Merge debug data
 
         // Try specific template first, then fallback
         try {

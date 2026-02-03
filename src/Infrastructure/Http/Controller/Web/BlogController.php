@@ -60,7 +60,7 @@ final readonly class BlogController
         $article = $this->articleRepository->getById($id);
 
         if ($article === null) {
-            return new Response(404, ['Content-Type' => 'text/html'], 'Article not found');
+            return $this->viewRenderer->renderErrorResponse(404, 'Article not found (ID: ' . $idRaw . ')');
         }
 
         return $this->viewRenderer->renderResponse('blog.show', [
@@ -73,7 +73,7 @@ final readonly class BlogController
         $slugString = $request->getAttribute('slug');
 
         if (!is_string($slugString) || trim($slugString) === '') {
-            return new Response(404, ['Content-Type' => 'text/html'], 'Invalid or missing slug');
+            return $this->viewRenderer->renderErrorResponse(404, 'Invalid or missing slug');
         }
 
         $slug = Slug::fromString($slugString);
@@ -81,7 +81,7 @@ final readonly class BlogController
         $article = $this->articleRepository->getBySlug($slug);
 
         if ($article === null) {
-            return new Response(404, ['Content-Type' => 'text/html'], 'Article not found');
+            return $this->viewRenderer->renderErrorResponse(404, 'Article not found with slug: ' . htmlspecialchars($slugString));
         }
 
         return $this->viewRenderer->renderResponse('blog.show', [

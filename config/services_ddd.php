@@ -37,6 +37,7 @@ use Blog\Infrastructure\Http\Middleware\ErrorHandlerMiddleware;
 use Blog\Infrastructure\Http\Middleware\RequestContextMiddleware;
 use Blog\Infrastructure\Http\Middleware\SessionTimeoutMiddleware;
 use Blog\Infrastructure\Http\Controller\Api\SessionPingController;
+use Blog\Middleware\PjaxMiddleware;
 
 
 
@@ -198,16 +199,21 @@ return [
     ),
 
     AuthMiddleware::class => fn() => new AuthMiddleware(),
-    ErrorHandlerMiddleware::class => fn() => new ErrorHandlerMiddleware(getenv('APP_ENV') ?: 'dev'),
+    ErrorHandlerMiddleware::class => fn(ContainerInterface $c) => new ErrorHandlerMiddleware(
+        getenv('APP_ENV') ?: 'dev',
+        $c->get(ViewRenderer::class)
+    ),
     RequestContextMiddleware::class => fn() => new RequestContextMiddleware(),
     SessionMiddleware::class => fn() => new SessionMiddleware(),
     SessionTimeoutMiddleware::class => fn() => new SessionTimeoutMiddleware(),
     CorsMiddleware::class => fn() => new CorsMiddleware(),
+    PjaxMiddleware::class => fn() => new \Blog\Middleware\PjaxMiddleware(),
 
     'middlewares' => fn(ContainerInterface $c) => [
         $c->get(ErrorHandlerMiddleware::class),
         $c->get(ExceptionMiddleware::class),
         $c->get(CorsMiddleware::class),
+        $c->get(PjaxMiddleware::class),
         $c->get(RequestContextMiddleware::class),
         $c->get(SessionMiddleware::class),
         $c->get(SessionTimeoutMiddleware::class),

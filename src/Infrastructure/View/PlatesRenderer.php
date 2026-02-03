@@ -210,6 +210,19 @@ final class PlatesRenderer
             // Otherwise treat as direct path
             return '/' . ltrim($name, '/');
         });
+
+        // PJAX and Islands helpers
+        $this->plates->registerFunction('island', function (string $name, array $props = [], ?string $ssrContent = null) {
+            return \Blog\Infrastructure\View\Helpers::island($name, $props, $ssrContent);
+        });
+
+        $this->plates->registerFunction('pjax_link', function (string $url, string $text, array $attributes = []) {
+            return \Blog\Infrastructure\View\Helpers::pjaxLink($url, $text, $attributes);
+        });
+
+        $this->plates->registerFunction('pjax_component', function (string $selector) {
+            return \Blog\Infrastructure\View\Helpers::pjaxComponent($selector);
+        });
     }
 
     public function render(string $template, array $data = []): string

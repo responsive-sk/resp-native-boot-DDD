@@ -14,7 +14,8 @@ use Throwable;
 final readonly class ErrorHandlerMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private string $env
+        private string $env,
+        private \Blog\Infrastructure\View\ViewRenderer $viewRenderer
     ) {
     }
 
@@ -56,78 +57,34 @@ final readonly class ErrorHandlerMiddleware implements MiddlewareInterface
             return $response;
 
         } catch (Throwable $e) {
-            // Production: Generic error page
-            if ($this->env === 'production') {
-                $html = <<<HTML
-                    <!DOCTYPE html>
-                    <html lang="sk">
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Chyba - ChubbyBlog</title>
-                        <style>
-                            body {
-                                font-family: system-ui, -apple-system, sans-serif;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                min-height: 100vh;
-                                margin: 0;
-                                background: #f3f4f6;
-                            }
-                            .error-container {
-                                text-align: center;
-                                padding: 2rem;
-                                background: white;
-                                border-radius: 8px;
-                                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-                                max-width: 500px;
-                            }
-                            h1 {
-                                color: #dc2626;
-                                margin: 0 0 1rem 0;
-                            }
-                            p {
-                                color: #6b7280;
-                                margin: 0 0 1.5rem 0;
-                            }
-                            a {
-                                display: inline-block;
-                                padding: 0.75rem 1.5rem;
-                                background: #3b82f6;
-                                color: white;
-                                text-decoration: none;
-                                border-radius: 6px;
-                            }
-                            a:hover {
-                                background: #2563eb;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="error-container">
-                            <h1>Niečo sa pokazilo</h1>
-                            <p>Ospravedlňujeme sa, ale nastala neočakávaná chyba. Skúste to prosím neskôr.</p>
-                            <a href="<?= path('/') ?>">Späť na hlavnú stránku</a>
-                        </div>
-                    </body>
-                    </html>
-                    HTML;
+            // Log error
+            error_log(sprintf(
+                '[%s] %s in %s:%d',
+                get_class($e),
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ));
 
-                // Log error (without exposing to user)
-                error_log(sprintf(
-                    '[%s] %s in %s:%d',
-                    get_class($e),
-                    $e->getMessage(),
-                    $e->getFile(),
-                    $e->getLine()
-                ));
+            // Determine status code
+            $statusCode = 500;
+            if ($e instanceof \Blog\Domain\Common\Exception\ResourceNotFoundException) {
+                $statusCode = 404;
+            }
+            // Add other exception mapping as needed
 
-                return new Response(500, ['Content-Type' => 'text/html'], $html);
+            // Render error page via ViewRenderer
+            // In DEV, pass the exception object so ViewRenderer can extract trace info
+            $data = [];
+            if ($this->env !== 'production') {
+                $data['exception'] = $e;
             }
 
-            // Development: Show full error
-            throw $e;
+            return $this->viewRenderer->renderErrorResponse(
+                $statusCode,
+                $this->env === 'production' ? 'An unexpected error occurred.' : $e->getMessage(),
+                $data
+            );
         }
     }
 }
