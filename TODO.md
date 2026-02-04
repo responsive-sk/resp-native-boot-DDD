@@ -1,6 +1,6 @@
 # TODO – smerovanie k Blog v1.0 + rich domain
 
-##  (2026-02-04)
+## Finished (2026-02-04)
 
 ### Security & Infrastructure (COMPLETED)
    - [x] CSRF Protection middleware with token generation/validation
@@ -62,5 +62,3 @@
 - Rozdeliť UpdateArticle na viacero akcií
 - Začať Orders package (sales/) – len štruktúra + PlaceOrder
 - Eventy: ArticlePublishedEvent → neskôr integrácia s inými doménami
-
-Každý deň aspoň 1 zaškrtnutie z č. 1–3 = pokrok zaručený!
