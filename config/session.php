@@ -14,7 +14,7 @@ return [
     ],
     'cookie' => [
         'httponly' => true,
-        'secure' => $_ENV['APP_ENV'] === 'production',
+        'secure' => ($_ENV['APP_ENV'] ?? 'development') === 'production',
         'samesite' => 'Lax',
         'domain' => $_ENV['SESSION_DOMAIN'] ?? null,
     ],
