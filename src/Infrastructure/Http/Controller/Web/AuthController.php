@@ -6,6 +6,7 @@ namespace Blog\Infrastructure\Http\Controller\Web;
 
 use Blog\Application\User\LoginUser;
 use Blog\Application\User\RegisterUser;
+use Blog\Domain\User\Repository\UserRepositoryInterface;
 use Blog\Infrastructure\View\ViewRenderer;
 use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
@@ -16,7 +17,8 @@ final readonly class AuthController
     public function __construct(
         private LoginUser $loginUser,
         private RegisterUser $registerUser,
-        private ViewRenderer $viewRenderer
+        private ViewRenderer $viewRenderer,
+        private UserRepositoryInterface $userRepository
     ) {
     }
 
@@ -73,8 +75,17 @@ final readonly class AuthController
         try {
             $userId = ($this->registerUser)($emailRaw, $password);
 
+            // Načítať celý User entity pre session data
+            $user = $this->userRepository->findById($userId);
+            
+            if (!$user) {
+                throw new \RuntimeException('Registered user not found in database.');
+            }
+
             session_regenerate_id(true);
-            $_SESSION['user_id'] = $userId->toString();
+            $_SESSION['user_id'] = $user->id()->toString();
+            $_SESSION['user_role'] = $user->role()->toString();
+            $_SESSION['last_activity'] = time();
             $_SESSION['user_email'] = $emailRaw;
 
             $redirect = $request->getQueryParams()['redirect'] ?? '/blog';

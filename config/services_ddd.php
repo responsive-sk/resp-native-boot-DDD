@@ -138,7 +138,8 @@ return [
     AuthController::class => fn(ContainerInterface $c) => new AuthController(
         $c->get(LoginUser::class),
         $c->get(RegisterUser::class),
-        $c->get(ViewRenderer::class)
+        $c->get(ViewRenderer::class),
+        $c->get(UserRepositoryInterface::class)
     ),
 
     SearchController::class => fn(ContainerInterface $c) => new SearchController(
