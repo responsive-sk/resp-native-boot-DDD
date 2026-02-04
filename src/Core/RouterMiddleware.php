@@ -11,8 +11,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * RouterMiddleware - middleware ktorý matchuje route a volá handler
- *
- * Nahradza Chubbyphp\Framework\Middleware\RouteMatcherMiddleware
  */
 final readonly class RouterMiddleware implements MiddlewareInterface
 {

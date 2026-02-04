@@ -1,42 +1,21 @@
 <?php
-
 declare(strict_types=1);
 
-namespace Blog;
+// 1. Načítaj boot
+require_once __DIR__ . '/boot.php';
 
-use Blog\Core\Application;
+// 2. Session setup (web-specific)
+$sessionName = $_ENV['SESSION_NAME'] ?? 'resp_session';
+session_name($sessionName);
 
-require __DIR__ . '/vendor/autoload.php';
+// 3. Vytvor app
+$containerFactory = require __DIR__ . '/config/container.php';
+$container = $containerFactory();
+$app = $container->get(Blog\Core\Application::class);
 
-return static function (?string $env = null) {
-    // Normalize environment
-    if ($env === null || $env === '') {
-        $env = getenv('APP_ENV') ?: 'dev';
-    }
+// 4. Spracuj request
+$request = \Nyholm\Psr7\ServerRequest::fromGlobals();
+$response = $app->handle($request);
 
-    // Error handling
-    if ($env === 'production') {
-        error_reporting(0);
-        ini_set('display_errors', '0');
-        ini_set('display_startup_errors', '0');
-    } else {
-        error_reporting(E_ALL);
-        ini_set('display_errors', '1');
-        ini_set('display_startup_errors', '1');
-    }
-
-    // DI Container
-    $containerFactory = require __DIR__ . '/config/container.php';
-    $container = $containerFactory();
-
-    // Get middlewares from container
-    $middlewares = $container->get('middlewares');
-
-    // Register routes (this adds them to router in container)
-
-
-    // Create Application with middleware stack
-    $app = new Application($middlewares);
-
-    return $app;
-};
+// 5. Pošli response
+(new \Laminas\HttpHandlerRunner\Emitter\SapiEmitter())->emit($response);

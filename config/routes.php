@@ -18,7 +18,6 @@ return function (ContainerInterface $c): Router {
     $router = new Router();
 
     // === PUBLIC WEB ROUTES ===
-    // === PUBLIC WEB ROUTES ===
     $router->get('/', 'home', fn ($req) => $c->get(BlogController::class)->home($req));
     $router->get('/about', 'about', fn ($req) => $c->get(BlogController::class)->about($req));
     $router->get('/contact', 'contact', fn ($req) => $c->get(BlogController::class)->contact($req));

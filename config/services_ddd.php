@@ -212,7 +212,6 @@ return [
 
     AuthMiddleware::class => fn () => new AuthMiddleware(),
     ErrorHandlerMiddleware::class => fn (ContainerInterface $c) => new ErrorHandlerMiddleware(
-        getenv('APP_ENV') ?: 'dev',
         $c->get(ViewRenderer::class)
     ),
     RequestContextMiddleware::class => fn () => new RequestContextMiddleware(),

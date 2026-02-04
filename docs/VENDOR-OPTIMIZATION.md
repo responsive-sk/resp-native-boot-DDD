@@ -46,7 +46,7 @@ Two scripts for optimizing the `vendor/` directory before production deployment.
 
 **Expected savings:** ~40-60% reduction in size
 
-⚠️ **Warning:** Test thoroughly after running! Some packages may rely on files we remove.
+**Warning:** Test thoroughly after running! Some packages may rely on files we remove.
 
 ---
 
@@ -107,11 +107,11 @@ Both scripts preserve:
 
 ## Safety Notes
 
-1. ✅ **Always run on a COPY first** before production
-2. ✅ **Test your application** after optimization
-3. ✅ **Run composer install again** if something breaks
-4. ✅ **Keep backups** of your vendor folder
-5. ⚠️ **Don't commit optimized vendor/** to Git
+1. **Always run on a COPY first** before production
+2. **Test your application** after optimization
+3. **Run composer install again** if something breaks
+4. **Keep backups** of your vendor folder
+5. **Don't commit optimized vendor/** to Git
 
 ---
 

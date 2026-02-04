@@ -11,12 +11,20 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Throwable;
 
-final readonly class ErrorHandlerMiddleware implements MiddlewareInterface
+final class ErrorHandlerMiddleware implements MiddlewareInterface
 {
+    private string $env;
+    
     public function __construct(
-        private string $env,
         private \Blog\Infrastructure\View\ViewRenderer $viewRenderer
     ) {
+        // ✅ Načíta APP_ENV z $_ENV (ktorý je nastavený v boot.php)
+        $this->env = $_ENV['APP_ENV'] ?? 'development';
+        
+        // ✅ Log init
+        if ($this->env === 'development') {
+            error_log("[ErrorHandler] Initialized for environment: {$this->env}");
+        }
     }
 
     public function process(
