@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (2026-02-04)
+- **CSRF Protection**: Complete CSRF middleware with token generation and validation
+- **Audit Logging System**: Domain entities and repositories for comprehensive audit trails
+- **Rate Limiting Middleware**: Prevent abuse and brute force attacks
+- **Session Security Enhancements**: Timeout middleware with fingerprint validation
+- **Boot.php System**: Shared initialization for all entry points (web, CLI, tests)
+- **Security Testing Script**: Automated security configuration validation
+- **Form Domain**: Basic form handling infrastructure
+
+### Changed (2026-02-04)
+- **BREAKING**: `ErrorHandlerMiddleware` now reads environment from `$_ENV` instead of constructor parameter
+- **BREAKING**: `web.php` simplified to use `boot.php` for initialization
+- Session configuration moved to `config/session.php` with environment-aware defaults
+- Enhanced `PlatesRenderer` with theme fallback and CSRF helper functions
+- Updated service container to remove environment dependencies
+
+### Fixed (2026-02-04)
+- PHP 8.4 deprecation warnings for implicit nullable parameters
+- APP_ENV undefined warning in session configuration
+- DI container loading issues in test scripts
+- Redundant ternary operator in SessionTimeoutMiddleware
+
+### Security Improvements (2026-02-04)
+- CSRF tokens for all unsafe HTTP methods (POST, PUT, PATCH, DELETE)
+- Audit logging for authentication and authorization events
+- Rate limiting to prevent brute force attacks
+- Enhanced session timeout with activity tracking
+- Secure cookie configuration with environment detection
+
+## [Unreleased]
+
 ### Added (2026-01-29)
 - UUID support for User entity via `ramsey/uuid` package
 - Environment variable support via `vlucas/phpdotenv` package

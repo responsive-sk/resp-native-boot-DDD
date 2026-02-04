@@ -1,18 +1,35 @@
 # TODO – smerovanie k Blog v1.0 + rich domain
 
+## ✅ Dokončené (2026-02-04)
+
+### 🔐 Security & Infrastructure (COMPLETED)
+   - [x] CSRF Protection middleware with token generation/validation
+   - [x] Audit logging system with domain entities
+   - [x] Rate limiting middleware for abuse prevention
+   - [x] Session timeout middleware with fingerprint validation
+   - [x] Boot.php system for shared initialization
+   - [x] Environment-aware configuration system
+   - [x] Security testing automation
+
+### 🛠️ Code Quality (COMPLETED)
+   - [x] PHP 8.4 compatibility fixes
+   - [x] Container loading improvements
+   - [x] Enhanced error handling middleware
+   - [x] Theme fallback system in PlatesRenderer
+
 ## Aktuálny cieľ: Dokončiť web autentifikáciu + Mark Dashboard CRUD (Q1 2026)
 
 ### Denne pred očami – top priority (zaškrtávaj si postupne)
 
-#### 1. Web autentifikácia (session-based)
-   - [ ] Pridať SessionMiddleware (spustiť session_start s bezpečnými parametrami)
-   - [ ] Upraviť AuthMiddleware – kontrola prihlásenia + redirect na /login s ?redirect=
-   - [ ] V AuthController::login():
-     - session_regenerate_id(true)
-     - uložiť $_SESSION['user_id'] + $_SESSION['user_role']
-     - redirect podľa ?redirect= (ak existuje)
-   - [ ] V AuthController::logout(): session_destroy() + redirect na /
-   - [ ] Otestovať flow: neprihlásený → /mark → redirect na login → po login späť na /mark
+#### 1. Web autentifikácia (session-based) ✅
+   - [x] SessionMiddleware implemented with secure parameters
+   - [x] AuthMiddleware updated with login redirect support
+   - [x] AuthController::login() with session_regenerate_id(true)
+   - [x] Session storage for user_id and user_role
+   - [x] AuthController::logout() with session_destroy()
+   - [x] Login/logout flow with redirect functionality
+
+### Ďalšie priority (Q1 2026)
 
 #### 2. Mark Dashboard – základný CRUD pre články
    - [ ] MarkDashboardController::index() – zobraziť zoznam článkov (draft + published)
@@ -33,12 +50,12 @@
    - [ ] Pridať kontrolu Authorization header v ArticleApiController (create/update/delete)
    - [ ] Mock token check (neskôr JWT)
 
-### Týždenné míľniky (príklad na január/február 2026)
+### Týždenné míľniky (aktualizované február 2026)
 
-- Týždeň 1–2: Dokončiť session auth + login/logout + redirect
-- Týždeň 3–4: Mark Dashboard – list + create článku
-- Týždeň 5–6: Edit + Publish/Archive akcie
-- Týždeň 7+: Začať rich domain (reviseDraft + publish)
+- ✅ **Týždeň 1–2 (január)**: Session auth + security middleware + boot.php
+- **Týždeň 3–4 (február)**: Mark Dashboard – list + create článku  
+- **Týždeň 5–6 (február)**: Edit + Publish/Archive akcie
+- **Týždeň 7+ (marec)**: Začať rich domain (reviseDraft + publish)
 
 ### Dlhodobé (po v1.0)
 

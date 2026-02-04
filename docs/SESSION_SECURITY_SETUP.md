@@ -9,7 +9,7 @@ The `SESSION_FINGERPRINT_SALT` is a critical security feature that:
 - Creates unique session fingerprints per environment
 - Adds an additional layer of security beyond session IDs
 
-### Quick Start
+### Quick Start with Boot.php
 
 1. **Copy `.env.example` to `.env`:**
    ```bash
@@ -26,12 +26,13 @@ The `SESSION_FINGERPRINT_SALT` is a critical security feature that:
    SESSION_FINGERPRINT_SALT=your-generated-salt-here
    ```
 
-4. **Load in application:**
+4. **Boot.php handles loading automatically:**
    ```php
-   use Core\Infrastructure\Config\EnvLoader;
+   // boot.php loads .env automatically
+   require_once __DIR__ . '/boot.php';
    
-   // In bootstrap/public/index.php
-   EnvLoader::load(__DIR__ . '/..');
+   // Environment is now available in $_ENV
+   $salt = $_ENV['SESSION_FINGERPRINT_SALT'] ?? 'default-secret-change-me';
    ```
 
 ### Generating Salts for Different Environments
@@ -86,50 +87,35 @@ SESSION_COOKIE_HTTPONLY=true
 SESSION_COOKIE_SAMESITE=Lax
 ```
 
-### Implementation in Code
+### Implementation in Code (Updated for Boot.php)
 
 ```php
-// 1. Load environment
-use Core\Infrastructure\Config\EnvLoader;
+// 1. Boot.php loads environment automatically
+require_once __DIR__ . '/boot.php';
 
-EnvLoader::load(__DIR__ . '/..');
+// 2. Session configuration is now in config/session.php
+$sessionConfig = require __DIR__ . '/config/session.php';
 
-// 2. Create middleware
+// 3. Middleware uses environment from $_ENV
 use Infrastructure\Http\Middleware\SessionTimeoutMiddleware;
 
-$sessionMiddleware = SessionTimeoutMiddleware::fromEnv();
+$sessionMiddleware = new SessionTimeoutMiddleware($sessionConfig);
 
-// 3. Apply to routes
+// 4. Apply to routes
 $sessionMiddleware->handle(function() {
     // Your application logic
 });
 ```
 
-### Troubleshooting
-
-**Error: "SESSION_FINGERPRINT_SALT not configured"**
-- Ensure `.env` file exists in project root
-- Check `SESSION_FINGERPRINT_SALT` is set in `.env`
-- Verify `EnvLoader::load()` is called before middleware
-
-**Error: "Required environment variable not set"**
-- Generate new salt: `php -r "echo bin2hex(random_bytes(32));"`
-- Add to `.env` file
-- Restart web server
-
-**Sessions not working after deployment**
-- Different salt between environments = sessions won't transfer
-- This is intentional for security
-- Users will need to log in again after deployment
-
-### Testing
+### Testing with Boot.php
 
 ```php
 // Test in development
-EnvLoader::load(__DIR__);
+require_once 'boot.php';
 
-$salt = EnvLoader::getRequired('SESSION_FINGERPRINT_SALT');
+$salt = $_ENV['SESSION_FINGERPRINT_SALT'] ?? 'not-set';
 echo "Salt configured: " . substr($salt, 0, 16) . "...\n";
+echo "Environment: " . ($_ENV['APP_ENV'] ?? 'not-set') . "\n";
 ```
 
 ### Docker/Container Setup
