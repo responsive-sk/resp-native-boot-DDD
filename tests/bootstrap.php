@@ -7,7 +7,6 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // Ensure per-model DB files are initialized for tests
 use Blog\Database\DatabaseManager;
-use ResponsiveSk\Slim4Paths\Paths as Slim4Paths;
 
 // Create users and posts DBs (DatabaseManager will create tables if missing)
 DatabaseManager::getConnection('users');

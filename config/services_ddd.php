@@ -4,6 +4,7 @@
 declare(strict_types=1);
 
 
+use Blog\Application\Audit\AuditLogger;
 use Blog\Application\Blog\CreateArticle;
 use Blog\Application\Blog\DeleteArticle;
 use Blog\Application\Blog\GetAllArticles;
@@ -18,6 +19,7 @@ use Blog\Core\Router;
 use Blog\Core\RouterMiddleware;
 use Blog\Database\Database;
 use Blog\Database\DatabaseManager;
+use Blog\Domain\Audit\Repository\AuditLogRepository;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 // === CONTROLLERS ===
 use Blog\Domain\User\Repository\UserRepositoryInterface;
@@ -31,10 +33,13 @@ use Blog\Infrastructure\Http\Controller\Web\ArticleController;
 use Blog\Infrastructure\Http\Controller\Web\AuthController;
 use Blog\Infrastructure\Http\Controller\Web\BlogController;
 use Blog\Infrastructure\Http\Controller\Web\SearchController;
+use Blog\Infrastructure\Http\Middleware\CsrfMiddleware;
 use Blog\Infrastructure\Http\Middleware\ErrorHandlerMiddleware;
+use Blog\Infrastructure\Http\Middleware\RateLimitMiddleware;
 use Blog\Infrastructure\Http\Middleware\RequestContextMiddleware;
 use Blog\Infrastructure\Http\Middleware\SessionTimeoutMiddleware;
 use Blog\Infrastructure\Persistence\Doctrine\DoctrineArticleRepository;
+use Blog\Infrastructure\Persistence\Doctrine\DoctrineAuditLogRepository;
 use Blog\Infrastructure\Persistence\Doctrine\DoctrineUserRepository;
 // === CORE ===
 use Blog\Infrastructure\View\PlatesRenderer;
@@ -45,6 +50,7 @@ use Blog\Middleware\PjaxMiddleware;
 use Blog\Middleware\SessionMiddleware;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Container\ContainerInterface;
+use ResponsiveSk\Slim4Paths\Paths;
 
 return [
         // === FACTORIES ===
@@ -52,7 +58,10 @@ return [
 
     Database::class => fn () => DatabaseManager::getConnection(),
 
-        // === VIEW RENDERER ===
+        // === PATHS ===
+    Paths::class => fn () => new Paths(__DIR__ . '/../'),
+
+    // === VIEW RENDERER ===
     PlatesRenderer::class => fn () => new PlatesRenderer(
         \Blog\Infrastructure\Paths::resourcesPath() . '/views'
     ),
@@ -67,6 +76,10 @@ return [
         DatabaseManager::getConnection('articles')
     ),
 
+    AuditLogRepository::class => fn (ContainerInterface $c) => new DoctrineAuditLogRepository(
+        $c->get(Database::class)
+    ),
+
     UserRepositoryInterface::class => fn () => new DoctrineUserRepository(
         DatabaseManager::getConnection('users')
     ),
@@ -76,6 +89,10 @@ return [
     ),
 
         // === APPLICATION USE-CASES ===
+    AuditLogger::class => fn (ContainerInterface $c) => new AuditLogger(
+        $c->get(AuditLogRepository::class)
+    ),
+
     CreateArticle::class => fn (ContainerInterface $c) => new CreateArticle(
         $c->get(ArticleRepository::class)
     ),
@@ -133,7 +150,8 @@ return [
         $c->get(LoginUser::class),
         $c->get(RegisterUser::class),
         $c->get(ViewRenderer::class),
-        $c->get(UserRepositoryInterface::class)
+        $c->get(Paths::class),
+        $c->get(AuditLogger::class)
     ),
 
     SearchController::class => fn (ContainerInterface $c) => new SearchController(
@@ -168,8 +186,7 @@ return [
 
     AuthApiController::class => fn (ContainerInterface $c) => new AuthApiController(
         $c->get(LoginUser::class),
-        $c->get(RegisterUser::class),
-        $c->get(UserRepositoryInterface::class)
+        $c->get(RegisterUser::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Form\FormController::class => fn (ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Form\FormController(
@@ -200,7 +217,12 @@ return [
     ),
     RequestContextMiddleware::class => fn () => new RequestContextMiddleware(),
     SessionMiddleware::class => fn () => new SessionMiddleware(),
-    SessionTimeoutMiddleware::class => fn () => new SessionTimeoutMiddleware(),
+    SessionTimeoutMiddleware::class => fn (ContainerInterface $c) => new SessionTimeoutMiddleware(
+        null,
+        $c->get(Paths::class)
+    ),
+    CsrfMiddleware::class => fn () => new CsrfMiddleware(),
+    RateLimitMiddleware::class => fn () => new RateLimitMiddleware(),
     CorsMiddleware::class => fn () => new CorsMiddleware(),
     PjaxMiddleware::class => fn () => new \Blog\Middleware\PjaxMiddleware(),
 
@@ -212,6 +234,8 @@ return [
         $c->get(RequestContextMiddleware::class),
         $c->get(SessionMiddleware::class),
         $c->get(SessionTimeoutMiddleware::class),
+        $c->get(RateLimitMiddleware::class),
+        $c->get(CsrfMiddleware::class),
         $c->get(AuthMiddleware::class),
         $c->get(RouterMiddleware::class),
     ],

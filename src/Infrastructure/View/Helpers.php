@@ -17,6 +17,7 @@ class Helpers
     public static function pjaxLink(string $url, string $text, array $attributes = []): string
     {
         $attrs = '';
+
         foreach ($attributes as $key => $value) {
             $value = htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
             $attrs .= " {$key}=\"{$value}\"";

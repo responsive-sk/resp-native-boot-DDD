@@ -42,6 +42,7 @@ final readonly class ViewRenderer
 
         // Handle dynamic titles/descriptions
         $item = $data['article'] ?? ($data['post'] ?? null);
+
         if ($item !== null) {
             $viewData['title'] = sprintf($config['title'], htmlspecialchars($item->title()->toString()));
             $viewData['description'] = sprintf($config['description'], htmlspecialchars($item->content()->excerpt(160)));
@@ -54,6 +55,36 @@ final readonly class ViewRenderer
     public function render(string $template, array $data = []): string
     {
         return $this->plates->render($template, $data);
+    }
+
+    /**
+     * Generate CSRF token HTML input field
+     */
+    public function csrfField(): string
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            $sessionName = $_ENV['SESSION_NAME'] ?? 'blog_session';
+            session_name($sessionName);
+            session_start();
+        }
+
+        $token = $_SESSION['csrf_token'] ?? '';
+
+        return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars($token) . '">';
+    }
+
+    /**
+     * Get CSRF token value
+     */
+    public function csrfToken(): string
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            $sessionName = $_ENV['SESSION_NAME'] ?? 'blog_session';
+            session_name($sessionName);
+            session_start();
+        }
+
+        return $_SESSION['csrf_token'] ?? '';
     }
 
     /**
@@ -77,6 +108,7 @@ final readonly class ViewRenderer
 
         // Prepare error data
         $debugData = [];
+
         if (isset($data['exception']) && $data['exception'] instanceof \Throwable) {
             $e = $data['exception'];
             $debugData = [

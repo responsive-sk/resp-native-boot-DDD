@@ -21,7 +21,7 @@ interface ArticleRepository
     public function getBySlug(Slug $slug): ?Article;
 
     /**
-    * @return Article[]
+     * @return Article[]
     */
 
     public function getAll(): array;

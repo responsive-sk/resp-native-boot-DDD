@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Blog\Database\DatabaseManager;
@@ -16,6 +17,7 @@ try {
 
     echo "<h1>Articles in Database</h1>";
     echo "<table border='1'><tr><th>ID</th><th>Title</th><th>Slug</th></tr>";
+
     foreach ($articles as $article) {
         echo "<tr>";
         echo "<td>" . htmlspecialchars((string) $article['id']) . "</td>";

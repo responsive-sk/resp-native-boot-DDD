@@ -11,8 +11,12 @@ use Doctrine\DBAL\Connection;
 
 final class DoctrineFormRepository implements FormRepositoryInterface
 {
-    public function __construct(private Connection $connection)
+    /** @var Connection @phpstan-ignore property.onlyWritten */
+    private Connection $connection;
+
+    public function __construct(Connection $connection)
     {
+        $this->connection = $connection;
     }
 
     public function save(Form $form): void

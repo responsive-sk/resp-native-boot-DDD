@@ -45,6 +45,7 @@ final readonly class DoctrineUserRepository implements UserRepositoryInterface
         $rows = $this->connection->fetchAllAssociative('SELECT * FROM users ORDER BY created_at DESC');
 
         $users = [];
+
         foreach ($rows as $row) {
             $users[] = $this->hydrate($row);
         }

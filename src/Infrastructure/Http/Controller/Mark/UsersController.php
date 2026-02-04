@@ -55,6 +55,7 @@ final readonly class UsersController
 
         try {
             $emailObj = Email::fromString($email);
+
             if ($this->userRepository->emailExists($emailObj)) {
                 throw new \InvalidArgumentException('Email is already registered.');
             }
@@ -118,6 +119,7 @@ final readonly class UsersController
             // Handle Role Update - logic extracted for simplicity, ideally domain method updateRole(UserRole)
             if (isset($data['role'])) {
                 $newRole = UserRole::fromString($data['role']);
+
                 if ($newRole->isMark()) {
                     $user->promoteToMark();
                 } else {

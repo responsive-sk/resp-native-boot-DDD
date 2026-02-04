@@ -68,6 +68,7 @@ final readonly class ErrorHandlerMiddleware implements MiddlewareInterface
 
             // Determine status code
             $statusCode = 500;
+
             if ($e instanceof \Blog\Domain\Common\Exception\ResourceNotFoundException) {
                 $statusCode = 404;
             }
@@ -76,6 +77,7 @@ final readonly class ErrorHandlerMiddleware implements MiddlewareInterface
             // Render error page via ViewRenderer
             // In DEV, pass the exception object so ViewRenderer can extract trace info
             $data = [];
+
             if ($this->env !== 'production') {
                 $data['exception'] = $e;
             }

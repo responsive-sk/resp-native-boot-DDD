@@ -39,6 +39,7 @@ final readonly class CreateArticle
         // 3. Zabezpečiť unikátnosť
         $i = 1;
         $originalSlug = $slug->toString();
+
         while ($this->articles->getBySlug($slug) !== null) {
             $slug = new Slug($originalSlug . '-' . $i);
             $article->setSlug($slug);
@@ -49,6 +50,7 @@ final readonly class CreateArticle
         $this->articles->add($article);
 
         $id = $article->id();
+
         if ($id === null) {
             throw new \RuntimeException('Article ID could not be generated.');
         }

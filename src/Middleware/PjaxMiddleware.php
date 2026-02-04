@@ -66,12 +66,14 @@ final class PjaxMiddleware implements MiddlewareInterface
 
         // Hľadaj PJAX container
         $containers = $xpath->query('//main[@data-container]');
+
         if ($containers->length > 0) {
             return $dom->saveHTML($containers->item(0));
         }
 
         // Fallback: celý <main>
         $main = $xpath->query('//main');
+
         if ($main->length > 0) {
             return $dom->saveHTML($main->item(0));
         }
@@ -89,6 +91,7 @@ final class PjaxMiddleware implements MiddlewareInterface
         // Extrahuj title
         $title = '';
         $titleNodes = $xpath->query('//title');
+
         if ($titleNodes->length > 0) {
             $title = $titleNodes->item(0)->textContent;
         }
@@ -96,11 +99,13 @@ final class PjaxMiddleware implements MiddlewareInterface
         // Extrahuj hlavný obsah
         $content = '';
         $containers = $xpath->query('//main[@data-container]');
+
         if ($containers->length > 0) {
             $content = $dom->saveHTML($containers->item(0));
         } else {
             // Fallback
             $main = $xpath->query('//main');
+
             if ($main->length > 0) {
                 $content = $dom->saveHTML($main->item(0));
             }

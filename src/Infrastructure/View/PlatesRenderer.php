@@ -66,6 +66,7 @@ final class PlatesRenderer
 
         foreach ($fallbacks as $fallback) {
             $fallbackPath = $templatesPath . '/' . $fallback;
+
             if (is_dir($fallbackPath)) {
                 // Log warning but continue
                 error_log(sprintf(
@@ -107,6 +108,7 @@ final class PlatesRenderer
             }
 
             $fullPath = $templatesPath . '/' . $item;
+
             if (is_dir($fullPath)) {
                 $themes[] = $item;
             }
@@ -170,6 +172,29 @@ final class PlatesRenderer
         // Register escapeHtml as alias for e()
         $this->plates->registerFunction('escapeHtml', function ($string) {
             return htmlspecialchars((string) ($string ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        });
+
+        // Register CSRF functions
+        $this->plates->registerFunction('csrfField', function () {
+            if (session_status() === PHP_SESSION_NONE) {
+                $sessionName = $_ENV['SESSION_NAME'] ?? 'blog_session';
+                session_name($sessionName);
+                session_start();
+            }
+
+            $token = $_SESSION['csrf_token'] ?? '';
+
+            return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars($token) . '">';
+        });
+
+        $this->plates->registerFunction('csrfToken', function () {
+            if (session_status() === PHP_SESSION_NONE) {
+                $sessionName = $_ENV['SESSION_NAME'] ?? 'blog_session';
+                session_name($sessionName);
+                session_start();
+            }
+
+            return $_SESSION['csrf_token'] ?? '';
         });
 
         // Register url() function for generating URLs from route names

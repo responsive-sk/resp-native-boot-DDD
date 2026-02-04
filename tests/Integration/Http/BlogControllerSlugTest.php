@@ -9,7 +9,6 @@ use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Domain\Blog\ValueObject\Content;
 use Blog\Domain\Blog\ValueObject\Title;
 use Blog\Domain\User\ValueObject\UserId;
-use Blog\Infrastructure\Http\Controller\Web\BlogController;
 use Blog\Infrastructure\View\ViewRenderer;
 use Nyholm\Psr7\Response;
 use Nyholm\Psr7\ServerRequest;

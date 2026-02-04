@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Blog;
 
 use Blog\Core\Application;
-use Psr\Container\ContainerInterface;
 
 require __DIR__ . '/vendor/autoload.php';
 

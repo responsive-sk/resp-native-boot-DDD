@@ -6,7 +6,6 @@ namespace Blog\Infrastructure\Http\Controller\Api;
 
 use Blog\Application\User\LoginUser;
 use Blog\Application\User\RegisterUser;
-use Blog\Domain\User\Repository\UserRepositoryInterface;
 use Blog\Domain\User\ValueObject\Email;
 use Blog\Domain\User\ValueObject\HashedPassword;
 use Blog\Domain\User\ValueObject\UserRole;
@@ -19,8 +18,7 @@ final class AuthApiController
 {
     public function __construct(
         private LoginUser $loginUser,
-        private RegisterUser $registerUser,
-        private UserRepositoryInterface $userRepository
+        private RegisterUser $registerUser
     ) {
     }
 
@@ -33,16 +31,9 @@ final class AuthApiController
             $password = HashedPassword::fromPlainPassword($data['password'] ?? '');
             $role = isset($data['role']) ? UserRole::fromString($data['role']) : null;
 
-            $userId = ($this->registerUser)($email->toString(), $password->toString());
+            $userEntity = ($this->registerUser)($email->toString(), $password->toString());
 
-            // Fetch the full User entity after registration
-            $userEntity = $this->userRepository->findById($userId);
-
-            if (!$userEntity) {
-                // This should theoretically not happen if registration was successful
-                throw new \RuntimeException('Registered user not found.');
-            }
-
+            // ✅ RegisterUser teraz vracia priamo User entitu (nie null)
             return $this->jsonResponse([
                 'message' => 'User registered successfully',
                 'user' => UserResponse::fromEntity($userEntity)->toArray(),

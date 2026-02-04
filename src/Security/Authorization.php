@@ -26,6 +26,7 @@ class Authorization
     public static function getUser(): ?array
     {
         self::ensureSession();
+
         if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role'])) {
             return null;
         }

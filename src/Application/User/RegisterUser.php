@@ -7,8 +7,7 @@ namespace Blog\Application\User;
 use Blog\Domain\User\Entity\User;
 use Blog\Domain\User\Repository\UserRepositoryInterface;
 use Blog\Domain\User\ValueObject\Email;
-use Blog\Domain\User\ValueObject\HashedPassword;  // ← Zmena!
-use Blog\Domain\User\ValueObject\UserId;
+use Blog\Domain\User\ValueObject\HashedPassword;
 
 final class RegisterUser
 {
@@ -17,7 +16,7 @@ final class RegisterUser
     ) {
     }
 
-    public function __invoke(string $email, string $password): UserId
+    public function __invoke(string $email, string $password): User
     {
         // 1. Validate email
         $emailVo = Email::fromString($email);
@@ -30,12 +29,13 @@ final class RegisterUser
         // 3. Create user
         $user = User::register(
             $emailVo,
-            HashedPassword::fromPlainPassword($password)  // ← Zmena!
+            HashedPassword::fromPlainPassword($password)
         );
 
         // 4. Persist
-        $this->users->save($user);  // ← Zmena (save namiesto add)!
+        $this->users->save($user);
 
-        return $user->id();  // ← Pozor! id() môže vrátiť null!
+        // Vrátiť celú User entitu
+        return $user;
     }
 }

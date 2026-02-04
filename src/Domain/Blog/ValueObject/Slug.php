@@ -36,6 +36,7 @@ final readonly class Slug
 
         // 4. Až TERAZ odstrániť diakritiku pomocou iconv (zvyšok)
         $converted = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $slug);
+
         if ($converted !== false) {
             $slug = $converted;
         }

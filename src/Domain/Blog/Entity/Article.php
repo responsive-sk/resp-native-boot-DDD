@@ -139,11 +139,13 @@ final class Article
     public function getUri(): string
     {
         $slug = $this->slug();
+
         if ($slug !== null) {
             return trim($slug->toString(), '/');
         }
 
         $id = $this->id();
+
         if ($id !== null) {
             return (string) $id;
         }

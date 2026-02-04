@@ -41,8 +41,10 @@ final readonly class UpdateArticle
 
             // Skontrolovať unikátnosť slug (okrem aktuálneho článku)
             $existing = $this->articles->getBySlug($slug);
+
             if ($existing !== null) {
                 $existingId = $existing->id();
+
                 // If existing article has no ID (should impossible for persisted entity), we can't compare.
                 // Assuming persisted entities have IDs.
                 if ($existingId !== null && !$existingId->equals($articleId)) {

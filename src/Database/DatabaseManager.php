@@ -67,8 +67,9 @@ class DatabaseManager
             $connectionConfig = $config['connections'][$name];
 
             // Ensure directory exists for SQLite
-            if (isset($connectionConfig['path'])) {
+            if ($connectionConfig['path'] !== '') {
                 $dir = dirname($connectionConfig['path']);
+
                 if (!is_dir($dir)) {
                     mkdir($dir, 0755, true);
                 }

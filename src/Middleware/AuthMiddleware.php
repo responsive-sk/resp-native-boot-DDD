@@ -32,6 +32,7 @@ final class AuthMiddleware implements MiddlewareInterface
 
         // Kontroluj, či je to chránená cesta
         $isProtected = false;
+
         foreach ($protectedPrefixes as $prefix) {
             if (str_starts_with($path, $prefix)) {
                 $isProtected = true;
