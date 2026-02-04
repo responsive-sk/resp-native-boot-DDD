@@ -1,8 +1,8 @@
 # TODO – smerovanie k Blog v1.0 + rich domain
 
-## ✅ Dokončené (2026-02-04)
+##  (2026-02-04)
 
-### 🔐 Security & Infrastructure (COMPLETED)
+### Security & Infrastructure (COMPLETED)
    - [x] CSRF Protection middleware with token generation/validation
    - [x] Audit logging system with domain entities
    - [x] Rate limiting middleware for abuse prevention
@@ -11,7 +11,7 @@
    - [x] Environment-aware configuration system
    - [x] Security testing automation
 
-### 🛠️ Code Quality (COMPLETED)
+### Code Quality (COMPLETED)
    - [x] PHP 8.4 compatibility fixes
    - [x] Container loading improvements
    - [x] Enhanced error handling middleware
@@ -21,7 +21,7 @@
 
 ### Denne pred očami – top priority (zaškrtávaj si postupne)
 
-#### 1. Web autentifikácia (session-based) ✅
+#### 1. Web autentifikácia (session-based) - COMPLETED
    - [x] SessionMiddleware implemented with secure parameters
    - [x] AuthMiddleware updated with login redirect support
    - [x] AuthController::login() with session_regenerate_id(true)
@@ -52,7 +52,7 @@
 
 ### Týždenné míľniky (aktualizované február 2026)
 
-- ✅ **Týždeň 1–2 (január)**: Session auth + security middleware + boot.php
+- [x] **Týždeň 1–2 (január)**: Session auth + security middleware + boot.php
 - **Týždeň 3–4 (február)**: Mark Dashboard – list + create článku  
 - **Týždeň 5–6 (február)**: Edit + Publish/Archive akcie
 - **Týždeň 7+ (marec)**: Začať rich domain (reviseDraft + publish)
