@@ -30,7 +30,8 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
-    ): ResponseInterface {
+    ): ResponseInterface
+    {
         try {
             $response = $handler->handle($request);
 
@@ -82,19 +83,45 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
             }
             // Add other exception mapping as needed
 
-            // Render error page via ViewRenderer
-            // In DEV, pass the exception object so ViewRenderer can extract trace info
+            // Data for view
             $data = [];
+            $message = $this->env === 'production' 
+                ? 'An unexpected error occurred.' 
+                : $e->getMessage();
 
             if ($this->env !== 'production') {
                 $data['exception'] = $e;
             }
 
-            return $this->viewRenderer->renderErrorResponse(
-                $statusCode,
-                $this->env === 'production' ? 'An unexpected error occurred.' : $e->getMessage(),
-                $data
-            );
+            // Try renderErrorResponse, fallback to renderResponse
+            try {
+                if (method_exists($this->viewRenderer, 'renderErrorResponse')) {
+                    return $this->viewRenderer->renderErrorResponse(
+                        $statusCode,
+                        $message,
+                        $data
+                    );
+                } else {
+                    // Fallback to renderResponse
+                    return $this->viewRenderer->renderResponse(
+                        'error/error',
+                        array_merge($data, [
+                            'statusCode' => $statusCode,
+                            'message' => $message,
+                        ]),
+                        $statusCode
+                    );
+                }
+            } catch (Throwable $renderError) {
+                // Ultimate fallback
+                error_log("ViewRenderer failed: " . $renderError->getMessage());
+                
+                return new Response(
+                    $statusCode,
+                    ['Content-Type' => 'text/html'],
+                    "<h1>Error {$statusCode}</h1><p>{$message}</p>"
+                );
+            }
         }
     }
 }

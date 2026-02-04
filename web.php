@@ -14,8 +14,22 @@ $container = $containerFactory();
 $app = $container->get(Blog\Core\Application::class);
 
 // 4. Spracuj request
-$request = \Nyholm\Psr7\ServerRequest::fromGlobals();
+$psr17Factory = new \Nyholm\Psr7\Factory\Psr17Factory();
+$creator = new \Nyholm\Psr7Server\ServerRequestCreator(
+    $psr17Factory,
+    $psr17Factory,
+    $psr17Factory,
+    $psr17Factory
+);
+$request = $creator->fromGlobals();
 $response = $app->handle($request);
 
-// 5. Pošli response
-(new \Laminas\HttpHandlerRunner\Emitter\SapiEmitter())->emit($response);
+// 5. Pošli response - ZJEDNODUŠENÁ VERZIA bez laminas
+$statusCode = $response->getStatusCode();
+foreach ($response->getHeaders() as $name => $values) {
+    foreach ($values as $value) {
+        header(sprintf('%s: %s', $name, $value), false);
+    }
+}
+http_response_code($statusCode);
+echo $response->getBody();
