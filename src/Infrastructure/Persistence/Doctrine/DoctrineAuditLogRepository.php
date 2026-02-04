@@ -39,7 +39,7 @@ class DoctrineAuditLogRepository implements AuditLogRepository
         return array_map([$this, 'hydrateAuditLog'], $rows);
     }
 
-    public function findByEventType(string $eventType, \DateTimeInterface $since = null): array
+    public function findByEventType(string $eventType, ?\DateTimeInterface $since = null): array
     {
         $sql = "SELECT * FROM audit_logs WHERE event_type = ?";
         $params = [$eventType];
@@ -55,7 +55,7 @@ class DoctrineAuditLogRepository implements AuditLogRepository
         return array_map([$this, 'hydrateAuditLog'], $rows);
     }
 
-    public function findFailedLogins(string $ipAddress, \DateTimeInterface $since = null): array
+    public function findFailedLogins(string $ipAddress, ?\DateTimeInterface $since = null): array
     {
         $sql = "SELECT * FROM audit_logs 
                 WHERE event_type = 'login_failed' 

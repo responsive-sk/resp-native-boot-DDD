@@ -229,7 +229,7 @@ class SessionTimeoutMiddleware implements MiddlewareInterface
                 $cookieParams['path'],
                 $cookieParams['lifetime'],
                 $cookieParams['samesite'],
-                $needsSecure ? '; Secure' : ''
+                '; Secure'
             );
 
             return $response->withHeader('Set-Cookie', $cookieHeader);
