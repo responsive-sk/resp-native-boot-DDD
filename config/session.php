@@ -1,21 +1,49 @@
 <?php
-
 // config/session.php
 return [
+    // === CORE SESSION SETTINGS ===
+    'name' => 'app_session', // Session cookie name
+    
+    // Cookie settings (pre slim4-session)
+    'cookie_params' => [
+        'lifetime' => 86400, // 24 hodín
+        'path' => '/',
+        'domain' => $_ENV['SESSION_DOMAIN'] ?? '',
+        'secure' => ($_ENV['APP_ENV'] ?? 'development') === 'production',
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ],
+    
+    // === APPLICATION SPECIFIC ===
     'timeout' => [
         'default' => 1800,     // 30 min - verejné stránky
-        'mark' => 7200,        // 2 hodiny - mark/admin panel
+        'mark' => 7200,        // 2 hodiny - mark/admin panel  
         'api' => 86400,        // 24 hodín - API tokeny
     ],
+    
     'fingerprint' => [
         'enabled' => true,
         'components' => ['user_agent'], // Bez IP kvôli mobile data/VPN
         'salt' => $_ENV['SESSION_FINGERPRINT_SALT'] ?? 'default-secret-change-me',
     ],
-    'cookie' => [
-        'httponly' => true,
-        'secure' => ($_ENV['APP_ENV'] ?? 'development') === 'production',
-        'samesite' => 'Lax',
-        'domain' => $_ENV['SESSION_DOMAIN'] ?? null,
+    
+    // === MARK ADMIN SPECIFIC ===
+    'mark' => [
+        'session_prefix' => 'mark_',
+        'regenerate_on_login' => true,
+        'require_fingerprint' => true,
+    ],
+    
+    // === SECURITY ===
+    'security' => [
+        'regenerate_id' => true,
+        'use_strict_mode' => true,
+        'use_cookies' => true,
+        'use_only_cookies' => true,
+        'cookie_secure' => 'auto', // auto = based on request
+        'cookie_httponly' => true,
+        'cookie_samesite' => 'Lax',
+        'sid_length' => 48,
+        'sid_bits_per_character' => 6,
     ],
 ];

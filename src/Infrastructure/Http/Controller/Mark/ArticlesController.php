@@ -137,11 +137,24 @@ final readonly class ArticlesController
 
     public function delete(ServerRequestInterface $request): ResponseInterface
     {
-        $id = (int) $request->getAttribute('id');
-        $articleId = ArticleId::fromInt($id);
+        try {
+            $id = (int) $request->getAttribute('id');
+            error_log("DEBUG: Attempting to delete article with ID: " . $id);
+            
+            $articleId = ArticleId::fromInt($id);
+            error_log("DEBUG: ArticleId created successfully");
 
-        $this->articleRepository->remove($articleId);
+            $this->articleRepository->remove($articleId);
+            error_log("DEBUG: Article removed successfully");
 
-        return new Response(302, ['Location' => '/mark/articles']);
+            return new Response(302, ['Location' => '/mark/articles']);
+        } catch (\Exception $e) {
+            error_log("ERROR in delete: " . $e->getMessage());
+            error_log("ERROR trace: " . $e->getTraceAsString());
+            
+            return $this->viewRenderer->renderResponse('error.500', [
+                'error' => 'Failed to delete article: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

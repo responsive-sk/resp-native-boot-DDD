@@ -1,6 +1,8 @@
 <?php
-// config/services_ddd.php - VYMAŽ slim4-session časť
+
+// config/services_ddd.php - COMPLETE WORKING VERSION WITH API ROUTES
 declare(strict_types=1);
+
 
 use Blog\Application\Audit\AuditLogger;
 use Blog\Application\Blog\CreateArticle;
@@ -51,12 +53,12 @@ use Psr\Container\ContainerInterface;
 use ResponsiveSk\Slim4Paths\Paths;
 
 return [
-    // === FACTORIES ===
+        // === FACTORIES ===
     Psr17Factory::class => fn () => new Psr17Factory(),
 
     Database::class => fn () => DatabaseManager::getConnection(),
 
-    // === PATHS ===
+        // === PATHS ===
     Paths::class => fn () => new Paths(__DIR__ . '/../'),
 
     // === VIEW RENDERER ===
@@ -69,7 +71,7 @@ return [
         require __DIR__ . '/pages.php'
     ),
 
-    // === REPOSITORIES ===
+        // === REPOSITORIES ===
     ArticleRepository::class => fn () => new DoctrineArticleRepository(
         DatabaseManager::getConnection('articles')
     ),
@@ -86,7 +88,7 @@ return [
         DatabaseManager::getConnection('forms')
     ),
 
-    // === APPLICATION USE-CASES ===
+        // === APPLICATION USE-CASES ===
     AuditLogger::class => fn (ContainerInterface $c) => new AuditLogger(
         $c->get(AuditLogRepository::class)
     ),
@@ -131,8 +133,8 @@ return [
         $c->get(\Blog\Domain\Form\Repository\FormRepositoryInterface::class)
     ),
 
-    // === CONTROLLERS ===
-    // Web
+        // === CONTROLLERS ===
+        // Web
     BlogController::class => fn (ContainerInterface $c) => new BlogController(
         $c->get(ArticleRepository::class),
         $c->get(ViewRenderer::class)
@@ -150,7 +152,6 @@ return [
         $c->get(ViewRenderer::class),
         $c->get(Paths::class),
         $c->get(AuditLogger::class)
-        // ODSTRÁŇ: $c->get(SessionInterface::class)
     ),
 
     SearchController::class => fn (ContainerInterface $c) => new SearchController(
@@ -158,7 +159,7 @@ return [
         $c->get(ViewRenderer::class)
     ),
 
-    // Mark (System Operator)
+        // Mark (System Operator)
     DashboardController::class => fn (ContainerInterface $c) => new DashboardController(
         $c->get(ArticleRepository::class),
         $c->get(ViewRenderer::class)
@@ -174,7 +175,7 @@ return [
         $c->get(ViewRenderer::class)
     ),
 
-    // API
+        // API
     ArticleApiController::class => fn (ContainerInterface $c) => new ArticleApiController(
         $c->get(ArticleRepository::class),
         $c->get(GetAllArticles::class),
@@ -195,13 +196,13 @@ return [
 
     SessionPingController::class => fn () => new SessionPingController(),
 
-    // === ROUTER ===
+        // === ROUTER ===
     Router::class => fn (ContainerInterface $c) => (require __DIR__ . '/routes.php')($c),
 
     // Alias pre 'router' key
     'router' => fn ($c) => $c->get(Router::class),
 
-    // === MIDDLEWARE ===
+        // === MIDDLEWARE ===
     RouterMiddleware::class => fn ($c) => new RouterMiddleware($c->get('router')),
 
     ExceptionMiddleware::class => fn (ContainerInterface $c) => new ExceptionMiddleware(
@@ -214,7 +215,7 @@ return [
         $c->get(ViewRenderer::class)
     ),
     RequestContextMiddleware::class => fn () => new RequestContextMiddleware(),
-    SessionMiddleware::class => fn () => new SessionMiddleware(), // PÔVODNÝ SessionMiddleware
+    SessionMiddleware::class => fn () => new SessionMiddleware(),
     SessionTimeoutMiddleware::class => fn (ContainerInterface $c) => new SessionTimeoutMiddleware(
         null,
         $c->get(Paths::class)
@@ -230,15 +231,16 @@ return [
         $c->get(CorsMiddleware::class),
         $c->get(PjaxMiddleware::class),
         $c->get(RequestContextMiddleware::class),
-        $c->get(SessionMiddleware::class), // PÔVODNÝ SessionMiddleware
+        $c->get(SessionMiddleware::class),
         $c->get(SessionTimeoutMiddleware::class),
         $c->get(RateLimitMiddleware::class),
-        // $c->get(CsrfMiddleware::class),
+        $c->get(CsrfMiddleware::class),
         $c->get(AuthMiddleware::class),
         $c->get(RouterMiddleware::class),
     ],
 
-    // === APPLICATION ===
+
+        // === APPLICATION ===
     Application::class => fn (ContainerInterface $c) => new Application(
         $c->get('middlewares')
     ),

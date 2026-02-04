@@ -61,7 +61,7 @@ class Authorization
         self::requireAuth();
 
         if (!self::hasRole($role)) {
-            throw AuthorizationException::notAuthorized($role);
+            throw AuthorizationException::notAuthorized("Role '{$role}' required");
         }
     }
 

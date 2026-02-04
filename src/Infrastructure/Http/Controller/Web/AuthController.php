@@ -165,7 +165,13 @@ final readonly class AuthController
         // Session konfigurácia pomocou Paths
         $config = require $this->paths->getPath('config') . '/session.php';
 
-        session_regenerate_id(true);
+        // ODSTRÁŇ TÚTO ČIARU - to je CELÝ problém!
+        // session_regenerate_id(true);
+
+        // Ensure session is started
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
         // Základné údaje
         $_SESSION['user_id'] = $user->id()->toString();
@@ -174,8 +180,7 @@ final readonly class AuthController
         $_SESSION['last_activity'] = time();
 
         // Mark špecifické
-        if ($user->role()->toString() === 'mark') {
-            $_SESSION['regenerated_at'] = time();
+        if ($user->role()->isMark()) {
             $_SESSION['mark_session'] = true;
         }
 
