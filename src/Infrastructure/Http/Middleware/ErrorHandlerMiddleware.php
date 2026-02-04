@@ -18,10 +18,10 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
     public function __construct(
         private \Blog\Infrastructure\View\ViewRenderer $viewRenderer
     ) {
-        // ✅ Načíta APP_ENV z $_ENV (ktorý je nastavený v boot.php)
+        // Načíta APP_ENV z $_ENV (ktorý je nastavený v boot.php)
         $this->env = $_ENV['APP_ENV'] ?? 'development';
         
-        // ✅ Log init
+        // Log init
         if ($this->env === 'development') {
             error_log("[ErrorHandler] Initialized for environment: {$this->env}");
         }
