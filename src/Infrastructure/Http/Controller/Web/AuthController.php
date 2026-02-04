@@ -77,7 +77,7 @@ final readonly class AuthController
 
             // Načítať celý User entity pre session data
             $user = $this->userRepository->findById($userId);
-            
+
             if (!$user) {
                 throw new \RuntimeException('Registered user not found in database.');
             }
