@@ -36,6 +36,7 @@ final readonly class RouterMiddleware implements MiddlewareInterface
 
         // Zavolaj route handler
         $routeHandler = $routeMatch->getHandler();
+
         return $routeHandler($request);
     }
 }

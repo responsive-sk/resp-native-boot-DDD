@@ -4,47 +4,47 @@
 declare(strict_types=1);
 
 
+use Blog\Application\Blog\CreateArticle;
+use Blog\Application\Blog\DeleteArticle;
+use Blog\Application\Blog\GetAllArticles;
+use Blog\Application\Blog\SearchArticles;
+use Blog\Application\Blog\UpdateArticle;
+use Blog\Application\User\LoginUser;
+use Blog\Application\User\RegisterUser;
+// === APPLICATION USE-CASES ===
+use Blog\Core\Application;
+use Blog\Core\ExceptionMiddleware;
+use Blog\Core\Router;
+use Blog\Core\RouterMiddleware;
 use Blog\Database\Database;
 use Blog\Database\DatabaseManager;
 use Blog\Domain\Blog\Repository\ArticleRepository;
-use Blog\Domain\User\Repository\UserRepositoryInterface;
-use Blog\Infrastructure\Http\Controller\Web\SearchController;
-use Blog\Infrastructure\Persistence\Doctrine\DoctrineArticleRepository;
-use Blog\Infrastructure\Persistence\Doctrine\DoctrineUserRepository;
-// === APPLICATION USE-CASES ===
-use Blog\Application\Blog\CreateArticle;
-use Blog\Application\Blog\GetAllArticles;
-use Blog\Application\Blog\UpdateArticle;
-use Blog\Application\Blog\DeleteArticle;
-use Blog\Application\Blog\SearchArticles;
-use Blog\Application\User\LoginUser;
-use Blog\Application\User\RegisterUser;
 // === CONTROLLERS ===
-use Blog\Infrastructure\Http\Controller\Web\BlogController;
-use Blog\Infrastructure\Http\Controller\Web\ArticleController;
-use Blog\Infrastructure\Http\Controller\Web\AuthController;
-use Blog\Infrastructure\Http\Controller\Mark\DashboardController;
-use Blog\Infrastructure\Http\Controller\Mark\ArticlesController;
+use Blog\Domain\User\Repository\UserRepositoryInterface;
 use Blog\Infrastructure\Http\Controller\Api\ArticleApiController;
 use Blog\Infrastructure\Http\Controller\Api\AuthApiController;
+use Blog\Infrastructure\Http\Controller\Api\SessionPingController;
+use Blog\Infrastructure\Http\Controller\Mark\ArticlesController;
+use Blog\Infrastructure\Http\Controller\Mark\DashboardController;
+use Blog\Infrastructure\Http\Controller\Web\ArticleController;
 // === MIDDLEWARE ===
-use Blog\Middleware\SessionMiddleware;
-use Blog\Middleware\AuthMiddleware;
-use Blog\Middleware\CorsMiddleware;
+use Blog\Infrastructure\Http\Controller\Web\AuthController;
+use Blog\Infrastructure\Http\Controller\Web\BlogController;
+use Blog\Infrastructure\Http\Controller\Web\SearchController;
 use Blog\Infrastructure\Http\Middleware\ErrorHandlerMiddleware;
 use Blog\Infrastructure\Http\Middleware\RequestContextMiddleware;
 use Blog\Infrastructure\Http\Middleware\SessionTimeoutMiddleware;
-use Blog\Infrastructure\Http\Controller\Api\SessionPingController;
-use Blog\Middleware\PjaxMiddleware;
+use Blog\Infrastructure\Persistence\Doctrine\DoctrineArticleRepository;
+use Blog\Infrastructure\Persistence\Doctrine\DoctrineUserRepository;
 // === CORE ===
-use Blog\Core\Router;
-use Blog\Core\RouterMiddleware;
-use Blog\Core\ExceptionMiddleware;
-use Blog\Core\Application;
-use Nyholm\Psr7\Factory\Psr17Factory;
-use Psr\Container\ContainerInterface;
 use Blog\Infrastructure\View\PlatesRenderer;
 use Blog\Infrastructure\View\ViewRenderer;
+use Blog\Middleware\AuthMiddleware;
+use Blog\Middleware\CorsMiddleware;
+use Blog\Middleware\PjaxMiddleware;
+use Blog\Middleware\SessionMiddleware;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Psr\Container\ContainerInterface;
 
 return [
         // === FACTORIES ===

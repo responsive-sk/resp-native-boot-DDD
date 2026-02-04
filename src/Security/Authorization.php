@@ -19,6 +19,7 @@ class Authorization
     public static function isAuthenticated(): bool
     {
         self::ensureSession();
+
         return isset($_SESSION['user_id']) && isset($_SESSION['user_role']);
     }
 
@@ -38,6 +39,7 @@ class Authorization
     public static function hasRole(string $role): bool
     {
         $user = self::getUser();
+
         return $user !== null && $user['role'] === $role;
     }
 

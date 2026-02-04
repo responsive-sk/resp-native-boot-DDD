@@ -35,6 +35,7 @@ final class AuthMiddleware implements MiddlewareInterface
         foreach ($protectedPrefixes as $prefix) {
             if (str_starts_with($path, $prefix)) {
                 $isProtected = true;
+
                 break;
             }
         }

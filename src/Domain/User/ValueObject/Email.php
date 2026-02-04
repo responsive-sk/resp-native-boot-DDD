@@ -46,12 +46,14 @@ final readonly class Email
     public function domain(): string
     {
         $parts = explode('@', $this->value);
+
         return $parts[1] ?? '';
     }
 
     public function localPart(): string
     {
         $parts = explode('@', $this->value);
+
         return $parts[0];
     }
 

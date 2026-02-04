@@ -184,6 +184,7 @@ final class Article
     {
         $events = $this->domainEvents;
         $this->domainEvents = [];
+
         return $events;
     }
 }

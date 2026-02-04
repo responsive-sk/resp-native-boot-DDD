@@ -73,12 +73,14 @@ final class PlatesRenderer
                     $requestedTheme,
                     $fallback
                 ));
+
                 return $fallback;
             }
         }
 
         // If no theme found, throw helpful error
         $available = $this->listAvailableThemes($templatesPath);
+
         throw new \RuntimeException(sprintf(
             'PlatesRenderer: No theme found! Requested "%s", templates path: "%s". Available themes: %s. Please check THEME_NAME in .env or create symlink.',
             $requestedTheme,

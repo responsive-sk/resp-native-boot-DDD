@@ -1,19 +1,19 @@
 {
     "name": "resp-app/blog-backend",
-    "description": "Blog Context Backend - DDD Architecture",
+    "description": "Context Backend - DDD Architecture",
     "type": "project",
     "require": {
-      "php": "8.2 - 8.5",
-      "ext-iconv": "*",
-      "ext-mbstring": "*",
-      "doctrine/dbal": "^4.3",
-      "league/plates": "^3.6",
-      "nikic/fast-route": "^1.3",
-      "nyholm/psr7": "^1.8",
-      "nyholm/psr7-server": "^1.1",
-      "psr/container": "^2.0",
-      "psr/http-server-middleware": "^1.0",
-      "responsive-sk/slim4-paths": "^6.0",
+        "php": "8.2 - 8.5",
+        "ext-iconv": "*",
+        "ext-mbstring": "*",
+        "doctrine/dbal": "^4.3",
+        "league/plates": "^3.6",
+        "nikic/fast-route": "^1.3",
+        "nyholm/psr7": "^1.8",
+        "nyholm/psr7-server": "^1.1",
+        "psr/container": "^2.0",
+        "psr/http-server-middleware": "^1.0",
+        "responsive-sk/slim4-paths": "^6.0",
         "ramsey/uuid": "^4.9",
         "vlucas/phpdotenv": "^5.6"
     },
@@ -31,7 +31,35 @@
         "dev": "php -S localhost:8000 -t public",
         "test": "phpunit",
         "test:unit": "phpunit --testsuite=Unit",
-        "test:integration": "phpunit --testsuite=Integration"
+        "test:integration": "phpunit --testsuite=Integration",
+        "cs-check": "php-cs-fixer fix --dry-run --verbose",
+        "cs-fix": "php-cs-fixer fix",
+        "cs-fix:diff": "php-cs-fixer fix --diff",
+        "lint": "php-cs-fixer fix --dry-run --using-cache=no",
+        "stan": "vendor/bin/phpstan analyse --memory-limit=1G src config",
+        "stan:strict": "vendor/bin/phpstan analyse --level=max --memory-limit=1G src config",
+        "analyse": [
+            "@cs-check",
+            "@stan"
+        ],
+        "analyse:strict": [
+            "@lint",
+            "@stan:strict"
+        ],
+        "pre-commit": [
+            "@cs-fix",
+            "@test"
+        ],
+        "pre-commit:strict": [
+            "@cs-fix",
+            "@stan",
+            "@test"
+        ],
+        "ci": [
+            "@lint",
+            "@stan",
+            "@test"
+        ]
     },
     "require-dev": {
         "phpunit/phpunit": "^12.4.5",

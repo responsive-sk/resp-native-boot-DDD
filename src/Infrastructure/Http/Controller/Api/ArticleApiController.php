@@ -95,7 +95,7 @@ final readonly class ArticleApiController
             return $this->jsonResponse(
                 [
                     'message' => 'Article created',
-                    'article' => $this->articleToArray($article)
+                    'article' => $this->articleToArray($article),
                 ],
                 201
             );
@@ -132,7 +132,7 @@ final readonly class ArticleApiController
             return $this->jsonResponse(
                 [
                     'message' => 'Article updated',
-                    'article' => $this->articleToArray($article)
+                    'article' => $this->articleToArray($article),
                 ]
             );
         } catch (\DomainException $e) {
@@ -162,7 +162,7 @@ final readonly class ArticleApiController
 
     /**
      * Helper method to convert Article to array
-     * 
+     *
      * @return array<string, mixed>
      */
     private function articleToArray(\Blog\Domain\Blog\Entity\Article $article): array

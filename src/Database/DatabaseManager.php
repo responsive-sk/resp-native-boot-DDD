@@ -51,7 +51,7 @@ class DatabaseManager
                     'driver' => 'pdo_sqlite',
                     'path' => $formsDb,
                 ],
-            ]
+            ],
         ];
     }
 

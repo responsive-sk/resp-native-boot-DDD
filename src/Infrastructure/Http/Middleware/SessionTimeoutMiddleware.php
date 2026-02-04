@@ -57,6 +57,7 @@ class SessionTimeoutMiddleware implements MiddlewareInterface
             if ($this->isAjax($request) || $this->isApi($request)) {
                 $response = new Response();
                 $response->getBody()->write(json_encode(['error' => 'Session expired', 'code' => 'SESSION_EXPIRED']));
+
                 return $response
                     ->withHeader('Content-Type', 'application/json')
                     ->withStatus(401);
@@ -64,6 +65,7 @@ class SessionTimeoutMiddleware implements MiddlewareInterface
 
             // Handle standard request with redirect
             $response = new Response();
+
             return $response
                 ->withHeader('Location', $this->redirectUrl . '?expired=1')
                 ->withStatus(302);

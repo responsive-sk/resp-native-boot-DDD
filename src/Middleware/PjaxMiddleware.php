@@ -1,4 +1,5 @@
 <?php
+
 // src/Middleware/PjaxMiddleware.php
 
 declare(strict_types=1);
@@ -34,6 +35,7 @@ final class PjaxMiddleware implements MiddlewareInterface
         if ($request->getQueryParams()['fragment'] ?? false) {
             // Vráť len HTML fragment bez layoutu
             $fragment = $this->extractPjaxFragment($content);
+
             return $this->createPjaxResponse($fragment, $response);
         }
 
@@ -45,12 +47,12 @@ final class PjaxMiddleware implements MiddlewareInterface
             $response->getStatusCode(),
             [
                 'Content-Type' => 'application/json',
-                'X-PJAX' => 'true'
+                'X-PJAX' => 'true',
             ],
             json_encode([
                 'title' => $data['title'],
                 'content' => $data['content'],
-                'url' => (string) $request->getUri()
+                'url' => (string) $request->getUri(),
             ])
         );
     }
@@ -106,7 +108,7 @@ final class PjaxMiddleware implements MiddlewareInterface
 
         return [
             'title' => $title,
-            'content' => $content
+            'content' => $content,
         ];
     }
 
@@ -116,7 +118,7 @@ final class PjaxMiddleware implements MiddlewareInterface
             $originalResponse->getStatusCode(),
             [
                 'Content-Type' => 'text/html; charset=utf-8',
-                'X-PJAX' => 'true'
+                'X-PJAX' => 'true',
             ],
             $content
         );

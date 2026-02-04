@@ -63,7 +63,7 @@ final readonly class ArticlesController
             return $this->viewRenderer->renderResponse('mark.articles.create', [
                 'error' => 'Title and content are required',
                 'title' => $title,
-                'content' => $content
+                'content' => $content,
             ]);
         }
 
@@ -81,7 +81,7 @@ final readonly class ArticlesController
             return $this->viewRenderer->renderResponse('mark.articles.create', [
                 'error' => $e->getMessage(),
                 'title' => $title,
-                'content' => $content
+                'content' => $content,
             ]);
         }
     }
@@ -115,7 +115,7 @@ final readonly class ArticlesController
         if (empty($data['title']) || empty($data['content'])) {
             return $this->viewRenderer->renderResponse('mark.articles.edit', [
                 'article' => $article,
-                'error' => 'Title and content are required'
+                'error' => 'Title and content are required',
             ]);
         }
 
@@ -130,7 +130,7 @@ final readonly class ArticlesController
         } catch (\InvalidArgumentException $e) {
             return $this->viewRenderer->renderResponse('mark.articles.edit', [
                 'article' => $article,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }

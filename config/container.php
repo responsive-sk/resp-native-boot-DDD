@@ -20,7 +20,7 @@ return function (): ContainerInterface {
         public function get(string $id)
         {
             if (!isset($this->services[$id])) {
-                throw new class extends Exception implements NotFoundExceptionInterface {
+                throw new class () extends Exception implements NotFoundExceptionInterface {
                     public function __construct(string $id = "", int $code = 0, ?Throwable $previous = null)
                     {
                         parent::__construct("Service '$id' not found in container", $code, $previous);

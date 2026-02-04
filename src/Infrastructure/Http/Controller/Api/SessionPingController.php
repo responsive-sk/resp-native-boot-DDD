@@ -17,7 +17,7 @@ class SessionPingController
         $response->getBody()->write(json_encode([
             'status' => 'ok',
             'message' => 'Session refreshed',
-            'expires_in' => 1800 // This could be dynamic based on config
+            'expires_in' => 1800, // This could be dynamic based on config
         ]));
 
         return $response->withHeader('Content-Type', 'application/json');

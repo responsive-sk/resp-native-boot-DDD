@@ -1,4 +1,5 @@
 <?php
+
 // config/pages.php - ROZŠÍRENÁ VERZIA
 return [
     // === PUBLIC ROUTES ===

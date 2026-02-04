@@ -29,6 +29,7 @@ final class Form
     {
         $now = new DateTimeImmutable();
         $id = FormId::generate();
+
         return new self($id, $title, $slug, $fields, $now, $now);
     }
 

@@ -43,6 +43,7 @@ final readonly class AuthController
             $_SESSION['last_activity'] = time();
 
             $redirect = $request->getQueryParams()['redirect'] ?? '/mark/dashboard';
+
             return new Response(302, ['Location' => $redirect]);
         } catch (\DomainException $e) {
             return $this->viewRenderer->renderResponse('auth.login', [
@@ -89,6 +90,7 @@ final readonly class AuthController
             $_SESSION['user_email'] = $emailRaw;
 
             $redirect = $request->getQueryParams()['redirect'] ?? '/blog';
+
             return new Response(302, ['Location' => $redirect]);
         } catch (\DomainException $e) {
             return $this->viewRenderer->renderResponse('auth.register', [

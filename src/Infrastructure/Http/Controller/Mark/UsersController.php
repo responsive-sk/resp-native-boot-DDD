@@ -49,7 +49,7 @@ final readonly class UsersController
             return $this->viewRenderer->renderResponse('mark.users.create', [
                 'error' => 'Email and password are required',
                 'email' => $email,
-                'role' => $role
+                'role' => $role,
             ]);
         }
 
@@ -71,7 +71,7 @@ final readonly class UsersController
             return $this->viewRenderer->renderResponse('mark.users.create', [
                 'error' => $e->getMessage(),
                 'email' => $email,
-                'role' => $role
+                'role' => $role,
             ]);
         }
     }
@@ -79,6 +79,7 @@ final readonly class UsersController
     public function editForm(ServerRequestInterface $request): ResponseInterface
     {
         $userIdStr = $request->getAttribute('id');
+
         // Warning: Assuming UUID string is passed in URL
         try {
             $userId = UserId::fromString($userIdStr);
@@ -99,6 +100,7 @@ final readonly class UsersController
     public function update(ServerRequestInterface $request): ResponseInterface
     {
         $userIdStr = $request->getAttribute('id');
+
         try {
             $userId = UserId::fromString($userIdStr);
             $user = $this->userRepository->findById($userId);
@@ -141,13 +143,14 @@ final readonly class UsersController
         } catch (\InvalidArgumentException $e) {
             return $this->viewRenderer->renderResponse('mark.users.edit', [
                 'user' => $user,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
     public function delete(ServerRequestInterface $request): ResponseInterface
     {
         $userIdStr = $request->getAttribute('id');
+
         try {
             $userId = UserId::fromString($userIdStr);
             $this->userRepository->remove($userId);

@@ -50,6 +50,7 @@ class Paths
         // Default: from current file location (src/Infrastructure/Paths.php)
         $candidate = dirname(__DIR__, 2);
         $real = realpath($candidate);
+
         return $real !== false ? $real : $candidate;
     }
 
@@ -123,6 +124,7 @@ class Paths
 
         if (!empty($params)) {
             $qs = http_build_query($params);
+
             return $path . '?' . $qs;
         }
 

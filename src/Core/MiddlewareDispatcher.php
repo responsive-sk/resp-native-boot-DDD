@@ -54,6 +54,7 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
     public function dispatch(ServerRequestInterface $request): ResponseInterface
     {
         $this->index = 0;
+
         return $this->handle($request);
     }
 }

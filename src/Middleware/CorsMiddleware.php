@@ -17,7 +17,7 @@ final readonly class CorsMiddleware implements MiddlewareInterface
             'http://localhost:5173',
             'http://localhost:3000',
             'http://127.0.0.1:5173',
-            'http://127.0.0.1:3000'
+            'http://127.0.0.1:3000',
         ],
         private array $allowedMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
         private array $allowedHeaders = ['Content-Type', 'Authorization', 'X-Requested-With']
@@ -35,6 +35,7 @@ final readonly class CorsMiddleware implements MiddlewareInterface
 
         // Process request and add CORS headers to response
         $response = $handler->handle($request);
+
         return $this->addCorsHeaders($request, $response);
     }
 

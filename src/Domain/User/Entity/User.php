@@ -81,6 +81,7 @@ final class User
         if ($this->id === null) {
             throw new \RuntimeException('User ID should not be null');
         }
+
         return $this->id;
     }
 
@@ -117,6 +118,7 @@ final class User
     {
         $events = $this->domainEvents;
         $this->domainEvents = [];
+
         return $events;
     }
 }

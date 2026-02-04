@@ -10,6 +10,7 @@ class Helpers
     {
         $propsJson = !empty($props) ? htmlspecialchars(json_encode($props), ENT_QUOTES, 'UTF-8') : '';
         $propsAttr = $propsJson ? " data-props='{$propsJson}'" : '';
+
         return "<{$name}{$propsAttr}>{$ssrContent}</{$name}>";
     }
 
@@ -26,7 +27,7 @@ class Helpers
 
     public static function pjaxComponent(string $selector): string
     {
-        // For now this helper is a placeholder for potential future PJAX-specific 
+        // For now this helper is a placeholder for potential future PJAX-specific
         // component scripts or registration logic.
         return "";
     }
