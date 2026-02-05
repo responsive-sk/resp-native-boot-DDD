@@ -25,14 +25,19 @@ final class Article
         private ArticleStatus     $status,
         private DateTimeImmutable $createdAt,
         private DateTimeImmutable $updatedAt,
-        private ?Slug             $slug = null
+        private ?Slug             $slug = null,
+        private ?\Blog\Domain\Blog\Entity\Category $category = null,
+        /** @var array<int, \Blog\Domain\Blog\Entity\Tag> */
+        private array $tags = []
     ) {
     }
 
     public static function create(
         Title $title,
         Content $content,
-        UserId $authorId
+        UserId $authorId,
+        ?\Blog\Domain\Blog\Entity\Category $category = null,
+        array $tags = []
     ): self {
         $now = new DateTimeImmutable();
 
@@ -44,7 +49,9 @@ final class Article
             status: ArticleStatus::draft(),
             createdAt: $now,
             updatedAt: $now,
-            slug: Slug::fromString($title->toString())
+            slug: Slug::fromString($title->toString()),
+            category: $category,
+            tags: $tags
         );
     }
 
@@ -56,9 +63,11 @@ final class Article
         ArticleStatus     $status,
         DateTimeImmutable $createdAt,
         DateTimeImmutable $updatedAt,
-        ?Slug             $slug = null
+        ?Slug             $slug = null,
+        ?\Blog\Domain\Blog\Entity\Category $category = null,
+        array $tags = []
     ): self {
-        return new self($id, $title, $content, $authorId, $status, $createdAt, $updatedAt, $slug);
+        return new self($id, $title, $content, $authorId, $status, $createdAt, $updatedAt, $slug, $category, $tags);
     }
 
     public function update(Title $title, Content $content): void
@@ -132,6 +141,52 @@ final class Article
     public function updatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    public function category(): ?\Blog\Domain\Blog\Entity\Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?\Blog\Domain\Blog\Entity\Category $category): void
+    {
+        $this->category = $category;
+        $this->updatedAt = new DateTimeImmutable();
+    }
+
+    /**
+     * @return array<int, \Blog\Domain\Blog\Entity\Tag>
+     */
+    public function tags(): array
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param array<int, \Blog\Domain\Blog\Entity\Tag> $tags
+     */
+    public function setTags(array $tags): void
+    {
+        $this->tags = $tags;
+        $this->updatedAt = new DateTimeImmutable();
+    }
+
+    public function addTag(\Blog\Domain\Blog\Entity\Tag $tag): void
+    {
+        if (!in_array($tag, $this->tags, true)) {
+            $this->tags[] = $tag;
+            $this->updatedAt = new DateTimeImmutable();
+        }
+    }
+
+    public function removeTag(\Blog\Domain\Blog\Entity\Tag $tag): void
+    {
+        $key = array_search($tag, $this->tags, true);
+        if ($key !== false) {
+            unset($this->tags[$key]);
+            $this->tags = array_values($this->tags);
+            $this->updatedAt = new DateTimeImmutable();
+        }
     }
 
     // Public slug/id for the article used by templates. Prefers slug string, falls back to id string,

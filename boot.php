@@ -1,4 +1,5 @@
 <?php
+// boot.php - KOMPLETNÁ VERZIA
 declare(strict_types=1);
 
 // Autoloader - POVINNÉ
@@ -27,3 +28,26 @@ date_default_timezone_set('Europe/Bratislava');
 
 // UTF-8 všade
 mb_internal_encoding('UTF-8');
+
+// === VYTVOR KONTAJNER ===
+try {
+    // container.php vracia Closure, ktorá vytvára kontajner
+    $containerFactory = require __DIR__ . '/config/container.php';
+    $container = $containerFactory();
+    
+    // Initialize Authorization with Session
+    if ($container->has(\ResponsiveSk\Slim4Session\SessionInterface::class)) {
+        $session = $container->get(\ResponsiveSk\Slim4Session\SessionInterface::class);
+        \Blog\Security\Authorization::setSession($session);
+    }
+    
+    // Vráť kontajner pre web.php
+    return $container;
+    
+} catch (Exception $e) {
+    if (($_ENV['APP_DEBUG'] ?? 'false') === 'true') {
+        throw $e;
+    }
+    error_log("Boot error: " . $e->getMessage());
+    return null;
+}

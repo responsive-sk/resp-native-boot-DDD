@@ -1,3 +1,0 @@
-->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfig::create(
-    PhpCsFixer\Runner\Parallel\ProcessCount::fromNumberOfCores()
-))

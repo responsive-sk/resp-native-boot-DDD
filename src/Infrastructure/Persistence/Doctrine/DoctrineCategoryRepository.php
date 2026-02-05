@@ -1,0 +1,146 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Blog\Infrastructure\Persistence\Doctrine;
+
+use Blog\Domain\Blog\Entity\Category;
+use Blog\Domain\Blog\Repository\CategoryRepository;
+use Blog\Domain\Blog\ValueObject\CategoryId;
+use Blog\Domain\Blog\ValueObject\CategorySlug;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Types;
+
+final class DoctrineCategoryRepository implements CategoryRepository
+{
+    public function __construct(private Connection $connection) {}
+
+    public function add(Category $category): void
+    {
+        $this->connection->insert('categories', [
+            'id' => $category->id()?->toString(),
+            'name' => $category->name()->toString(),
+            'slug' => $category->slug()->toString(),
+            'description' => $category->description(),
+            'created_at' => $category->createdAt()->format('Y-m-d H:i:s'),
+            'updated_at' => $category->updatedAt()->format('Y-m-d H:i:s'),
+        ], [
+            'created_at' => Types::DATETIME_IMMUTABLE,
+            'updated_at' => Types::DATETIME_IMMUTABLE,
+        ]);
+
+        $categoryId = CategoryId::fromString($this->connection->lastInsertId());
+        $category->setId($categoryId);
+    }
+
+    public function update(Category $category): void
+    {
+        $this->connection->update('categories', [
+            'name' => $category->name()->toString(),
+            'slug' => $category->slug()->toString(),
+            'description' => $category->description(),
+            'updated_at' => $category->updatedAt()->format('Y-m-d H:i:s'),
+        ], [
+            'id' => $category->id()->toString(),
+        ], [
+            'updated_at' => Types::DATETIME_IMMUTABLE,
+        ]);
+    }
+
+    public function remove(CategoryId $id): void
+    {
+        $this->connection->delete('categories', [
+            'id' => $id->toString(),
+        ]);
+    }
+
+    public function getById(CategoryId $id): ?Category
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $result = $qb
+            ->select('*')
+            ->from('categories')
+            ->where('id = :id')
+            ->setParameter('id', $id->toString())
+            ->fetchAssociative();
+
+        if (!$result) {
+            return null;
+        }
+
+        return $this->hydrateCategory($result);
+    }
+
+    public function getBySlug(CategorySlug $slug): ?Category
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $result = $qb
+            ->select('*')
+            ->from('categories')
+            ->where('slug = :slug')
+            ->setParameter('slug', $slug->toString())
+            ->fetchAssociative();
+
+        if (!$result) {
+            return null;
+        }
+
+        return $this->hydrateCategory($result);
+    }
+
+    public function getAll(): array
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $results = $qb
+            ->select('*')
+            ->from('categories')
+            ->orderBy('name', 'ASC')
+            ->fetchAllAssociative();
+
+        return array_map([$this, 'hydrateCategory'], $results);
+    }
+
+    public function getActive(): array
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $results = $qb
+            ->select('*')
+            ->from('categories')
+            ->orderBy('name', 'ASC')
+            ->fetchAllAssociative();
+
+        return array_map([$this, 'hydrateCategory'], $results);
+    }
+
+    public function nameExists(string $name, ?CategoryId $excludeId = null): bool
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->select('COUNT(*)')
+            ->from('categories')
+            ->where('LOWER(name) = LOWER(:name)')
+            ->setParameter('name', $name);
+
+        if ($excludeId !== null) {
+            $qb
+                ->andWhere('id != :exclude_id')
+                ->setParameter('exclude_id', $excludeId->toString());
+        }
+
+        $count = (int) $qb->fetchOne();
+
+        return $count > 0;
+    }
+
+    private function hydrateCategory(array $data): Category
+    {
+        return Category::reconstitute(
+            CategoryId::fromString($data['id']),
+            \Blog\Domain\Blog\ValueObject\CategoryName::fromString($data['name']),
+            CategorySlug::fromString($data['slug']),
+            $data['description'],
+            new \DateTimeImmutable($data['created_at']),
+            new \DateTimeImmutable($data['updated_at'])
+        );
+    }
+}

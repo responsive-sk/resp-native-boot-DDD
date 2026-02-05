@@ -22,10 +22,27 @@ class DatabaseManager
 
         // Get database paths from environment or use defaults
         // Convert relative paths to absolute
-        $appDb = $_ENV['DB_PATH_APP'] ?? 'data/app.db';
-        $articlesDb = $_ENV['DB_PATH_ARTICLES'] ?? 'data/articles.db';
-        $usersDb = $_ENV['DB_PATH_USERS'] ?? 'data/users.db';
-        $formsDb = $_ENV['DB_PATH_FORMS'] ?? 'data/forms.db';
+        $appDb = $_ENV['DB_PATH_APP'] ?? 'data/app';
+        $articlesDb = $_ENV['DB_PATH_ARTICLES'] ?? 'data/articles';
+        $usersDb = $_ENV['DB_PATH_USERS'] ?? 'data/users';
+        $formsDb = $_ENV['DB_PATH_FORMS'] ?? 'data/forms';
+        
+        // Get database extension from environment or use default
+        $dbExtension = $_ENV['DB_EXTENSION'] ?? '.sqlite';
+        
+        // Add extension if not already present
+        if (!str_ends_with($appDb, $dbExtension)) {
+            $appDb .= $dbExtension;
+        }
+        if (!str_ends_with($articlesDb, $dbExtension)) {
+            $articlesDb .= $dbExtension;
+        }
+        if (!str_ends_with($usersDb, $dbExtension)) {
+            $usersDb .= $dbExtension;
+        }
+        if (!str_ends_with($formsDb, $dbExtension)) {
+            $formsDb .= $dbExtension;
+        }
 
         // Make paths absolute if they're relative
         $appDb = self::makeAbsolutePath($appDb, $basePath);

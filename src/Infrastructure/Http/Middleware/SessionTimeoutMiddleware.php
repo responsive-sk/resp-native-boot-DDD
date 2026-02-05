@@ -64,10 +64,10 @@ class SessionTimeoutMiddleware implements MiddlewareInterface
     private function startSecureSession(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
-            $cookieParams = $this->config['cookie'];
+            $cookieParams = $this->config['cookie_params'];
 
             session_set_cookie_params($cookieParams);
-            session_name('resp_blog_session'); // Custom session name
+            session_name($this->config['name'] ?? 'resp_blog_session'); // Use config name
             session_start();
         }
     }
@@ -217,7 +217,7 @@ class SessionTimeoutMiddleware implements MiddlewareInterface
 
     private function applySecureCookieHeaders(ResponseInterface $response): ResponseInterface
     {
-        $needsSecure = $this->config['cookie']['secure'];
+        $needsSecure = $this->config['cookie_params']['secure'] ?? false;
 
         if ($needsSecure && session_status() === PHP_SESSION_ACTIVE) {
             $cookieParams = session_get_cookie_params();

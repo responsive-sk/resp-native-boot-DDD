@@ -7,6 +7,8 @@ namespace Blog\Infrastructure\Persistence\Doctrine;
 use Blog\Domain\Blog\Entity\Article;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Domain\Blog\ValueObject\ArticleId;
+use Blog\Domain\Blog\ValueObject\CategorySlug;
+use Blog\Domain\Blog\ValueObject\CategoryId;
 use Blog\Domain\Blog\ValueObject\Slug;
 use Doctrine\DBAL\Connection;
 
@@ -31,7 +33,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
                 'status' => $article->status()->toString(),
                 'created_at' => $article->createdAt()->format('Y-m-d H:i:s'),
                 'updated_at' => $article->updatedAt()->format('Y-m-d H:i:s'),
-                'category' => null,
+                'category_id' => $article->category()?->id()?->toString(),
             ]);
 
             // Set the generated ID
@@ -46,6 +48,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
                 'user_id' => $article->authorId()->toBytes(),  // ← user_id as bytes
                 'status' => $article->status()->toString(),
                 'updated_at' => $article->updatedAt()->format('Y-m-d H:i:s'),
+                'category_id' => $article->category()?->id()?->toString(),
             ], ['id' => $id->toInt()]);
         }
     }
@@ -127,13 +130,69 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
         );
     }
 
+    public function getByCategory(CategoryId $categoryId): array
+    {
+        $rows = $this->connection->fetchAllAssociative(
+            'SELECT * FROM articles WHERE category_id = ? ORDER BY created_at DESC',
+            [$categoryId->toString()]
+        );
+
+        return array_map([$this, 'hydrate'], $rows);
+    }
+
     public function getCategories(): array
     {
         return [];
     }
 
+    private function loadTagsForArticle(int $articleId): array
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $results = $qb
+            ->select('t.*')
+            ->from('tags', 't')
+            ->innerJoin('t', 'article_tags', 'at', 't.id = at.tag_id')
+            ->where('at.article_id = :article_id')
+            ->setParameter('article_id', $articleId)
+            ->orderBy('t.name', 'ASC')
+            ->fetchAllAssociative();
+
+        return array_map([$this, 'hydrateTag'], $results);
+    }
+
+    private function hydrateTag(array $data): \Blog\Domain\Blog\Entity\Tag
+    {
+        return \Blog\Domain\Blog\Entity\Tag::reconstitute(
+            \Blog\Domain\Blog\ValueObject\TagId::fromString($data['id']),
+            \Blog\Domain\Blog\ValueObject\TagName::fromString($data['name']),
+            \Blog\Domain\Blog\ValueObject\TagSlug::fromString($data['slug']),
+            new \DateTimeImmutable($data['created_at'])
+        );
+    }
+
     private function hydrate(array $row): Article
     {
+        $category = null;
+        if (!empty($row['category_id'])) {
+            // Load category - for simplicity, we'll create a minimal category
+            // In production, you might want to inject CategoryRepository
+            $categoryData = $this->connection->fetchAssociative(
+                'SELECT * FROM categories WHERE id = ?',
+                [$row['category_id']]
+            );
+            
+            if ($categoryData) {
+                $category = \Blog\Domain\Blog\Entity\Category::reconstitute(
+                    \Blog\Domain\Blog\ValueObject\CategoryId::fromString($categoryData['id']),
+                    \Blog\Domain\Blog\ValueObject\CategoryName::fromString($categoryData['name']),
+                    \Blog\Domain\Blog\ValueObject\CategorySlug::fromString($categoryData['slug']),
+                    $categoryData['description'],
+                    new \DateTimeImmutable($categoryData['created_at']),
+                    new \DateTimeImmutable($categoryData['updated_at'])
+                );
+            }
+        }
+
         return Article::reconstitute(
             ArticleId::fromInt((int) $row['id']),
             \Blog\Domain\Blog\ValueObject\Title::fromString($row['title']),
@@ -142,7 +201,9 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
             \Blog\Domain\Blog\ValueObject\ArticleStatus::fromString($row['status']),
             new \DateTimeImmutable($row['created_at']),
             new \DateTimeImmutable($row['updated_at']),
-            $row['slug'] ? \Blog\Domain\Blog\ValueObject\Slug::fromString($row['slug']) : null
+            $row['slug'] ? \Blog\Domain\Blog\ValueObject\Slug::fromString($row['slug']) : null,
+            $category,
+            $this->loadTagsForArticle((int) $row['id'])
         );
     }
 }

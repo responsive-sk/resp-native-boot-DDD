@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Blog\Infrastructure\Http\Controller\Web;
 
 use Blog\Domain\Blog\Repository\ArticleRepository;
+use Blog\Domain\Blog\Repository\CategoryRepository;
 use Blog\Domain\Blog\ValueObject\ArticleId;
+use Blog\Domain\Blog\ValueObject\CategorySlug;
 use Blog\Domain\Blog\ValueObject\Slug;
 use Blog\Infrastructure\View\ViewRenderer;
 use Nyholm\Psr7\Response;
@@ -16,6 +18,7 @@ final readonly class BlogController
 {
     public function __construct(
         private ArticleRepository $articleRepository,
+        private CategoryRepository $categoryRepository,
         private ViewRenderer $viewRenderer
     ) {
     }
@@ -38,10 +41,13 @@ final readonly class BlogController
     public function index(ServerRequestInterface $request): ResponseInterface
     {
         $articles = $this->articleRepository->getAll();
+        $categories = $this->categoryRepository->getAll();
         $page = (int) ($request->getQueryParams()['page'] ?? 1);
 
         return $this->viewRenderer->renderResponse('blog.index', [
             'articles' => $articles,
+            'categories' => $categories,
+            'blogCategories' => array_map(fn($cat) => $cat->slug()->toString(), $categories),
             'page' => $page,
         ]);
     }
@@ -65,6 +71,7 @@ final readonly class BlogController
 
         return $this->viewRenderer->renderResponse('blog.show', [
             'article' => $article,
+            'blogCategories' => array_map(fn($cat) => $cat->slug()->toString(), $this->categoryRepository->getAll()),
         ]);
     }
 
@@ -86,6 +93,29 @@ final readonly class BlogController
 
         return $this->viewRenderer->renderResponse('blog.show', [
             'article' => $article,
+            'blogCategories' => array_map(fn($cat) => $cat->slug()->toString(), $this->categoryRepository->getAll()),
+        ]);
+    }
+
+    public function showCategory(ServerRequestInterface $request, string $slug): ResponseInterface
+    {
+        if (empty(trim($slug))) {
+            return new Response(404, ['Content-Type' => 'text/html'], 'Invalid or missing category slug');
+        }
+
+        $categorySlug = CategorySlug::fromString($slug);
+        $category = $this->categoryRepository->getBySlug($categorySlug);
+
+        if ($category === null) {
+            return $this->viewRenderer->renderErrorResponse(404, 'Category not found: ' . htmlspecialchars($slug));
+        }
+
+        $articles = $this->articleRepository->getByCategory($category->id());
+
+        return $this->viewRenderer->renderResponse('blog.category', [
+            'category' => $category,
+            'articles' => $articles,
+            'blogCategories' => array_map(fn($cat) => $cat->slug()->toString(), $this->categoryRepository->getAll()),
         ]);
     }
 }

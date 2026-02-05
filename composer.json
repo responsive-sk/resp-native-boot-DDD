@@ -16,7 +16,8 @@
         "responsive-sk/slim4-paths": "^6.0",
         "ramsey/uuid": "^4.9",
         "vlucas/phpdotenv": "^5.6",
-        "responsive-sk/slim4-session": "^2.2"
+        "responsive-sk/slim4-session": "^2.2",
+        "cloudinary/cloudinary_php": "^3.1"
     },
     "autoload": {
         "psr-4": {
@@ -70,6 +71,8 @@
     "require-dev": {
         "phpunit/phpunit": "^12.4.5",
         "friendsofphp/php-cs-fixer": "^3.93",
-        "phpstan/phpstan": "^1.0"
+        "phpstan/phpstan": "^1.0",
+        "responsive-sk/php-debugbar-middleware": "^1.0",
+        "filp/whoops": "^2.18"
     }
 }

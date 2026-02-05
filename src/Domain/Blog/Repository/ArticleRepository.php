@@ -6,6 +6,7 @@ namespace Blog\Domain\Blog\Repository;
 
 use Blog\Domain\Blog\Entity\Article;
 use Blog\Domain\Blog\ValueObject\ArticleId;
+use Blog\Domain\Blog\ValueObject\CategoryId;
 use Blog\Domain\Blog\ValueObject\Slug;
 
 interface ArticleRepository
@@ -30,5 +31,10 @@ interface ArticleRepository
      * @return Article[]
      */
     public function search(string $query): array;
+
+    /**
+     * @return Article[]
+     */
+    public function getByCategory(CategoryId $categoryId): array;
 
 }

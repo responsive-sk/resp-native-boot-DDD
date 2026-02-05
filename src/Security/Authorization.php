@@ -6,34 +6,104 @@ namespace Blog\Security;
 
 use Blog\Security\Exception\AuthenticationException;
 use Blog\Security\Exception\AuthorizationException;
+use ResponsiveSk\Slim4Session\SessionInterface;
 
 class Authorization
 {
-    private static function ensureSession(): void
+    private static ?SessionInterface $session = null;
+    
+    public static function setSession(SessionInterface $session): void
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+        self::$session = $session;
+    }
+    
+    private static function getSession(): SessionInterface
+    {
+        if (self::$session === null) {
+            // Fallback to direct session if not set
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            // Create a simple wrapper
+            self::$session = new class implements SessionInterface {
+                public function get(string $key, mixed $default = null): mixed {
+                    return $_SESSION[$key] ?? $default;
+                }
+                public function set(string $key, mixed $value): void {
+                    $_SESSION[$key] = $value;
+                }
+                public function has(string $key): bool {
+                    return isset($_SESSION[$key]);
+                }
+                public function delete(string $key): void {
+                    unset($_SESSION[$key]);
+                }
+                public function clear(): void {
+                    $_SESSION = [];
+                }
+                public function all(): array {
+                    return $_SESSION;
+                }
+                public function regenerate(): void {
+                    session_regenerate_id(false);
+                }
+                public function destroy(): bool {
+                    return session_destroy();
+                }
+                public function getId(): string {
+                    return session_id();
+                }
+                public function getName(): string {
+                    return session_name();
+                }
+                public function save(): void {
+                    session_write_close();
+                }
+                public function isStarted(): bool {
+                    return session_status() === PHP_SESSION_ACTIVE;
+                }
+                public function migrate(bool $destroy = false): bool {
+                    return session_regenerate_id($destroy);
+                }
+                public function invalidate(): bool {
+                    return session_destroy();
+                }
+                public function remove(string $key): void {
+                    unset($_SESSION[$key]);
+                }
+                public function start(): bool {
+                    if (session_status() === PHP_SESSION_NONE) {
+                        return session_start();
+                    }
+                    return true;
+                }
+                public function regenerateId(bool $deleteOldSession = false): bool {
+                    return session_regenerate_id($deleteOldSession);
+                }
+            };
         }
+        
+        return self::$session;
     }
 
     public static function isAuthenticated(): bool
     {
-        self::ensureSession();
-
-        return isset($_SESSION['user_id']) && isset($_SESSION['user_role']);
+        $session = self::getSession();
+        
+        return $session->has('user_id') && $session->has('user_role');
     }
 
     public static function getUser(): ?array
     {
-        self::ensureSession();
-
-        if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role'])) {
+        $session = self::getSession();
+        
+        if (!$session->has('user_id') || !$session->has('user_role')) {
             return null;
         }
 
         return [
-            'id' => $_SESSION['user_id'],
-            'role' => $_SESSION['user_role'],
+            'id' => $session->get('user_id'),
+            'role' => $session->get('user_role'),
         ];
     }
 
@@ -41,12 +111,34 @@ class Authorization
     {
         $user = self::getUser();
 
-        return $user !== null && $user['role'] === $role;
+        if ($user === null) {
+            return false;
+        }
+
+        // Normalize both roles for comparison
+        $normalizeRole = function(string $role): string {
+            $role = strtolower(trim($role));
+            // Remove ROLE_ prefix if present
+            if (str_starts_with($role, 'role_')) {
+                $role = substr($role, 5);
+            }
+            return $role;
+        };
+
+        return $normalizeRole($user['role']) === $normalizeRole($role);
     }
 
     public static function isMark(): bool
     {
-        return self::hasRole('ROLE_MARK');
+        $session = self::getSession();
+        
+        // Check mark session flag first
+        if ($session->has('mark_session') && $session->get('mark_session') === true) {
+            return true;
+        }
+        
+        // Fallback to role check
+        return self::hasRole('mark') || self::hasRole('ROLE_MARK');
     }
 
     public static function requireAuth(): void
@@ -61,12 +153,16 @@ class Authorization
         self::requireAuth();
 
         if (!self::hasRole($role)) {
-            throw AuthorizationException::notAuthorized("Role '{$role}' required");
+            throw AuthorizationException::notAuthorized($role);
         }
     }
 
     public static function requireMark(): void
     {
-        self::requireRole('ROLE_MARK');
+        self::requireAuth();
+        
+        if (!self::isMark()) {
+            throw AuthorizationException::notAuthorized('MARK role required');
+        }
     }
 }

@@ -250,6 +250,45 @@ final class PlatesRenderer
         $this->plates->registerFunction('pjax_component', function (string $selector) {
             return \Blog\Infrastructure\View\Helpers::pjaxComponent($selector);
         });
+
+        // Add blogCategories helper
+        $this->plates->registerFunction('blogCategories', function () {
+            static $categories = null;
+            
+            if ($categories === null) {
+                try {
+                    $categoryRepository = \Blog\Infrastructure\Persistence\Doctrine\DoctrineCategoryRepository::class;
+                    $repo = new $categoryRepository(\Blog\Database\DatabaseManager::getConnection('articles'));
+                    $cats = $repo->getAll();
+                    $categories = array_map(fn($cat) => $cat->slug()->toString(), $cats);
+                } catch (\Exception $e) {
+                    $categories = [];
+                }
+            }
+            
+            return $categories;
+        });
+
+        // Add blogTags helper
+        $this->plates->registerFunction('blogTags', function () {
+            static $tags = null;
+            
+            if ($tags === null) {
+                try {
+                    $getAllTags = new \Blog\Application\Blog\GetAllTags(
+                        new \Blog\Infrastructure\Persistence\Doctrine\DoctrineTagRepository(
+                            \Blog\Database\DatabaseManager::getConnection('articles')
+                        )
+                    );
+                    $tagEntities = $getAllTags();
+                    $tags = array_map(fn($tag) => $tag->name()->toString(), $tagEntities);
+                } catch (\Exception $e) {
+                    $tags = [];
+                }
+            }
+            
+            return $tags;
+        });
     }
 
     public function render(string $template, array $data = []): string
