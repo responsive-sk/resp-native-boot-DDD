@@ -16,7 +16,7 @@ use Blog\Infrastructure\View\ViewRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final readonly class ArticlesController extends BaseController
+final class ArticlesController extends BaseController
 {
     public function __construct(
         private ArticleRepository $articleRepository,
@@ -27,7 +27,7 @@ final readonly class ArticlesController extends BaseController
     public function index(ServerRequestInterface $request): ResponseInterface
     {
         $useCase = $this->useCaseHandler->get(GetAllArticles::class);
-        
+
         try {
             $result = $this->executeUseCase($request, $useCase, [], 'web');
             $articles = $result['articles'] ?? [];
@@ -62,7 +62,7 @@ final readonly class ArticlesController extends BaseController
     public function create(ServerRequestInterface $request): ResponseInterface
     {
         $useCase = $this->useCaseHandler->get(CreateArticle::class);
-        
+
         try {
             $result = $this->executeUseCase($request, $useCase, [
                 'title' => 'body:title',
@@ -97,7 +97,7 @@ final readonly class ArticlesController extends BaseController
     public function update(ServerRequestInterface $request): ResponseInterface
     {
         $useCase = $this->useCaseHandler->get(UpdateArticle::class);
-        
+
         try {
             $result = $this->executeUseCase($request, $useCase, [
                 'article_id' => 'route:id',
@@ -118,7 +118,7 @@ final readonly class ArticlesController extends BaseController
     public function delete(ServerRequestInterface $request): ResponseInterface
     {
         $useCase = $this->useCaseHandler->get(DeleteArticle::class);
-        
+
         try {
             $result = $this->executeUseCase($request, $useCase, [
                 'article_id' => 'route:id'

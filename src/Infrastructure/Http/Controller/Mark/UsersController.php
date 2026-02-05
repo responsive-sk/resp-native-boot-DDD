@@ -14,7 +14,7 @@ use Blog\Infrastructure\View\ViewRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final readonly class UsersController extends BaseController
+final class UsersController extends BaseController
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
@@ -39,7 +39,7 @@ final readonly class UsersController extends BaseController
     public function create(ServerRequestInterface $request): ResponseInterface
     {
         $useCase = $this->useCaseHandler->get(RegisterUser::class);
-        
+
         try {
             $result = $this->executeUseCase($request, $useCase, [
                 'email' => 'body:email',
@@ -79,7 +79,7 @@ final readonly class UsersController extends BaseController
     public function update(ServerRequestInterface $request): ResponseInterface
     {
         $useCase = $this->useCaseHandler->get(UpdateUserRole::class);
-        
+
         try {
             $result = $this->executeUseCase($request, $useCase, [
                 'user_id' => 'route:id',
@@ -91,7 +91,7 @@ final readonly class UsersController extends BaseController
             // Get user data for form repopulation
             $userIdStr = $request->getAttribute('id');
             $user = null;
-            
+
             try {
                 $userId = \Blog\Domain\User\ValueObject\UserId::fromString($userIdStr);
                 $user = $this->userRepository->findById($userId);
@@ -109,11 +109,11 @@ final readonly class UsersController extends BaseController
     public function delete(ServerRequestInterface $request): ResponseInterface
     {
         $userIdStr = $request->getAttribute('id');
-        
+
         try {
             $userId = \Blog\Domain\User\ValueObject\UserId::fromString($userIdStr);
             $this->userRepository->remove($userId);
-            
+
             return $this->redirect('/mark/users');
         } catch (\Exception $e) {
             return $this->htmlResponse('Error deleting user: ' . $e->getMessage(), 400);

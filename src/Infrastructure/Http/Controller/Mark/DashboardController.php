@@ -11,7 +11,7 @@ use Blog\Infrastructure\View\ViewRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final readonly class DashboardController extends BaseController
+final class DashboardController extends BaseController
 {
     public function __construct(
         private ArticleRepository $articleRepository,
@@ -22,7 +22,7 @@ final readonly class DashboardController extends BaseController
     public function index(ServerRequestInterface $request): ResponseInterface
     {
         $useCase = $this->useCaseHandler->get(GetAllArticles::class);
-        
+
         try {
             $result = $this->executeUseCase($request, $useCase, [], 'web');
             $articles = $result['articles'] ?? [];
