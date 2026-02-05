@@ -8,49 +8,53 @@ use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Infrastructure\View\ViewRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Container\ContainerInterface;
+use Blog\Core\UseCaseHandler;
 
 class ArticleController extends BaseController
 {
     public function __construct(
+        ContainerInterface $container,
+        UseCaseHandler $useCaseHandler,
         private ViewRenderer $renderer
     ) {
-        // BaseController constructor will be called by DI container
+        parent::__construct($container, $useCaseHandler);
     }
-    
+
     public function show(ServerRequestInterface $request, string $slug): ResponseInterface
     {
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\GetArticleBySlug::class);
-        
+
         $result = $this->executeUseCase($request, $useCase, [
             'slug' => 'route:slug'
         ], 'web');
-        
+
         $html = $this->renderer->renderResponse('article.show', [
-            'article' => $result['article'] ?? null
+            'article' => $result['data']['article'] ?? null
         ]);
-        
+
         return $html;
     }
-    
+
     public function index(ServerRequestInterface $request): ResponseInterface
     {
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\GetAllArticles::class);
-        
+
         $result = $this->executeUseCase($request, $useCase, [
             'page' => 'query:page',
             'category' => 'query:category',
             'tag' => 'query:tag'
-        ], 'web');
-        
+        ], 'array');
+
         $html = $this->renderer->renderResponse('article.index', [
-            'articles' => $result['articles'] ?? [],
-            'count' => $result['count'] ?? 0,
+            'articles' => $result['data']['articles'] ?? [],
+            'count' => $result['data']['count'] ?? 0,
             'currentPage' => $request->getQueryParams()['page'] ?? 1
         ]);
-        
+
         return $html;
     }
-    
+
     public function createForm(ServerRequestInterface $request): ResponseInterface
     {
         return $this->renderer->renderResponse('article.create', []);
@@ -116,7 +120,7 @@ class ArticleController extends BaseController
     public function delete(ServerRequestInterface $request): ResponseInterface
     {
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\DeleteArticle::class);
-        
+
         try {
             $result = $this->executeUseCase($request, $useCase, [
                 'article_id' => 'route:id'

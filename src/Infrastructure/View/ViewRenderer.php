@@ -44,8 +44,20 @@ final readonly class ViewRenderer
         $item = $data['article'] ?? ($data['post'] ?? null);
 
         if ($item !== null) {
-            $viewData['title'] = sprintf($config['title'], htmlspecialchars($item->title()->toString()));
-            $viewData['description'] = sprintf($config['description'], htmlspecialchars($item->content()->excerpt(160)));
+            $isObject = is_object($item);
+
+            // Get Title
+            $title = $isObject
+                ? $item->title()->toString()
+                : ($item['title'] ?? '');
+
+            // Get Content/Excerpt
+            $contentVal = $isObject
+                ? $item->content()->excerpt(160)
+                : mb_substr(strip_tags($item['content'] ?? ''), 0, 160);
+
+            $viewData['title'] = sprintf($config['title'], htmlspecialchars($title));
+            $viewData['description'] = sprintf($config['description'], htmlspecialchars($contentVal));
         }
 
         return $viewData;

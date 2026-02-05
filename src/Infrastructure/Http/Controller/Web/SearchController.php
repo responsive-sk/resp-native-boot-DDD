@@ -10,11 +10,17 @@ use Blog\Infrastructure\View\ViewRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final readonly class SearchController extends BaseController
+use Psr\Container\ContainerInterface;
+use Blog\Core\UseCaseHandler;
+
+final class SearchController extends BaseController
 {
     public function __construct(
+        ContainerInterface $container,
+        UseCaseHandler $useCaseHandler,
         private ViewRenderer $viewRenderer
     ) {
+        parent::__construct($container, $useCaseHandler);
     }
 
     public function index(ServerRequestInterface $request): ResponseInterface
@@ -24,13 +30,13 @@ final readonly class SearchController extends BaseController
 
         if ($query !== '') {
             $useCase = $this->useCaseHandler->get(SearchArticles::class);
-            
+
             try {
                 $result = $this->executeUseCase($request, $useCase, [
                     'query' => 'query:q'
-                ], 'web');
-                
-                $results = $result['articles'] ?? [];
+                ], 'array');
+
+                $results = $result['data']['articles'] ?? [];
             } catch (\Exception $e) {
                 $results = [];
             }

@@ -16,44 +16,25 @@ $container = $containerFactory();
 // 4. Vytvor app
 $app = $container->get(Blog\Core\Application::class);
 
-// 5. **OPRAVENÝ DEBUGBAR** - správne parametre
+// 5. **BLOG DEBUGBAR** - použijeme náš vlastný middleware
 $useDebugBar = true; // Vždy testovať
 
-if ($useDebugBar && 
-    class_exists('\DebugBar\StandardDebugBar') && 
-    class_exists('\ResponsiveSk\PhpDebugBarMiddleware\DebugBarMiddleware')) {
-    
-    echo "<!-- DebugBar initialization -->\n";
-    
+if (
+    $useDebugBar &&
+    class_exists('\DebugBar\StandardDebugBar') &&
+    class_exists('\Blog\Infrastructure\Http\Middleware\BlogDebugBarMiddleware')
+) {
+
+    echo "<!-- Blog DebugBar initialization -->\n";
+
     try {
-        // 1. Vytvor DebugBar
-        $debugBar = new \DebugBar\StandardDebugBar();
-        
-        // 2. Pridaj PDO collector ak existuje DB
-        try {
-            if (class_exists('\Blog\Database\DatabaseManager')) {
-                $db = \Blog\Database\DatabaseManager::getConnection();
-                $debugBar->addCollector(new \DebugBar\DataCollector\PDO\PDOCollector($db->getPdo()));
-            }
-        } catch (\Throwable $e) {
-            // Ignore DB errors
-            echo "<!-- PDO collector skipped: " . $e->getMessage() . " -->\n";
-        }
-        
-        // 3. **OPRAVA:** Pridaj assetPath parameter!
-        $debugBarMiddleware = new \ResponsiveSk\PhpDebugBarMiddleware\DebugBarMiddleware(
-            $debugBar,  // Prvý parameter: DebugBar inštancia
-            '/debugbar' // Druhý parameter: asset path (povinný!)
-        );
-        
-        // 4. Pridať middleware do app **SPRÁVNE** - cez $app->add()
-        $app->add($debugBarMiddleware);
-        
-        echo "<!-- DebugBarMiddleware added to app -->\n";
-        
-        // 5. Assets route už nie je potrebný - middleware sa postará o assets
-        
-        // 6. Spracuj request normálne - app sa postará o middleware
+        // Pridať náš vlastný DebugBar middleware
+        $blogDebugBarMiddleware = new \Blog\Infrastructure\Http\Middleware\BlogDebugBarMiddleware();
+        $app->add($blogDebugBarMiddleware);
+
+        echo "<!-- BlogDebugBarMiddleware added to app -->\n";
+
+        // Spracuj request normálne - app sa postará o middleware
         $psr17Factory = new \Nyholm\Psr7\Factory\Psr17Factory();
         $creator = new \Nyholm\Psr7Server\ServerRequestCreator(
             $psr17Factory,
@@ -63,15 +44,15 @@ if ($useDebugBar &&
         );
         $request = $creator->fromGlobals();
         $response = $app->handle($request);
-        
-        // 7. Pošli response
+
+        // Pošli response
         $app->emit($response);
-        
+
         exit; // Ukončiť
-        
+
     } catch (\Throwable $e) {
-        error_log("DebugBar error: " . $e->getMessage());
-        echo "<!-- DebugBar error: " . $e->getMessage() . " -->\n";
+        error_log("Blog DebugBar error: " . $e->getMessage());
+        echo "<!-- Blog DebugBar error: " . $e->getMessage() . " -->\n";
         // Pokračujeme bez DebugBar
     }
 }

@@ -12,7 +12,7 @@ use Blog\Domain\Blog\ValueObject\Slug;
 use Blog\Domain\Blog\ValueObject\Title;
 use Blog\Domain\User\ValueObject\UserId;
 
-final readonly class CreateArticle extends BaseUseCase
+final class CreateArticle extends BaseUseCase
 {
     public function __construct(
         private ArticleRepository $articles
@@ -22,7 +22,7 @@ final readonly class CreateArticle extends BaseUseCase
     public function execute(array $input): array
     {
         $this->validate($input);
-        
+
         $title = $input['title'];
         $content = $input['content'];
         $authorId = $input['author_id'];
@@ -64,25 +64,25 @@ final readonly class CreateArticle extends BaseUseCase
             'article' => $article
         ]);
     }
-    
+
     protected function validate(array $input): void
     {
         if (empty($input['title'])) {
             throw new \InvalidArgumentException('Title is required');
         }
-        
+
         if (empty($input['content'])) {
             throw new \InvalidArgumentException('Content is required');
         }
-        
+
         if (empty($input['author_id'])) {
             throw new \InvalidArgumentException('Author ID is required');
         }
-        
+
         if (strlen($input['title']) > 255) {
             throw new \InvalidArgumentException('Title must not exceed 255 characters');
         }
-        
+
         if (strlen($input['content']) < 10) {
             throw new \InvalidArgumentException('Content must be at least 10 characters long');
         }

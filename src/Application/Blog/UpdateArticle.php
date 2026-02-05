@@ -13,7 +13,7 @@ use Blog\Domain\Blog\ValueObject\Slug;
 use Blog\Domain\Blog\ValueObject\Title;
 use DomainException;
 
-final readonly class UpdateArticle extends BaseUseCase
+final class UpdateArticle extends BaseUseCase
 {
     public function __construct(
         private ArticleRepository $articles
@@ -23,7 +23,7 @@ final readonly class UpdateArticle extends BaseUseCase
     public function execute(array $input): array
     {
         $this->validate($input);
-        
+
         $articleId = ArticleId::fromInt((int) $input['article_id']);
         $title = Title::fromString($input['title']);
         $content = Content::fromString($input['content']);
@@ -65,33 +65,33 @@ final readonly class UpdateArticle extends BaseUseCase
             'article_id' => $articleId->toInt()
         ]);
     }
-    
+
     protected function validate(array $input): void
     {
         if (empty($input['article_id'])) {
             throw new \InvalidArgumentException('Article ID is required');
         }
-        
+
         if (empty($input['title'])) {
             throw new \InvalidArgumentException('Title is required');
         }
-        
+
         if (empty($input['content'])) {
             throw new \InvalidArgumentException('Content is required');
         }
-        
+
         if (!is_numeric($input['article_id']) || (int) $input['article_id'] <= 0) {
             throw new \InvalidArgumentException('Invalid article ID');
         }
-        
+
         if (strlen($input['title']) > 255) {
             throw new \InvalidArgumentException('Title must not exceed 255 characters');
         }
-        
+
         if (strlen($input['content']) < 10) {
             throw new \InvalidArgumentException('Content must be at least 10 characters long');
         }
-        
+
         if (isset($input['slug']) && strlen($input['slug']) > 255) {
             throw new \InvalidArgumentException('Slug must not exceed 255 characters');
         }

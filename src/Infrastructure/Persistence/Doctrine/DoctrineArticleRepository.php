@@ -93,9 +93,19 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
 
     public function getAll(): array
     {
+        // Debug DB path
+        $params = $this->connection->getParams();
+
+        // Fetch ALL articles first to debug the filtering issue
+        // Temporarily fetching all because the WHERE clause was failing mysteriously
         $rows = $this->connection->fetchAllAssociative(
-            'SELECT * FROM articles ORDER BY created_at DESC'
+            "SELECT * FROM articles ORDER BY created_at DESC"
         );
+
+        // Filter in PHP
+        $rows = array_filter($rows, function ($row) {
+            return trim($row['status'] ?? '') === 'published';
+        });
 
         return array_map([$this, 'hydrate'], $rows);
     }
@@ -108,7 +118,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
 
         // Split query into terms and add * wildcard to each for prefix matching
         $terms = array_filter(explode(' ', trim($query)));
-        $ftsQuery = implode(' ', array_map(fn ($term) => $term . '*', $terms));
+        $ftsQuery = implode(' ', array_map(fn($term) => $term . '*', $terms));
 
         // Use FTS5 virtual table for full-text search
         $sql = "
@@ -116,6 +126,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
             FROM articles a
             INNER JOIN articles_fts fts ON a.id = fts.rowid
             WHERE articles_fts MATCH :query
+            AND a.status = 'published'
             ORDER BY rank
             LIMIT 50
         ";
@@ -133,7 +144,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
     public function getByCategory(CategoryId $categoryId): array
     {
         $rows = $this->connection->fetchAllAssociative(
-            'SELECT * FROM articles WHERE category_id = ? ORDER BY created_at DESC',
+            "SELECT * FROM articles WHERE category_id = ? AND status = 'published' ORDER BY created_at DESC",
             [$categoryId->toString()]
         );
 
@@ -147,17 +158,22 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
 
     private function loadTagsForArticle(int $articleId): array
     {
-        $qb = $this->connection->createQueryBuilder();
-        $results = $qb
-            ->select('t.*')
-            ->from('tags', 't')
-            ->innerJoin('t', 'article_tags', 'at', 't.id = at.tag_id')
-            ->where('at.article_id = :article_id')
-            ->setParameter('article_id', $articleId)
-            ->orderBy('t.name', 'ASC')
-            ->fetchAllAssociative();
+        try {
+            $qb = $this->connection->createQueryBuilder();
+            $results = $qb
+                ->select('t.*')
+                ->from('tags', 't')
+                ->innerJoin('t', 'article_tags', 'at', 't.id = at.tag_id')
+                ->where('at.article_id = :article_id')
+                ->setParameter('article_id', $articleId)
+                ->orderBy('t.name', 'ASC')
+                ->fetchAllAssociative();
 
-        return array_map([$this, 'hydrateTag'], $results);
+            return array_map([$this, 'hydrateTag'], $results);
+        } catch (\Exception $e) {
+            // Ak tabuľka neexistuje alebo iná chyba, vráť prázdne pole
+            return [];
+        }
     }
 
     private function hydrateTag(array $data): \Blog\Domain\Blog\Entity\Tag
@@ -180,7 +196,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
                 'SELECT * FROM categories WHERE id = ?',
                 [$row['category_id']]
             );
-            
+
             if ($categoryData) {
                 $category = \Blog\Domain\Blog\Entity\Category::reconstitute(
                     \Blog\Domain\Blog\ValueObject\CategoryId::fromString($categoryData['id']),

@@ -5,22 +5,27 @@ declare(strict_types=1);
 namespace Blog\Infrastructure\Http\Controller\Web;
 
 use Blog\Infrastructure\Http\Controller\BaseController;
+use Blog\Core\UseCaseHandler;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Domain\Blog\Repository\CategoryRepository;
 use Blog\Domain\Blog\ValueObject\ArticleId;
 use Blog\Domain\Blog\ValueObject\CategorySlug;
 use Blog\Domain\Blog\ValueObject\Slug;
 use Blog\Infrastructure\View\ViewRenderer;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final readonly class BlogController extends BaseController
+final class BlogController extends BaseController
 {
     public function __construct(
+        ContainerInterface $container,
+        UseCaseHandler $useCaseHandler,
         private ArticleRepository $articleRepository,
         private CategoryRepository $categoryRepository,
         private ViewRenderer $viewRenderer
     ) {
+        parent::__construct($container, $useCaseHandler);
     }
 
     public function home(ServerRequestInterface $request): ResponseInterface
@@ -41,14 +46,10 @@ final readonly class BlogController extends BaseController
     public function index(ServerRequestInterface $request): ResponseInterface
     {
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\GetAllArticles::class);
-        
-        try {
-            $result = $this->executeUseCase($request, $useCase, [], 'web');
-            $articles = $result['articles'] ?? [];
-        } catch (\Exception $e) {
-            $articles = [];
-        }
-        
+
+        $result = $this->executeUseCase($request, $useCase, [], 'array');
+        $articles = $result['data']['articles'] ?? [];
+
         $categories = $this->categoryRepository->getAll();
         $page = (int) ($request->getQueryParams()['page'] ?? 1);
 
@@ -85,20 +86,20 @@ final readonly class BlogController extends BaseController
     public function showBySlug(ServerRequestInterface $request): ResponseInterface
     {
         $slugRaw = $request->getAttribute('slug');
-        
+
         if (empty($slugRaw)) {
             return $this->htmlResponse('Slug is required', 400);
         }
 
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\GetArticleBySlug::class);
-        
+
         try {
             $result = $this->executeUseCase($request, $useCase, [
                 'slug' => 'route:slug'
-            ], 'web');
-            
+            ], 'array');
+
             return $this->viewRenderer->renderResponse('blog.show', [
-                'article' => $result['article'],
+                'article' => $result['data']['article'],
             ]);
         } catch (\Exception $e) {
             return $this->htmlResponse('Article not found', 404);
