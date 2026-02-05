@@ -14,9 +14,12 @@ use Psr\Http\Message\ServerRequestInterface;
 final class DashboardController extends BaseController
 {
     public function __construct(
+        \Psr\Container\ContainerInterface $container,
+        \Blog\Core\UseCaseHandler $useCaseHandler,
         private ArticleRepository $articleRepository,
         private ViewRenderer $viewRenderer
     ) {
+        parent::__construct($container, $useCaseHandler);
     }
 
     public function index(ServerRequestInterface $request): ResponseInterface

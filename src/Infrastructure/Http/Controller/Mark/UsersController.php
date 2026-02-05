@@ -17,9 +17,12 @@ use Psr\Http\Message\ServerRequestInterface;
 final class UsersController extends BaseController
 {
     public function __construct(
+        \Psr\Container\ContainerInterface $container,
+        \Blog\Core\UseCaseHandler $useCaseHandler,
         private UserRepositoryInterface $userRepository,
         private ViewRenderer $viewRenderer
     ) {
+        parent::__construct($container, $useCaseHandler);
     }
 
     public function index(ServerRequestInterface $request): ResponseInterface

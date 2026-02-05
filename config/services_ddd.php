@@ -244,27 +244,35 @@ $services += [
     // Mark (System Operator) Controllers
     \Blog\Infrastructure\Http\Controller\Mark\DashboardController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Mark\DashboardController(
         $c,
-        $c->get(\Blog\Core\UseCaseHandler::class)
+        $c->get(\Blog\Core\UseCaseHandler::class),
+        $c->get(\Blog\Domain\Blog\Repository\ArticleRepository::class),
+        $c->get(ViewRenderer::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Mark\ArticlesController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Mark\ArticlesController(
         $c,
-        $c->get(\Blog\Core\UseCaseHandler::class)
+        $c->get(\Blog\Core\UseCaseHandler::class),
+        $c->get(\Blog\Domain\Blog\Repository\ArticleRepository::class),
+        $c->get(ViewRenderer::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Mark\CategoryController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Mark\CategoryController(
-        $c,
-        $c->get(\Blog\Core\UseCaseHandler::class)
+        $c->get(\Blog\Domain\Blog\Repository\CategoryRepository::class),
+        $c->get(ViewRenderer::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Mark\TagController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Mark\TagController(
-        $c,
-        $c->get(\Blog\Core\UseCaseHandler::class)
+        $c->get(\Blog\Domain\Blog\Repository\TagRepository::class),
+        $c->get(\Blog\Application\Blog\GetAllTags::class),
+        $c->get(\Blog\Application\Blog\GetOrCreateTag::class),
+        $c->get(ViewRenderer::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Mark\UsersController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Mark\UsersController(
         $c,
-        $c->get(\Blog\Core\UseCaseHandler::class)
+        $c->get(\Blog\Core\UseCaseHandler::class),
+        $c->get(UserRepositoryInterface::class),
+        $c->get(ViewRenderer::class)
     ),
 
     // API Controllers
