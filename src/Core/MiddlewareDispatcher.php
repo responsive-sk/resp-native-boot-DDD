@@ -57,4 +57,14 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
 
         return $this->handle($request);
     }
+
+    /**
+     * Vráti zoznam všetkých middleware
+     * 
+     * @return array<MiddlewareInterface>
+     */
+    public function getMiddlewares(): array
+    {
+        return $this->middlewares;
+    }
 }

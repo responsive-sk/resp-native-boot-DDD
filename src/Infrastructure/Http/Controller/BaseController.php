@@ -13,14 +13,15 @@ abstract class BaseController
     public function __construct(
         protected ContainerInterface $container,
         protected UseCaseHandler $useCaseHandler
-    ) {}
-    
+    ) {
+    }
+
     /**
      * Zjednodušené vykonanie use-case
      */
     protected function executeUseCase(
         ServerRequestInterface $request,
-        callable $useCase,
+        object $useCase,
         array $mappingConfig,
         string $responseType = 'web'
     ) {
@@ -31,7 +32,7 @@ abstract class BaseController
             $responseType
         );
     }
-    
+
     /**
      * JSON response helper
      */
@@ -39,7 +40,7 @@ abstract class BaseController
     {
         return $this->useCaseHandler->createJsonResponse($data, $status);
     }
-    
+
     /**
      * HTML response helper
      */
@@ -47,7 +48,7 @@ abstract class BaseController
     {
         return $this->useCaseHandler->createHtmlResponse($html, $status);
     }
-    
+
     /**
      * Get service from container
      */
@@ -55,7 +56,7 @@ abstract class BaseController
     {
         return $this->container->get($id);
     }
-    
+
     /**
      * Redirect helper
      */
@@ -63,7 +64,7 @@ abstract class BaseController
     {
         $factory = new \Nyholm\Psr7\Factory\Psr17Factory();
         $response = $factory->createResponse($status);
-        
+
         return $response->withHeader('Location', $url);
     }
 }

@@ -14,10 +14,14 @@ use Blog\Infrastructure\Http\Controller\Web\ArticleController;
 use Blog\Infrastructure\Http\Controller\Web\AuthController;
 use Blog\Infrastructure\Http\Controller\Web\BlogController;
 use Blog\Infrastructure\Http\Controller\Web\SearchController;
+use Blog\Infrastructure\Http\Controller\DebugController;
 use Psr\Container\ContainerInterface;
 
 return function (ContainerInterface $c): Router {
     $router = new Router();
+
+    // === DEBUG ERROR ROUTE ===
+    $router->get('/debug/error', 'debug.error', fn ($req) => $c->get(DebugController::class)->error($req));
 
     // === DEBUGBAR ASSETS ROUTE (MUSÍ BYŤ PRVÁ!) ===
     $debugbarConfig = require __DIR__ . '/debugbar.php';

@@ -17,48 +17,167 @@
    - [x] Enhanced error handling middleware
    - [x] Theme fallback system in PlatesRenderer
 
-## Aktuálny cieľ: Dokončiť web autentifikáciu + Mark Dashboard CRUD (Q1 2026)
+# TODO: CELKOVÝ APP REFAKTOR + CLOUDINARY
 
-### Denne pred očami – top priority (zaškrtávaj si postupne)
+1. ARCHITEKTÚRA & CORE
 
-#### 1. Web autentifikácia (session-based) - COMPLETED
-   - [x] SessionMiddleware implemented with secure parameters
-   - [x] AuthMiddleware updated with login redirect support
-   - [x] AuthController::login() with session_regenerate_id(true)
-   - [x] Session storage for user_id and user_role
-   - [x] AuthController::logout() with session_destroy()
-   - [x] Login/logout flow with redirect functionality
+    Implementovať Clean Architecture vrstvy (Domain, Application, Infrastructure)
 
-### Ďalšie priority (Q1 2026)
+    Vytvoriť UseCaseHandler + UseCaseMapper integráciu
 
-#### 2. Mark Dashboard – základný CRUD pre články
-   - [ ] MarkDashboardController::index() – zobraziť zoznam článkov (draft + published)
-   - [ ] MarkArticlesController::createForm() – formulár na nový článok
-   - [ ] MarkArticlesController::create() – zavolať ReviseDraftArticle use-case
-   - [ ] MarkArticlesController::editForm() + edit() – edit draftu
-   - [ ] Pridať tlačidlá Publish / Archive v zozname + samostatné akcie
-   - [ ] Použiť Authorization::requireMark() v controlleroch
+    Refaktorovať všetky Controllery na UseCaseHandler pattern
 
-#### 3. Rich domain v Article (paralelne, 1–2 nové metódy týždenne)
-   - [ ] Article::reviseDraft(Title $title, Content $content): void
-   - [ ] Article::publish(): void (len z draft)
-   - [ ] Article::archive(): void (len z published)
-   - [ ] Nové use-cases: ReviseDraftArticle, PublishArticle, ArchiveArticle
-   - [ ] API: POST /api/articles/{id}/publish (zavolať PublishArticle)
+    Implementovať Repository pattern pre všetky entity
 
-#### 4. API bezpečnosť (po dokončení web auth)
-   - [ ] Pridať kontrolu Authorization header v ArticleApiController (create/update/delete)
-   - [ ] Mock token check (neskôr JWT)
+    Aktualizovať Dependency Injection kontajner
 
-### Týždenné míľniky (aktualizované február 2026)
+2. CLOUDINARY INTEGRÁCIA
 
-- [x] **Týždeň 1–2 (január)**: Session auth + security middleware + boot.php
-- **Týždeň 3–4 (február)**: Mark Dashboard – list + create článku  
-- **Týždeň 5–6 (február)**: Edit + Publish/Archive akcie
-- **Týždeň 7+ (marec)**: Začať rich domain (reviseDraft + publish)
+    Nainštalovať Cloudinary SDK
 
-### Dlhodobé (po v1.0)
+    Vytvoriť Image Domain (Entity, Repository, Value Objects)
 
-- Rozdeliť UpdateArticle na viacero akcií
-- Začať Orders package (sales/) – len štruktúra + PlaceOrder
-- Eventy: ArticlePublishedEvent → neskôr integrácia s inými doménami
+    Implementovať CloudinaryStorage service
+
+    Vytvoriť ImageProcessor s transformáciami
+
+    Pridať image upload endpointy
+
+3. ENTITY REFAKTOR
+
+    Article + featured image podpora
+
+    User + avatar Cloudinary integracia
+
+    Category/Tag + cover images
+
+    Vytvoriť Image entity s Cloudinary metadátami
+
+4. CONTROLLER REFAKTOR
+
+   API Controllers:
+
+    ArticleApiController (CRUD + images)
+
+    AuthApiController
+
+    ImageApiController (Cloudinary uploads)
+
+    CategoryApiController
+
+    TagApiController
+
+Web Controllers:
+
+    ArticleController (blog frontend)
+
+    BlogController (listing)
+
+    AuthController (login/register)
+
+Mark/Admin Controllers:
+
+    ArticlesController (admin CRUD)
+
+    UsersController
+
+    MediaController (Cloudinary library)
+
+5. FRONTEND & UX
+
+    Cloudinary upload widget v article editori
+
+    Drag & drop image upload
+
+    Media library pre správu obrázkov
+
+    Responsive images s Cloudinary transformáciami
+
+    Lazy loading + WebP podpora
+
+6. INFRASTRUKTÚRA
+
+    Aktualizovať kontajner služby
+
+    Middleware stack optimalizácia
+
+    Error handling + logging
+
+    Environment config pre dev/prod
+
+    Database migrations pre images
+
+7. TESTOVANIE
+
+    Unit tests pre UseCases
+
+    Integration tests pre Cloudinary
+
+    E2E tests pre user flows
+
+    Performance testing image uploads
+
+8. DEPLOYMENT
+
+    Cloudinary setup (account + config)
+
+    CI/CD pipeline s image processing
+
+    Environment variables management
+
+    Monitoring + analytics
+
+# ROADMAP:
+
+## TÝŽDEŇ 1-2: FOUNDATION
+
+1. Cloudinary SDK + Image Domain
+2. UseCaseHandler + BaseController
+3. Refaktor 1. controller (ArticleApi)
+4. Basic image upload endpoint
+
+TÝŽDEŇ 3-4: INTEGRÁCIA
+text
+
+1. Refaktor všetkých API controllers
+2. Cloudinary widget v UI
+3. Featured images v článkoch
+4. User avatars
+
+TÝŽDEŇ 5-6: UX & POLISH
+text
+
+1. Media library admin
+2. Image optimizácie
+3. Responsive images
+4. Performance tuning
+
+TÝŽDEŇ 7-8: FINAL ALPHA
+text
+
+1. Testing + bug fixes
+2. Documentation
+3. Deployment setup
+4. Alpha release
+
+## PRIORITY ORDER:
+
+    UseCaseHandler + BaseController (core architecture)
+
+    Cloudinary základná integrácia
+
+    Article refaktor s images
+
+    User avatars
+
+    Admin media library
+
+    UX improvements
+
+## KLÚČOVÉ VÝHODY:
+
+Čistá architektúra - lepšia údržba
+Cloudinary CDN - rýchle obrázky globálne
+Automatické transformácie - žiadne manuálne resize
+Scalable - pripravené na rast
+Moderný stack - pripravené pre budúce features

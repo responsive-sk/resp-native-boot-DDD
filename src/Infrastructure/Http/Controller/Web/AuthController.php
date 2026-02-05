@@ -29,18 +29,18 @@ class AuthController extends BaseController
         parent::__construct($container, $useCaseHandler);
     }
 
+    public function loginForm(ServerRequestInterface $request): ResponseInterface
+    {
+        $categories = $this->categoryRepository->getAll();
+
+        return $this->viewRenderer->renderResponse('auth.login', [
+            'categories' => $categories,
+            'title' => 'Login',
+        ]);
+    }
+
     public function login(ServerRequestInterface $request): ResponseInterface
     {
-        // GET request - zobraziť formulár
-        if ($request->getMethod() === 'GET') {
-            $categories = $this->categoryRepository->getAll();
-
-            return $this->viewRenderer->renderResponse('auth/login', [
-                'categories' => $categories,
-                'title' => 'Login',
-            ]);
-        }
-
         // POST request - spracovať login
         try {
             $useCase = $this->useCaseHandler->get(LoginUser::class);
@@ -62,18 +62,18 @@ class AuthController extends BaseController
             }
 
             // Ak login zlyhal
-            $categories = $this->categoryRepository->findAll();
+            $categories = $this->categoryRepository->getAll();
 
-            return $this->viewRenderer->renderResponse('auth/login', [
+            return $this->viewRenderer->renderResponse('auth.login', [
                 'categories' => $categories,
                 'title' => 'Login',
                 'error' => 'Invalid credentials',
             ], 401);
 
         } catch (\DomainException $e) {
-            $categories = $this->categoryRepository->findAll();
+            $categories = $this->categoryRepository->getAll();
 
-            return $this->viewRenderer->renderResponse('auth/login', [
+            return $this->viewRenderer->renderResponse('auth.login', [
                 'categories' => $categories,
                 'title' => 'Login',
                 'error' => $e->getMessage(),
@@ -81,18 +81,18 @@ class AuthController extends BaseController
         }
     }
 
+    public function registerForm(ServerRequestInterface $request): ResponseInterface
+    {
+        $categories = $this->categoryRepository->getAll();
+
+        return $this->viewRenderer->renderResponse('auth.register', [
+            'categories' => $categories,
+            'title' => 'Register',
+        ]);
+    }
+
     public function register(ServerRequestInterface $request): ResponseInterface
     {
-        // GET request - zobraziť formulár
-        if ($request->getMethod() === 'GET') {
-            $categories = $this->categoryRepository->findAll();
-
-            return $this->viewRenderer->renderResponse('auth/register', [
-                'categories' => $categories,
-                'title' => 'Register',
-            ]);
-        }
-
         // POST request - spracovať registráciu
         try {
             $useCase = $this->useCaseHandler->get(RegisterUser::class);
@@ -113,15 +113,19 @@ class AuthController extends BaseController
                 return $this->redirect($this->paths->urlFor('home'));
             }
 
-            return $this->viewRenderer->renderResponse('auth/register', [
-                'categories' => $this->categoryRepository->findAll(),
+            $categories = $this->categoryRepository->getAll();
+
+            return $this->viewRenderer->renderResponse('auth.register', [
+                'categories' => $categories,
                 'title' => 'Register',
                 'error' => 'Registration failed',
             ], 400);
 
         } catch (\DomainException $e) {
-            return $this->viewRenderer->renderResponse('auth/register', [
-                'categories' => $this->categoryRepository->findAll(),
+            $categories = $this->categoryRepository->getAll();
+
+            return $this->viewRenderer->renderResponse('auth.register', [
+                'categories' => $categories,
                 'title' => 'Register',
                 'error' => $e->getMessage(),
             ], 400);

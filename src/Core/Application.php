@@ -45,6 +45,7 @@ final class Application implements RequestHandlerInterface
 {
     private MiddlewareDispatcher $dispatcher;
     private ?\ResponsiveSk\PhpDebugBarMiddleware\DebugBarMiddleware $debugBarMiddleware = null;
+    private array $additionalMiddlewares = [];
     
     /**
      * @param array<MiddlewareInterface> $middlewares
@@ -54,19 +55,30 @@ final class Application implements RequestHandlerInterface
         $this->dispatcher = new MiddlewareDispatcher($middlewares);
     }
     
+    /**
+     * Pridá middleware do aplikácie
+     */
+    public function add(MiddlewareInterface $middleware): void
+    {
+        $this->additionalMiddlewares[] = $middleware;
+    }
     
     /**
      * Spracuje HTTP request
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        // Vytvor nový dispatcher s pridanými middlewares
+        $allMiddlewares = array_merge($this->additionalMiddlewares, $this->dispatcher->getMiddlewares());
+        $newDispatcher = new MiddlewareDispatcher($allMiddlewares);
+        
         // Ak máme DebugBar, použime ho ako prvý
         if ($this->debugBarMiddleware !== null) {
-            return $this->debugBarMiddleware->process($request, $this->dispatcher);
+            return $this->debugBarMiddleware->process($request, $newDispatcher);
         }
         
         // Normálne spracovanie
-        return $this->dispatcher->dispatch($request);
+        return $newDispatcher->dispatch($request);
     }
     
     /**

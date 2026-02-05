@@ -939,7 +939,262 @@ SystemIcon:
 
 ---
 
-## 📊 Výsledky Testovania
+## 6. ENTITY DESIGN PRE IMAGE
+
+### DOMAIN ENTITY DESIGN
+
+#### IMAGE ENTITY
+```php
+<?php
+declare(strict_types=1);
+
+namespace Blog\Domain\Image\Entity;
+
+use Blog\Domain\Image\ValueObject\ImageId;
+use Blog\Domain\Image\ValueObject\ImageMetadata;
+use Blog\Domain\Image\ValueObject\ImageDimensions;
+use Blog\Domain\User\ValueObject\UserId;
+
+class Image
+{
+    public function __construct(
+        private ImageId $id,
+        private string $filename,
+        private string $originalFilename,
+        private string $path,
+        private string $mimeType,
+        private int $size,
+        private ImageDimensions $dimensions,
+        private ImageMetadata $metadata,
+        private ?UserId $uploadedBy = null,
+        private \DateTimeImmutable $createdAt,
+        private ?\DateTimeImmutable $updatedAt = null
+    ) {}
+    
+    public function getId(): ImageId { return $this->id; }
+    public function getFilename(): string { return $this->filename; }
+    public function getPath(): string { return $this->path; }
+    public function getFullPath(): string { return $this->path . '/' . $this->filename; }
+    public function getMimeType(): string { return $this->mimeType; }
+    public function getSize(): int { return $this->size; }
+    public function getDimensions(): ImageDimensions { return $this->dimensions; }
+    public function getMetadata(): ImageMetadata { return $this->metadata; }
+    
+    public function isImage(): bool
+    {
+        return str_starts_with($this->mimeType, 'image/');
+    }
+    
+    public function isFeaturedImage(): bool
+    {
+        return $this->metadata->isFeatured();
+    }
+    
+    public function getThumbnailPath(string $variant = 'thumbnail'): string
+    {
+        return $this->path . '/' . $variant . '/' . $this->filename;
+    }
+}
+```
+
+#### FEATURED IMAGE VALUE OBJECT
+```php
+<?php
+declare(strict_types=1);
+
+namespace Blog\Domain\Article\ValueObject;
+
+use Blog\Domain\Image\ValueObject\ImageId;
+
+class FeaturedImage
+{
+    public function __construct(
+        private ImageId $imageId,
+        private string $caption = '',
+        private string $altText = '',
+        private ?string $credit = null
+    ) {}
+    
+    public function getImageId(): ImageId { return $this->imageId; }
+    public function getCaption(): string { return $this->caption; }
+    public function getAltText(): string { return $this->altText; }
+    public function getCredit(): ?string { return $this->credit; }
+    
+    public function withCaption(string $caption): self
+    {
+        $new = clone $this;
+        $new->caption = $caption;
+        return $new;
+    }
+    
+    public function withAltText(string $altText): self
+    {
+        $new = clone $this;
+        $new->altText = $altText;
+        return $new;
+    }
+}
+```
+
+#### IMAGE METADATA VALUE OBJECT
+```php
+<?php
+declare(strict_types=1);
+
+namespace Blog\Domain\Image\ValueObject;
+
+class ImageMetadata
+{
+    public function __construct(
+        private string $title = '',
+        private string $description = '',
+        private string $altText = '',
+        private string $caption = '',
+        private bool $isFeatured = false,
+        private array $exifData = [],
+        private array $tags = [],
+        private ?string $credit = null,
+        private array $customFields = []
+    ) {}
+    
+    public function getTitle(): string { return $this->title; }
+    public function getDescription(): string { return $this->description; }
+    public function getAltText(): string { return $this->altText; }
+    public function getCaption(): string { return $this->caption; }
+    public function isFeatured(): bool { return $this->isFeatured; }
+    public function getExifData(): array { return $this->exifData; }
+    public function getTags(): array { return $this->tags; }
+    public function getCredit(): ?string { return $this->credit; }
+    public function getCustomFields(): array { return $this->customFields; }
+    
+    public function fromArray(array $data): self
+    {
+        return new self(
+            $data['title'] ?? '',
+            $data['description'] ?? '',
+            $data['alt_text'] ?? '',
+            $data['caption'] ?? '',
+            $data['is_featured'] ?? false,
+            $data['exif_data'] ?? [],
+            $data['tags'] ?? [],
+            $data['credit'] ?? null,
+            $data['custom_fields'] ?? []
+        );
+    }
+    
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'description' => $this->description,
+            'alt_text' => $this->altText,
+            'caption' => $this->caption,
+            'is_featured' => $this->isFeatured,
+            'exif_data' => $this->exifData,
+            'tags' => $this->tags,
+            'credit' => $this->credit,
+            'custom_fields' => $this->customFields
+        ];
+    }
+}
+```
+
+#### IMAGE DIMENSIONS VALUE OBJECT
+```php
+<?php
+declare(strict_types=1);
+
+namespace Blog\Domain\Image\ValueObject;
+
+class ImageDimensions
+{
+    public function __construct(
+        private int $width,
+        private int $height
+    ) {}
+    
+    public function getWidth(): int { return $this->width; }
+    public function getHeight(): int { return $this->height; }
+    public function getAspectRatio(): float
+    {
+        return $this->height > 0 ? $this->width / $this->height : 0;
+    }
+    
+    public function __toString(): string
+    {
+        return "{$this->width}x{$this->height}";
+    }
+}
+```
+
+#### IMAGE VARIANT VALUE OBJECT
+```php
+<?php
+declare(strict_types=1);
+
+namespace Blog\Domain\Image\ValueObject;
+
+class ImageVariant
+{
+    public const THUMBNAIL = 'thumbnail';
+    public const MEDIUM = 'medium';
+    public const LARGE = 'large';
+    public const ORIGINAL = 'original';
+    
+    public function __construct(
+        private string $name,
+        private string $url,
+        private ImageDimensions $dimensions,
+        private int $size
+    ) {}
+    
+    public function getName(): string { return $this->name; }
+    public function getUrl(): string { return $this->url; }
+    public function getDimensions(): ImageDimensions { return $this->dimensions; }
+    public function getSize(): int { return $this->size; }
+}
+```
+
+### 7. AKTUALIZÁCIA ARCHITEKTÚRA
+
+#### IMAGE ARCHITECTURE
+```yaml
+┌─────────────────────────────────────────┐
+│                 HTTP Layer                       │
+│  ImageController • UploadController             │
+│  ImageController • GalleryController            │
+│  ImageController • DownloadController           │
+├─────────────────────────────────────────┤
+│              Application Layer                   │
+│  UploadImageUseCase • ProcessImageUseCase      │
+│  AttachImageUseCase • ResizeImageUseCase       │
+│  GetImageGalleryUseCase • SearchImagesUseCase   │
+│  GetImageMetadataUseCase • DeleteImageUseCase  │
+├─────────────────────────────────────────┤
+│                Domain Layer                      │
+│  Image • FeaturedImage • Avatar •              │
+│  ImageRepository • ImageService                │
+│  ImageProcessor • ImageOptimizer • Watermarker     │
+├─────────────────────────────────────────┤
+│            Infrastructure Layer                  │
+│  LocalImageStorage • CloudImageStorage         │
+│  ImageProcessor (GD/Imagick) • Thumbnailer     │
+│  ImageCache • CDN                            │
+│  Filesystem • Database Metadata Storage         │
+└─────────────────────────────────────────┘
+```
+
+### 8. DESIGN PRINCÍPY PRE IMAGE ENTITIES
+
+#### SOLID PRINCIPLES
+1. **Single Responsibility Principle** - Každá entita má jeden jasný účel
+2. **Immutability** - Všetky value objects sú nemeniteľné
+3. **Rich Domain Model** - Obsahuje všetky potrebné informácie
+4. **Aggregate Boundaries** - Jasné hranice medzi agregátmi
+5. **Domain Events** - Event-driven pre zmeny stavu
+6. **Validation in Value Objects** - Validácia pri vytvorení
+7. **Factory Pattern** - Centralizované vytváranie entít
+8. **Repository Pattern** - Oddelenie perzistencie od business logiky
 
 ---
 

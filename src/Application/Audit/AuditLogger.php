@@ -111,4 +111,52 @@ class AuditLogger
             ));
         }
     }
+
+    public function logLogin(string $userId): void
+    {
+        // Simple wrapper for now, assuming success since it's called after successful login
+        // In a real scenario, we might want to pass the request object here too if needed
+        // For now, we'll just log slightly less info or use a placeholder IP
+        $log = AuditLog::createAuthenticationEvent(
+            AuditLogId::generate(),
+            'login_success',
+            $userId, // using userId as identifier
+            true,
+            [
+                'timestamp' => date('c'),
+                'details' => 'User logged in successfully'
+            ]
+        );
+        $this->repository->save($log);
+    }
+
+    public function logRegistration(string $userId): void
+    {
+        $log = AuditLog::createAuthenticationEvent(
+            AuditLogId::generate(),
+            'registration',
+            $userId,
+            true,
+            [
+                'timestamp' => date('c'),
+                'details' => 'New user registered'
+            ]
+        );
+        $this->repository->save($log);
+    }
+
+    public function logLogout(string $userId): void
+    {
+        $log = AuditLog::createAuthenticationEvent(
+            AuditLogId::generate(),
+            'logout',
+            $userId,
+            true,
+            [
+                'timestamp' => date('c'),
+                'details' => 'User logged out'
+            ]
+        );
+        $this->repository->save($log);
+    }
 }

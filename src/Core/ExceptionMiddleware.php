@@ -37,7 +37,9 @@ final readonly class ExceptionMiddleware implements MiddlewareInterface
     private function handleException(Throwable $e): ResponseInterface
     {
         $statusCode = $this->getStatusCode($e);
-        $debug = getenv('APP_DEBUG') === 'true';
+
+        $envDebug = $_ENV['APP_DEBUG'] ?? getenv('APP_DEBUG');
+        $debug = $envDebug === 'true' || $envDebug === true;
 
         if ($debug) {
             // Debug mode: zobraz detailné info o chybe
@@ -54,7 +56,7 @@ final readonly class ExceptionMiddleware implements MiddlewareInterface
         $env = $_ENV['APP_ENV'] ?? getenv('APP_ENV') ?: 'production';
 
         // V dev prostredí (aj keď debug=false) chceme vidieť trace v šablóne
-        if ($env === 'dev') {
+        if ($env === 'dev' || $env === 'development') {
             $message = $e->getMessage();
             $data['trace'] = $e->getTraceAsString();
             $data['exception_class'] = get_class($e);
