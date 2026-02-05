@@ -23,7 +23,16 @@ return function (): ContainerInterface {
         ];
     };
     
-    // 4. Pridaj DebugBar služby ak sú potrebné
+    // 4. Pridaj nové služby pre FÁZU 4
+    $services += [
+        'use_case_handler' => fn () => new \Blog\Core\UseCaseHandler($this),
+        'image_repository' => fn () => new \Blog\Infrastructure\Persistence\Doctrine\DoctrineImageRepository(
+            $this->get('database')
+        ),
+        'image_factory' => fn () => new \Blog\Domain\Image\Factory\ImageFactory(),
+    ];
+    
+    // 5. Pridaj DebugBar služby ak sú potrebné
     if ($debugbarConfig['debugbar']['enabled'] ?? false) {
         // DebugBar middleware
         $services[\ResponsiveSk\PhpDebugBarMiddleware\DebugBarMiddleware::class] = 

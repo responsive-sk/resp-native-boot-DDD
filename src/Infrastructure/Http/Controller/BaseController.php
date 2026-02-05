@@ -1,6 +1,4 @@
 <?php
-// src/Infrastructure/Http/Controller/BaseController.php
-
 declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller;
@@ -10,34 +8,32 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-/**
- * BaseController so základnou funkcionalitou pre všetky controllery
- */
 abstract class BaseController
 {
-    protected UseCaseHandler $useCaseHandler;
-    protected ContainerInterface $container;
-    
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-        $this->useCaseHandler = $container->get(UseCaseHandler::class);
-    }
+    public function __construct(
+        protected ContainerInterface $container,
+        protected UseCaseHandler $useCaseHandler
+    ) {}
     
     /**
-     * Rýchle vykonanie use-case s mapovaním
+     * Zjednodušené vykonanie use-case
      */
     protected function executeUseCase(
         ServerRequestInterface $request,
-        object $useCase,
-        array $mapping,
+        callable $useCase,
+        array $mappingConfig,
         string $responseType = 'web'
     ) {
-        return $this->useCaseHandler->execute($request, $useCase, $mapping, $responseType);
+        return $this->useCaseHandler->execute(
+            $request,
+            $useCase,
+            $mappingConfig,
+            $responseType
+        );
     }
     
     /**
-     * Vytvorí JSON response
+     * JSON response helper
      */
     protected function jsonResponse($data, int $status = 200): ResponseInterface
     {
@@ -45,7 +41,7 @@ abstract class BaseController
     }
     
     /**
-     * Vytvorí HTML response
+     * HTML response helper
      */
     protected function htmlResponse(string $html, int $status = 200): ResponseInterface
     {
@@ -53,7 +49,15 @@ abstract class BaseController
     }
     
     /**
-     * Presmerovanie
+     * Get service from container
+     */
+    protected function get(string $id): mixed
+    {
+        return $this->container->get($id);
+    }
+    
+    /**
+     * Redirect helper
      */
     protected function redirect(string $url, int $status = 302): ResponseInterface
     {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Blog\Application\Blog;
 
+use Blog\Core\BaseUseCase;
 use Blog\Domain\Blog\Entity\Article;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Domain\Blog\ValueObject\Content;
@@ -11,18 +12,21 @@ use Blog\Domain\Blog\ValueObject\Slug;
 use Blog\Domain\Blog\ValueObject\Title;
 use Blog\Domain\User\ValueObject\UserId;
 
-final readonly class CreateArticle
+final readonly class CreateArticle extends BaseUseCase
 {
     public function __construct(
         private ArticleRepository $articles
     ) {
     }
 
-    public function __invoke(
-        string $title,
-        string $content,
-        string $authorId
-    ): \Blog\Domain\Blog\ValueObject\ArticleId {
+    public function execute(array $input): array
+    {
+        $this->validate($input);
+        
+        $title = $input['title'];
+        $content = $input['content'];
+        $authorId = $input['author_id'];
+
         // 1. Vytvor Slug priamo z titulu - Slug trieda sa postará o normalizáciu
         $slug = new Slug($title);
 
@@ -55,6 +59,32 @@ final readonly class CreateArticle
             throw new \RuntimeException('Article ID could not be generated.');
         }
 
-        return $id;
+        return $this->success([
+            'article_id' => $id->toInt(),
+            'article' => $article
+        ]);
+    }
+    
+    protected function validate(array $input): void
+    {
+        if (empty($input['title'])) {
+            throw new \InvalidArgumentException('Title is required');
+        }
+        
+        if (empty($input['content'])) {
+            throw new \InvalidArgumentException('Content is required');
+        }
+        
+        if (empty($input['author_id'])) {
+            throw new \InvalidArgumentException('Author ID is required');
+        }
+        
+        if (strlen($input['title']) > 255) {
+            throw new \InvalidArgumentException('Title must not exceed 255 characters');
+        }
+        
+        if (strlen($input['content']) < 10) {
+            throw new \InvalidArgumentException('Content must be at least 10 characters long');
+        }
     }
 }

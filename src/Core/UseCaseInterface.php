@@ -6,11 +6,7 @@ namespace Blog\Core;
 interface UseCaseInterface
 {
     /**
-     * Execute the use case with the given input
-     *
-     * @param array<string, mixed> $input
-     * @return array<string, mixed>
-     * @throws \Exception
+     * Execute the use case with input data
      */
     public function execute(array $input): array;
 }

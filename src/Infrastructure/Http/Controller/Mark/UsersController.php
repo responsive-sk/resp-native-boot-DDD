@@ -9,6 +9,7 @@ use Blog\Domain\User\Entity\User;
 use Blog\Domain\User\Repository\UserRepositoryInterface;
 use Blog\Application\User\RegisterUser;
 use Blog\Application\User\LoginUser;
+use Blog\Application\User\UpdateUserRole;
 use Blog\Infrastructure\View\ViewRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -42,8 +43,7 @@ final readonly class UsersController extends BaseController
         try {
             $result = $this->executeUseCase($request, $useCase, [
                 'email' => 'body:email',
-                'password' => 'body:password',
-                'role' => 'body:role'
+                'password' => 'body:password'
             ], 'web');
 
             return $this->redirect('/mark/users');
@@ -51,7 +51,6 @@ final readonly class UsersController extends BaseController
             return $this->viewRenderer->renderResponse('mark.users.create', [
                 'error' => $e->getMessage(),
                 'email' => $request->getParsedBody()['email'] ?? '',
-                'role' => $request->getParsedBody()['role'] ?? 'ROLE_USER',
             ]);
         }
     }
@@ -79,20 +78,31 @@ final readonly class UsersController extends BaseController
 
     public function update(ServerRequestInterface $request): ResponseInterface
     {
-        $userIdStr = $request->getAttribute('id');
+        $useCase = $this->useCaseHandler->get(UpdateUserRole::class);
         
         try {
-            $userId = \Blog\Domain\User\ValueObject\UserId::fromString($userIdStr);
-            $user = $this->userRepository->findById($userId);
-            
-            if (!$user) {
-                return $this->viewRenderer->renderResponse('error.404', [], 404);
-            }
+            $result = $this->executeUseCase($request, $useCase, [
+                'user_id' => 'route:id',
+                'role' => 'body:role'
+            ], 'web');
 
-            // TODO: Implement user update logic
             return $this->redirect('/mark/users');
         } catch (\Exception $e) {
-            return $this->htmlResponse('Error updating user: ' . $e->getMessage(), 400);
+            // Get user data for form repopulation
+            $userIdStr = $request->getAttribute('id');
+            $user = null;
+            
+            try {
+                $userId = \Blog\Domain\User\ValueObject\UserId::fromString($userIdStr);
+                $user = $this->userRepository->findById($userId);
+            } catch (\Exception $ex) {
+                // User not found, will be handled in editForm
+            }
+
+            return $this->viewRenderer->renderResponse('mark.users.edit', [
+                'user' => $user,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 

@@ -11,7 +11,6 @@ use Blog\Domain\Blog\ValueObject\ArticleId;
 use Blog\Domain\Blog\ValueObject\CategorySlug;
 use Blog\Domain\Blog\ValueObject\Slug;
 use Blog\Infrastructure\View\ViewRenderer;
-use Blog\Application\Blog\GetAllArticles;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -41,7 +40,15 @@ final readonly class BlogController extends BaseController
 
     public function index(ServerRequestInterface $request): ResponseInterface
     {
-        $articles = $this->articleRepository->getAll();
+        $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\GetAllArticles::class);
+        
+        try {
+            $result = $this->executeUseCase($request, $useCase, [], 'web');
+            $articles = $result['articles'] ?? [];
+        } catch (\Exception $e) {
+            $articles = [];
+        }
+        
         $categories = $this->categoryRepository->getAll();
         $page = (int) ($request->getQueryParams()['page'] ?? 1);
 
@@ -59,7 +66,7 @@ final readonly class BlogController extends BaseController
 
         // Basic validation + conversion to value object
         if (!is_scalar($idRaw) || !ctype_digit((string) $idRaw) || (int) $idRaw <= 0) {
-            return new Response(404, ['Content-Type' => 'text/html'], 'Invalid or missing article ID');
+            return $this->htmlResponse('Invalid or missing article ID', 404);
         }
 
         $id = ArticleId::fromInt((int) $idRaw);
@@ -67,48 +74,48 @@ final readonly class BlogController extends BaseController
         $article = $this->articleRepository->getById($id);
 
         if ($article === null) {
-            return $this->viewRenderer->renderErrorResponse(404, 'Article not found (ID: ' . $idRaw . ')');
+            return $this->htmlResponse('Article not found (ID: ' . $idRaw . ')', 404);
         }
 
         return $this->viewRenderer->renderResponse('blog.show', [
             'article' => $article,
-            'blogCategories' => array_map(fn($cat) => $cat->slug()->toString(), $this->categoryRepository->getAll()),
         ]);
     }
 
     public function showBySlug(ServerRequestInterface $request): ResponseInterface
     {
-        $slugString = $request->getAttribute('slug');
-
-        if (!is_string($slugString) || trim($slugString) === '') {
-            return $this->viewRenderer->renderErrorResponse(404, 'Invalid or missing slug');
+        $slugRaw = $request->getAttribute('slug');
+        
+        if (empty($slugRaw)) {
+            return $this->htmlResponse('Slug is required', 400);
         }
 
-        $slug = Slug::fromString($slugString);
-
-        $article = $this->articleRepository->getBySlug($slug);
-
-        if ($article === null) {
-            return $this->viewRenderer->renderErrorResponse(404, 'Article not found with slug: ' . htmlspecialchars($slugString));
+        $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\GetArticleBySlug::class);
+        
+        try {
+            $result = $this->executeUseCase($request, $useCase, [
+                'slug' => 'route:slug'
+            ], 'web');
+            
+            return $this->viewRenderer->renderResponse('blog.show', [
+                'article' => $result['article'],
+            ]);
+        } catch (\Exception $e) {
+            return $this->htmlResponse('Article not found', 404);
         }
-
-        return $this->viewRenderer->renderResponse('blog.show', [
-            'article' => $article,
-            'blogCategories' => array_map(fn($cat) => $cat->slug()->toString(), $this->categoryRepository->getAll()),
-        ]);
     }
 
     public function showCategory(ServerRequestInterface $request, string $slug): ResponseInterface
     {
         if (empty(trim($slug))) {
-            return new Response(404, ['Content-Type' => 'text/html'], 'Invalid or missing category slug');
+            return $this->htmlResponse('Invalid or missing category slug', 404);
         }
 
         $categorySlug = CategorySlug::fromString($slug);
         $category = $this->categoryRepository->getBySlug($categorySlug);
 
         if ($category === null) {
-            return $this->viewRenderer->renderErrorResponse(404, 'Category not found: ' . htmlspecialchars($slug));
+            return $this->htmlResponse('Category not found: ' . htmlspecialchars($slug), 404);
         }
 
         $articles = $this->articleRepository->getByCategory($category->id());

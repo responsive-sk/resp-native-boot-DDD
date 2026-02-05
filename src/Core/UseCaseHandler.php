@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace Blog\Core;
 
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -14,28 +15,36 @@ use Psr\Http\Message\ServerRequestInterface;
 final class UseCaseHandler
 {
     public function __construct(
-        private UseCaseMapper $mapper
+        private ContainerInterface $container
     ) {}
+    
+    /**
+     * Získa use case z kontajnera
+     */
+    public function get(string $className): object
+    {
+        return $this->container->get($className);
+    }
     
     /**
      * Spustí use-case s automatickým mapovaním
      */
     public function execute(
         ServerRequestInterface $request,
-        callable $useCase,
+        object $useCase,
         array $mappingConfig,
         string $responseType = 'web' // 'web', 'api', 'json'
     ) {
         // 1. Mapuj request na use-case vstup
-        $input = $this->mapper->mapToUseCaseInput($request, $mappingConfig);
+        $input = UseCaseMapper::mapToUseCaseInput($request, $mappingConfig);
         
         // 2. Spusti use-case
-        $result = $useCase($input);
+        $result = $useCase->execute($input);
         
         // 3. Mapuj výstup podľa typu response
         return match($responseType) {
-            'api', 'json' => $this->mapper->mapToApiResponse($result),
-            'web' => $this->mapper->mapToViewData($result),
+            'api', 'json' => UseCaseMapper::mapToApiResponse($result),
+            'web' => UseCaseMapper::mapToViewData($result),
             default => $result
         };
     }

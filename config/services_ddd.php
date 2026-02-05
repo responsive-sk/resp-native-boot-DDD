@@ -210,96 +210,81 @@ $services += [
 // === FÁZA 6: CONTROLLERS ===
 $services += [
     // Web Controllers
-    BlogController::class => fn (ContainerInterface $c) => new BlogController(
-        $c->get(ArticleRepository::class),
-        $c->get(\Blog\Domain\Blog\Repository\CategoryRepository::class),
-        $c->get(ViewRenderer::class),
-        $c->get(UseCaseHandler::class) // Pridané
+    \Blog\Infrastructure\Http\Controller\Web\BlogController::class => fn (ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Web\BlogController(
+        $c,
+        $c->get(\Blog\Core\UseCaseHandler::class)
     ),
 
-    ArticleController::class => fn (ContainerInterface $c) => new ArticleController(
-        $c->get(ArticleRepository::class),
-        $c->get(CreateArticle::class),
-        $c->get(ViewRenderer::class),
-        $c->get(UseCaseHandler::class) // Pridané
+    \Blog\Infrastructure\Http\Controller\Web\ArticleController::class => fn (ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Web\ArticleController(
+        $c,
+        $c->get(\Blog\Core\UseCaseHandler::class)
     ),
 
-    AuthController::class => fn (ContainerInterface $c) => new AuthController(
-        $c->get(LoginUser::class),
-        $c->get(RegisterUser::class),
-        $c->get(ViewRenderer::class),
-        $c->get(Paths::class),
-        $c->get(AuditLogger::class),
-        $c->get(SessionInterface::class),
-        $c->get(\Blog\Domain\Blog\Repository\CategoryRepository::class),
-        $c->get(UseCaseHandler::class) // Pridané
+    \Blog\Infrastructure\Http\Controller\Web\AuthController::class => fn (ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Web\AuthController(
+        $c,
+        $c->get(\Blog\Core\UseCaseHandler::class)
     ),
 
-    SearchController::class => fn (ContainerInterface $c) => new SearchController(
-        $c->get(SearchArticles::class),
-        $c->get(ViewRenderer::class),
-        $c->get(UseCaseHandler::class) // Pridané
+    \Blog\Infrastructure\Http\Controller\Web\SearchController::class => fn (ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Web\SearchController(
+        $c,
+        $c->get(\Blog\Core\UseCaseHandler::class)
     ),
 
     // Mark (System Operator) Controllers
-    DashboardController::class => fn (ContainerInterface $c) => new DashboardController(
-        $c->get(ArticleRepository::class),
-        $c->get(ViewRenderer::class),
-        $c->get(UseCaseHandler::class) // Pridané
+    \Blog\Infrastructure\Http\Controller\Mark\DashboardController::class => fn (ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Mark\DashboardController(
+        $c,
+        $c->get(\Blog\Core\UseCaseHandler::class)
     ),
 
-    ArticlesController::class => fn (ContainerInterface $c) => new ArticlesController(
-        $c->get(ArticleRepository::class),
-        $c->get(ViewRenderer::class),
-        $c->get(UseCaseHandler::class) // Pridané
+    \Blog\Infrastructure\Http\Controller\Mark\ArticlesController::class => fn (ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Mark\ArticlesController(
+        $c,
+        $c->get(\Blog\Core\UseCaseHandler::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Mark\CategoryController::class => fn (ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Mark\CategoryController(
-        $c->get(\Blog\Domain\Blog\Repository\CategoryRepository::class),
-        $c->get(ViewRenderer::class),
-        $c->get(UseCaseHandler::class) // Pridané
+        $c,
+        $c->get(\Blog\Core\UseCaseHandler::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Mark\TagController::class => fn (ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Mark\TagController(
-        $c->get(\Blog\Domain\Blog\Repository\TagRepository::class),
-        $c->get(\Blog\Application\Blog\GetAllTags::class),
-        $c->get(\Blog\Application\Blog\GetOrCreateTag::class),
-        $c->get(ViewRenderer::class),
-        $c->get(UseCaseHandler::class) // Pridané
+        $c,
+        $c->get(\Blog\Core\UseCaseHandler::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Mark\UsersController::class => fn (ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Mark\UsersController(
-        $c->get(UserRepositoryInterface::class),
-        $c->get(ViewRenderer::class),
-        $c->get(UseCaseHandler::class) // Pridané
+        $c,
+        $c->get(\Blog\Core\UseCaseHandler::class)
     ),
 
     // API Controllers
-    ArticleApiController::class => fn (ContainerInterface $c) => new ArticleApiController(
-        $c->get(ArticleRepository::class),
-        $c->get(GetAllArticles::class),
-        $c->get(CreateArticle::class),
-        $c->get(UpdateArticle::class),
-        $c->get(DeleteArticle::class),
-        $c->get(UseCaseHandler::class) // Pridané
+    \Blog\Infrastructure\Http\Controller\Api\ArticleApiController::class => fn (ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Api\ArticleApiController(
+        $c,
+        $c->get(\Blog\Core\UseCaseHandler::class)
     ),
 
-    AuthApiController::class => fn (ContainerInterface $c) => new AuthApiController(
-        $c->get(LoginUser::class),
-        $c->get(RegisterUser::class),
-        $c->get(UseCaseHandler::class) // Pridané
+    \Blog\Infrastructure\Http\Controller\Api\AuthApiController::class => fn (ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Api\AuthApiController(
+        $c,
+        $c->get(\Blog\Core\UseCaseHandler::class)
     ),
 
-    \Blog\Infrastructure\Http\Controller\Form\FormController::class => fn (ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Form\FormController(
-        $c->get(\Blog\Application\Form\CreateForm::class),
-        $c->get(\Blog\Application\Form\GetForm::class),
-        $c->get(UseCaseHandler::class) // Pridané
+    \Blog\Infrastructure\Http\Controller\Api\SessionPingController::class => fn (ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Api\SessionPingController(
+        $c,
+        $c->get(\Blog\Core\UseCaseHandler::class)
     ),
 
-    SessionPingController::class => fn () => new SessionPingController(),
+    \Blog\Infrastructure\Http\Controller\Api\ImageController::class => fn (ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Api\ImageController(
+        $c,
+        $c->get(\Blog\Core\UseCaseHandler::class)
+    ),
+
+    ];
+
+// === FÁZA 7: CORE SERVICES ===
+$services += [
+    \Blog\Core\UseCaseHandler::class => fn (ContainerInterface $c) => new \Blog\Core\UseCaseHandler($c),
 ];
 
-// === FÁZA 7: ROUTER ===
+// === FÁZA 8: ROUTER ===
 $services += [
     Router::class => fn (ContainerInterface $c) => (require __DIR__ . '/routes.php')($c),
     'router' => fn ($c) => $c->get(Router::class), // Alias

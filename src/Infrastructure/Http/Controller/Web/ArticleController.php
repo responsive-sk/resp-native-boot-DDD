@@ -5,30 +5,60 @@ declare(strict_types=1);
 namespace Blog\Infrastructure\Http\Controller\Web;
 
 use Blog\Infrastructure\Http\Controller\BaseController;
-use Blog\Application\Blog\CreateArticle;
-use Blog\Application\Blog\UpdateArticle;
-use Blog\Application\Blog\DeleteArticle;
-use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Infrastructure\View\ViewRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final readonly class ArticleController extends BaseController
+class ArticleController extends BaseController
 {
     public function __construct(
-        private ArticleRepository $articleRepository,
-        private ViewRenderer $viewRenderer
+        private ViewRenderer $renderer
     ) {
+        // BaseController constructor will be called by DI container
     }
-
+    
+    public function show(ServerRequestInterface $request, string $slug): ResponseInterface
+    {
+        $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\GetArticleBySlug::class);
+        
+        $result = $this->executeUseCase($request, $useCase, [
+            'slug' => 'route:slug'
+        ], 'web');
+        
+        $html = $this->renderer->renderResponse('article.show', [
+            'article' => $result['article'] ?? null
+        ]);
+        
+        return $html;
+    }
+    
+    public function index(ServerRequestInterface $request): ResponseInterface
+    {
+        $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\GetAllArticles::class);
+        
+        $result = $this->executeUseCase($request, $useCase, [
+            'page' => 'query:page',
+            'category' => 'query:category',
+            'tag' => 'query:tag'
+        ], 'web');
+        
+        $html = $this->renderer->renderResponse('article.index', [
+            'articles' => $result['articles'] ?? [],
+            'count' => $result['count'] ?? 0,
+            'currentPage' => $request->getQueryParams()['page'] ?? 1
+        ]);
+        
+        return $html;
+    }
+    
     public function createForm(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->viewRenderer->renderResponse('article.create');
+        return $this->renderer->renderResponse('article.create', []);
     }
 
     public function create(ServerRequestInterface $request): ResponseInterface
     {
-        $useCase = $this->useCaseHandler->get(CreateArticle::class);
+        $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\CreateArticle::class);
 
         try {
             $result = $this->executeUseCase($request, $useCase, [
@@ -37,36 +67,35 @@ final readonly class ArticleController extends BaseController
                 'author_id' => 'session:user_id'
             ], 'web');
 
-            // Redirect to the new article
             return $this->redirect('/blog/' . $result['article_id']);
 
         } catch (\Exception $e) {
-            return $this->viewRenderer->renderResponse('article.create', [
+            return $this->renderer->renderResponse('article.create', [
                 'error' => $e->getMessage(),
                 'title' => $request->getParsedBody()['title'] ?? '',
                 'content' => $request->getParsedBody()['content'] ?? '',
-            ], 400);
+            ]);
         }
     }
 
     public function editForm(ServerRequestInterface $request): ResponseInterface
     {
         $id = (int) $request->getAttribute('id');
-        $article = $this->articleRepository->getById(\Blog\Domain\Blog\ValueObject\ArticleId::fromInt($id));
+        $article = $this->get('article_repository')->getById(\Blog\Domain\Blog\ValueObject\ArticleId::fromInt($id));
 
         if (!$article) {
             return $this->htmlResponse('Article not found', 404);
         }
 
-        return $this->viewRenderer->renderResponse('article.edit', [
-            'article' => $article,
+        return $this->renderer->renderResponse('article.edit', [
+            'article' => $article
         ]);
     }
 
     public function update(ServerRequestInterface $request): ResponseInterface
     {
-        $useCase = $this->useCaseHandler->get(UpdateArticle::class);
-        
+        $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\UpdateArticle::class);
+
         try {
             $result = $this->executeUseCase($request, $useCase, [
                 'article_id' => 'route:id',
@@ -77,7 +106,7 @@ final readonly class ArticleController extends BaseController
 
             return $this->redirect('/blog/' . $result['article_id']);
         } catch (\Exception $e) {
-            return $this->viewRenderer->renderResponse('article.edit', [
+            return $this->renderer->renderResponse('article.edit', [
                 'error' => $e->getMessage(),
                 'article' => $result['article'] ?? null,
             ], 400);
@@ -86,7 +115,7 @@ final readonly class ArticleController extends BaseController
 
     public function delete(ServerRequestInterface $request): ResponseInterface
     {
-        $useCase = $this->useCaseHandler->get(DeleteArticle::class);
+        $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\DeleteArticle::class);
         
         try {
             $result = $this->executeUseCase($request, $useCase, [
