@@ -7,22 +7,20 @@ namespace Blog\Infrastructure\Http\Controller\Web;
 
 use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Infrastructure\View\ViewRenderer;
+use Blog\Application\User\LoginUser;
+use Blog\Application\User\RegisterUser;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class AuthController extends BaseController
 {
     public function __construct(
-        private \Blog\Application\User\LoginUser $loginUser,
-        private \Blog\Application\User\RegisterUser $registerUser,
         private ViewRenderer $viewRenderer,
         private \ResponsiveSk\Slim4Paths\Paths $paths,
         private \Blog\Application\Audit\AuditLogger $auditLogger,
         private \ResponsiveSk\Slim4Session\SessionInterface $session,
-        private \Blog\Domain\Blog\Repository\CategoryRepository $categoryRepository,
-        UseCaseHandler $useCaseHandler
+        private \Blog\Domain\Blog\Repository\CategoryRepository $categoryRepository
     ) {
-        parent::__construct($useCaseHandler);
     }
     
     public function login(ServerRequestInterface $request): ResponseInterface
@@ -39,28 +37,20 @@ class AuthController extends BaseController
         
         // POST request - spracovať login
         try {
-            $mapping = [
+            $useCase = $this->useCaseHandler->get(LoginUser::class);
+            
+            $result = $this->executeUseCase($request, $useCase, [
                 'email' => 'body:email',
                 'password' => 'body:password',
-            ];
-            
-            $result = $this->executeUseCase(
-                $request,
-                fn($input) => $this->loginUser->execute(
-                    $input['email'],
-                    $input['password']
-                ),
-                $mapping,
-                'api'
-            );
+            ], 'web');
             
             if ($result['success']) {
                 // Nastav session
-                $this->session->set('user_id', $result['user']->getId());
-                $this->session->set('user_role', $result['user']->getRole());
+                $this->session->set('user_id', $result['user']['id']);
+                $this->session->set('user_role', $result['user']['role']);
                 
                 // Audit log
-                $this->auditLogger->logLogin($result['user']->getId());
+                $this->auditLogger->logLogin($result['user']['id']);
                 
                 return $this->redirect($this->paths->urlFor('home'));
             }
@@ -99,29 +89,20 @@ class AuthController extends BaseController
         
         // POST request - spracovať registráciu
         try {
-            $mapping = [
+            $useCase = $this->useCaseHandler->get(RegisterUser::class);
+            
+            $result = $this->executeUseCase($request, $useCase, [
                 'email' => 'body:email',
                 'password' => 'body:password',
                 'name' => 'body:name',
-            ];
-            
-            $result = $this->executeUseCase(
-                $request,
-                fn($input) => $this->registerUser->execute(
-                    $input['email'],
-                    $input['password'],
-                    $input['name']
-                ),
-                $mapping,
-                'api'
-            );
+            ], 'web');
             
             // Automatický login po úspešnej registrácii
             if ($result['success']) {
-                $this->session->set('user_id', $result['user']->getId());
-                $this->session->set('user_role', $result['user']->getRole());
+                $this->session->set('user_id', $result['user']['id']);
+                $this->session->set('user_role', $result['user']['role']);
                 
-                $this->auditLogger->logRegistration($result['user']->getId());
+                $this->auditLogger->logRegistration($result['user']['id']);
                 
                 return $this->redirect($this->paths->urlFor('home'));
             }

@@ -4,39 +4,28 @@ declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Api;
 
+use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Application\User\LoginUser;
 use Blog\Application\User\RegisterUser;
-use Blog\Domain\User\ValueObject\Email;
-use Blog\Domain\User\ValueObject\HashedPassword;
-use Blog\Domain\User\ValueObject\UserRole;
-use Blog\Infrastructure\Http\Response\UserResponse;
-use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class AuthApiController
+final class AuthApiController extends BaseController
 {
-    public function __construct(
-        private LoginUser $loginUser,
-        private RegisterUser $registerUser
-    ) {
-    }
-
     public function register(ServerRequestInterface $request): ResponseInterface
     {
-        $data = json_decode((string) $request->getBody(), true);
-
+        $useCase = $this->useCaseHandler->get(RegisterUser::class);
+        
         try {
-            $email = Email::fromString($data['email'] ?? '');
-            $password = HashedPassword::fromPlainPassword($data['password'] ?? '');
-            $role = isset($data['role']) ? UserRole::fromString($data['role']) : null;
+            $result = $this->executeUseCase($request, $useCase, [
+                'email' => 'body:email',
+                'password' => 'body:password',
+                'role' => 'body:role'
+            ], 'api');
 
-            $userEntity = ($this->registerUser)($email->toString(), $password->toString());
-
-            // ✅ RegisterUser teraz vracia priamo User entitu (nie null)
             return $this->jsonResponse([
                 'message' => 'User registered successfully',
-                'user' => UserResponse::fromEntity($userEntity)->toArray(),
+                'user' => $result['user'],
             ], 201);
         } catch (\Exception $e) {
             return $this->jsonResponse(['error' => $e->getMessage()], 400);
@@ -45,31 +34,22 @@ final class AuthApiController
 
     public function login(ServerRequestInterface $request): ResponseInterface
     {
-        $data = json_decode((string) $request->getBody(), true);
-
+        $useCase = $this->useCaseHandler->get(LoginUser::class);
+        
         try {
-            $email = Email::fromString($data['email'] ?? '');
-            $password = $data['password'] ?? '';
-
-            $user = ($this->loginUser)($email->toString(), $password);
+            $result = $this->executeUseCase($request, $useCase, [
+                'email' => 'body:email',
+                'password' => 'body:password'
+            ], 'api');
 
             // V reálnej aplikácii by tu bol JWT token
             return $this->jsonResponse([
                 'message' => 'Login successful',
-                'user' => UserResponse::fromEntity($user)->toArray(),
-                'token' => 'mock-token-for-user-' . $user->id()->toString(),
+                'user' => $result['user'],
+                'token' => 'mock-token-for-user-' . $result['user']['id'],
             ]);
         } catch (\Exception $e) {
             return $this->jsonResponse(['error' => $e->getMessage()], 401);
         }
-    }
-
-    private function jsonResponse(array $data, int $status = 200): ResponseInterface
-    {
-        return new Response(
-            $status,
-            ['Content-Type' => 'application/json'],
-            json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE)
-        );
     }
 }

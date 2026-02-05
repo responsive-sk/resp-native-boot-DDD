@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace Blog\Infrastructure\Http\Controller;
 
 use Blog\Core\UseCaseHandler;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -15,10 +16,12 @@ use Psr\Http\Message\ServerRequestInterface;
 abstract class BaseController
 {
     protected UseCaseHandler $useCaseHandler;
+    protected ContainerInterface $container;
     
-    public function __construct(UseCaseHandler $useCaseHandler)
+    public function __construct(ContainerInterface $container)
     {
-        $this->useCaseHandler = $useCaseHandler;
+        $this->container = $container;
+        $this->useCaseHandler = $container->get(UseCaseHandler::class);
     }
     
     /**
@@ -26,7 +29,7 @@ abstract class BaseController
      */
     protected function executeUseCase(
         ServerRequestInterface $request,
-        callable $useCase,
+        object $useCase,
         array $mapping,
         string $responseType = 'web'
     ) {

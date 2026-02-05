@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Web;
 
+use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Domain\Blog\Repository\CategoryRepository;
 use Blog\Domain\Blog\ValueObject\ArticleId;
 use Blog\Domain\Blog\ValueObject\CategorySlug;
 use Blog\Domain\Blog\ValueObject\Slug;
 use Blog\Infrastructure\View\ViewRenderer;
-use Nyholm\Psr7\Response;
+use Blog\Application\Blog\GetAllArticles;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final readonly class BlogController
+final readonly class BlogController extends BaseController
 {
     public function __construct(
         private ArticleRepository $articleRepository,

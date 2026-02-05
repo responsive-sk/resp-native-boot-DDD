@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Web;
 
+use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Application\Blog\CreateArticle;
+use Blog\Application\Blog\UpdateArticle;
+use Blog\Application\Blog\DeleteArticle;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Infrastructure\View\ViewRenderer;
-use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final readonly class ArticleController
+final readonly class ArticleController extends BaseController
 {
     public function __construct(
         private ArticleRepository $articleRepository,
-        private CreateArticle $createArticle,
         private ViewRenderer $viewRenderer
     ) {
     }
@@ -27,26 +28,23 @@ final readonly class ArticleController
 
     public function create(ServerRequestInterface $request): ResponseInterface
     {
-        $data = $request->getParsedBody();
+        $useCase = $this->useCaseHandler->get(CreateArticle::class);
 
         try {
-            // Get author ID from session (UUID string)
-            $authorId = $_SESSION['user_id'] ?? throw new \Exception('User not authenticated');
-
-            $articleId = ($this->createArticle)(
-                $data['title'] ?? '',
-                $data['content'] ?? '',
-                $authorId
-            );
+            $result = $this->executeUseCase($request, $useCase, [
+                'title' => 'body:title',
+                'content' => 'body:content',
+                'author_id' => 'session:user_id'
+            ], 'web');
 
             // Redirect to the new article
-            return new Response(302, ['Location' => '/blog/' . $articleId->toInt()]);
+            return $this->redirect('/blog/' . $result['article_id']);
 
         } catch (\Exception $e) {
             return $this->viewRenderer->renderResponse('article.create', [
                 'error' => $e->getMessage(),
-                'title' => $data['title'] ?? '',
-                'content' => $data['content'] ?? '',
+                'title' => $request->getParsedBody()['title'] ?? '',
+                'content' => $request->getParsedBody()['content'] ?? '',
             ], 400);
         }
     }
@@ -57,7 +55,7 @@ final readonly class ArticleController
         $article = $this->articleRepository->getById(\Blog\Domain\Blog\ValueObject\ArticleId::fromInt($id));
 
         if (!$article) {
-            return new Response(404, ['Content-Type' => 'text/html'], 'Article not found');
+            return $this->htmlResponse('Article not found', 404);
         }
 
         return $this->viewRenderer->renderResponse('article.edit', [
@@ -67,20 +65,37 @@ final readonly class ArticleController
 
     public function update(ServerRequestInterface $request): ResponseInterface
     {
-        $id = (int) $request->getAttribute('id');
-        $data = $request->getParsedBody();
+        $useCase = $this->useCaseHandler->get(UpdateArticle::class);
+        
+        try {
+            $result = $this->executeUseCase($request, $useCase, [
+                'article_id' => 'route:id',
+                'title' => 'body:title',
+                'content' => 'body:content',
+                'slug' => 'body:slug'
+            ], 'web');
 
-        // TODO: Implement update logic
-        // For now, redirect back
-        return new Response(302, ['Location' => '/blog/' . $id]);
+            return $this->redirect('/blog/' . $result['article_id']);
+        } catch (\Exception $e) {
+            return $this->viewRenderer->renderResponse('article.edit', [
+                'error' => $e->getMessage(),
+                'article' => $result['article'] ?? null,
+            ], 400);
+        }
     }
 
     public function delete(ServerRequestInterface $request): ResponseInterface
     {
-        $id = (int) $request->getAttribute('id');
+        $useCase = $this->useCaseHandler->get(DeleteArticle::class);
+        
+        try {
+            $result = $this->executeUseCase($request, $useCase, [
+                'article_id' => 'route:id'
+            ], 'web');
 
-        // TODO: Implement delete logic
-        // For now, redirect to blog index
-        return new Response(302, ['Location' => '/blog']);
+            return $this->redirect('/blog');
+        } catch (\Exception $e) {
+            return $this->htmlResponse('Error deleting article: ' . $e->getMessage(), 400);
+        }
     }
 }

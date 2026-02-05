@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Mark;
 
+use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Domain\Blog\Entity\Article;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Domain\Blog\ValueObject\ArticleId;
-use Blog\Domain\Blog\ValueObject\Content;
-use Blog\Domain\Blog\ValueObject\Title;
-use Blog\Domain\User\ValueObject\UserId;
+use Blog\Application\Blog\CreateArticle;
+use Blog\Application\Blog\UpdateArticle;
+use Blog\Application\Blog\DeleteArticle;
+use Blog\Application\Blog\GetAllArticles;
 use Blog\Infrastructure\View\ViewRenderer;
-use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final readonly class ArticlesController
+final readonly class ArticlesController extends BaseController
 {
     public function __construct(
         private ArticleRepository $articleRepository,
@@ -25,7 +26,14 @@ final readonly class ArticlesController
 
     public function index(ServerRequestInterface $request): ResponseInterface
     {
-        $articles = $this->articleRepository->getAll();
+        $useCase = $this->useCaseHandler->get(GetAllArticles::class);
+        
+        try {
+            $result = $this->executeUseCase($request, $useCase, [], 'web');
+            $articles = $result['articles'] ?? [];
+        } catch (\Exception $e) {
+            $articles = [];
+        }
 
         return $this->viewRenderer->renderResponse('mark.articles.index', [
             'articles' => $articles,
@@ -38,7 +46,6 @@ final readonly class ArticlesController
         $article = $this->articleRepository->getById(ArticleId::fromInt($id));
 
         if (!$article) {
-            // TODO: Return proper error response
             return $this->viewRenderer->renderResponse('error.404', [], 404);
         }
 
@@ -54,34 +61,21 @@ final readonly class ArticlesController
 
     public function create(ServerRequestInterface $request): ResponseInterface
     {
-        $data = (array) $request->getParsedBody();
-
-        $title = $data['title'] ?? '';
-        $content = $data['content'] ?? '';
-
-        if ($title === '' || $content === '') {
-            return $this->viewRenderer->renderResponse('mark.articles.create', [
-                'error' => 'Title and content are required',
-                'title' => $title,
-                'content' => $content,
-            ]);
-        }
-
+        $useCase = $this->useCaseHandler->get(CreateArticle::class);
+        
         try {
-            $title = Title::fromString($data['title']);
-            $content = Content::fromString($data['content']);
-            // TODO: Get actual logged in user ID. For now using a valid UUID placeholder.
-            $authorId = UserId::fromString('00000000-0000-0000-0000-000000000001');
+            $result = $this->executeUseCase($request, $useCase, [
+                'title' => 'body:title',
+                'content' => 'body:content',
+                'author_id' => 'session:user_id'
+            ], 'web');
 
-            $article = Article::create($title, $content, $authorId);
-            $this->articleRepository->add($article);
-
-            return new Response(302, ['Location' => '/mark/articles']);
-        } catch (\InvalidArgumentException $e) {
+            return $this->redirect('/mark/articles');
+        } catch (\Exception $e) {
             return $this->viewRenderer->renderResponse('mark.articles.create', [
                 'error' => $e->getMessage(),
-                'title' => $title,
-                'content' => $content,
+                'title' => $request->getParsedBody()['title'] ?? '',
+                'content' => $request->getParsedBody()['content'] ?? '',
             ]);
         }
     }
@@ -102,59 +96,37 @@ final readonly class ArticlesController
 
     public function update(ServerRequestInterface $request): ResponseInterface
     {
-        $id = (int) $request->getAttribute('id');
-        $articleId = ArticleId::fromInt($id);
-        $article = $this->articleRepository->getById($articleId);
-
-        if (!$article) {
-            return $this->viewRenderer->renderResponse('error.404', [], 404);
-        }
-
-        $data = (array) $request->getParsedBody();
-
-        if (empty($data['title']) || empty($data['content'])) {
-            return $this->viewRenderer->renderResponse('mark.articles.edit', [
-                'article' => $article,
-                'error' => 'Title and content are required',
-            ]);
-        }
-
+        $useCase = $this->useCaseHandler->get(UpdateArticle::class);
+        
         try {
-            $title = Title::fromString($data['title']);
-            $content = Content::fromString($data['content']);
+            $result = $this->executeUseCase($request, $useCase, [
+                'article_id' => 'route:id',
+                'title' => 'body:title',
+                'content' => 'body:content',
+                'slug' => 'body:slug'
+            ], 'web');
 
-            $article->update($title, $content);
-            $this->articleRepository->update($article);
-
-            return new Response(302, ['Location' => '/mark/articles']);
-        } catch (\InvalidArgumentException $e) {
+            return $this->redirect('/mark/articles');
+        } catch (\Exception $e) {
             return $this->viewRenderer->renderResponse('mark.articles.edit', [
-                'article' => $article,
                 'error' => $e->getMessage(),
+                'article' => $result['article'] ?? null,
             ]);
         }
     }
 
     public function delete(ServerRequestInterface $request): ResponseInterface
     {
+        $useCase = $this->useCaseHandler->get(DeleteArticle::class);
+        
         try {
-            $id = (int) $request->getAttribute('id');
-            error_log("DEBUG: Attempting to delete article with ID: " . $id);
-            
-            $articleId = ArticleId::fromInt($id);
-            error_log("DEBUG: ArticleId created successfully");
+            $result = $this->executeUseCase($request, $useCase, [
+                'article_id' => 'route:id'
+            ], 'web');
 
-            $this->articleRepository->remove($articleId);
-            error_log("DEBUG: Article removed successfully");
-
-            return new Response(302, ['Location' => '/mark/articles']);
+            return $this->redirect('/mark/articles');
         } catch (\Exception $e) {
-            error_log("ERROR in delete: " . $e->getMessage());
-            error_log("ERROR trace: " . $e->getTraceAsString());
-            
-            return $this->viewRenderer->renderResponse('error.500', [
-                'error' => 'Failed to delete article: ' . $e->getMessage()
-            ], 500);
+            return $this->htmlResponse('Error deleting article: ' . $e->getMessage(), 400);
         }
     }
 }

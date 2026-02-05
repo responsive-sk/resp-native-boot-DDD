@@ -4,48 +4,46 @@ declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Api;
 
+use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Application\Blog\CreateArticle;
 use Blog\Application\Blog\DeleteArticle;
 use Blog\Application\Blog\GetAllArticles;
 use Blog\Application\Blog\UpdateArticle;
-use Blog\Domain\Blog\Repository\ArticleRepository;
-use Blog\Domain\Blog\ValueObject\ArticleId;
-use Blog\Domain\Blog\ValueObject\Content;
-use Blog\Domain\Blog\ValueObject\Slug;
-use Blog\Domain\Blog\ValueObject\Title;
-use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final readonly class ArticleApiController
+final readonly class ArticleApiController extends BaseController
 {
     public function __construct(
-        private ArticleRepository $articleRepository,
-        private GetAllArticles $getAllArticles,
-        private CreateArticle $createArticle,
-        private UpdateArticle $updateArticle,
-        private DeleteArticle $deleteArticle
+        private \Blog\Domain\Blog\Repository\ArticleRepository $articleRepository
     ) {
     }
 
     public function index(ServerRequestInterface $request): ResponseInterface
     {
-        $articles = $this->getAllArticles->__invoke();
-
-        $articleData = array_map(function ($article) {
-            return $this->articleToArray($article);
-        }, $articles);
-
-        return $this->jsonResponse($articleData);
+        $useCase = $this->useCaseHandler->get(GetAllArticles::class);
+        
+        try {
+            $result = $this->executeUseCase($request, $useCase, [], 'api');
+            
+            // Transform articles to array format
+            $articles = array_map(function ($article) {
+                return $this->articleToArray($article);
+            }, $result['articles'] ?? []);
+            
+            return $this->jsonResponse($articles);
+        } catch (\Exception $e) {
+            return $this->jsonResponse([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function show(ServerRequestInterface $request): ResponseInterface
     {
-        $id = (int) filter_var($request->getAttribute('id'), FILTER_VALIDATE_INT);
-
         try {
-            $articleId = ArticleId::fromInt($id);
-            $article = $this->articleRepository->getById($articleId);
+            $article = $this->articleRepository->getById($request->getAttribute('id'));
 
             if (!$article) {
                 return $this->jsonResponse(['error' => 'Article not found'], 404);
@@ -59,34 +57,16 @@ final readonly class ArticleApiController
 
     public function create(ServerRequestInterface $request): ResponseInterface
     {
-        $body = (string) $request->getBody();
-        $data = json_decode($body, true);
-
-        if (!is_array($data)) {
-            return $this->jsonResponse(['error' => 'Invalid JSON'], 400);
-        }
-
+        $useCase = $this->useCaseHandler->get(CreateArticle::class);
+        
         try {
-            $titleStr = (string) ($data['title'] ?? '');
-            $contentStr = (string) ($data['content'] ?? '');
+            $result = $this->executeUseCase($request, $useCase, [
+                'title' => 'body:title',
+                'content' => 'body:content',
+                'author_id' => 'session:user_id'
+            ], 'api');
 
-            $title = Title::fromString($titleStr);
-            $content = Content::fromString($contentStr);
-
-            // Author ID should be UUID string from session or request
-            $authorId = (string) ($data['authorId'] ?? $_SESSION['user_id'] ?? '');
-
-            if ($authorId === '') {
-                throw new \Exception('Author ID required');
-            }
-
-            $articleId = $this->createArticle->__invoke(
-                $title->toString(),
-                $content->toString(),
-                $authorId
-            );
-
-            $article = $this->articleRepository->getById($articleId);
+            $article = $this->articleRepository->getById($result['article_id']);
 
             if (!$article) {
                 throw new \Exception('Failed to retrieve created article');
@@ -106,33 +86,20 @@ final readonly class ArticleApiController
 
     public function update(ServerRequestInterface $request): ResponseInterface
     {
-        $id = (int) filter_var($request->getAttribute('id'), FILTER_VALIDATE_INT);
-        $body = (string) $request->getBody();
-        $data = json_decode($body, true);
-
-        if (!is_array($data)) {
-            return $this->jsonResponse(['error' => 'Invalid JSON'], 400);
-        }
-
+        $useCase = $this->useCaseHandler->get(UpdateArticle::class);
+        
         try {
-            $articleId = ArticleId::fromInt($id);
-
-            $titleStr = (string) ($data['title'] ?? '');
-            $contentStr = (string) ($data['content'] ?? '');
-
-            $title = Title::fromString($titleStr);
-            $content = Content::fromString($contentStr);
-
-            // Optional slug
-            $slugStr = isset($data['slug']) ? (string) $data['slug'] : null;
-            $slug = $slugStr ? new Slug($slugStr) : null;
-
-            $article = $this->updateArticle->__invoke($articleId, $title, $content, $slug);
+            $result = $this->executeUseCase($request, $useCase, [
+                'article_id' => 'route:id',
+                'title' => 'body:title',
+                'content' => 'body:content',
+                'slug' => 'body:slug'
+            ], 'api');
 
             return $this->jsonResponse(
                 [
                     'message' => 'Article updated',
-                    'article' => $this->articleToArray($article),
+                    'article' => $this->articleToArray($result['article']),
                 ]
             );
         } catch (\DomainException $e) {
@@ -144,11 +111,12 @@ final readonly class ArticleApiController
 
     public function delete(ServerRequestInterface $request): ResponseInterface
     {
-        $id = (int) filter_var($request->getAttribute('id'), FILTER_VALIDATE_INT);
-
+        $useCase = $this->useCaseHandler->get(DeleteArticle::class);
+        
         try {
-            $articleId = ArticleId::fromInt($id);
-            $this->deleteArticle->__invoke($articleId);
+            $result = $this->executeUseCase($request, $useCase, [
+                'article_id' => 'route:id'
+            ], 'api');
 
             return $this->jsonResponse(
                 ['message' => 'Article deleted successfully']
@@ -181,17 +149,5 @@ final readonly class ArticleApiController
             'updated_at' => $article->updatedAt()->format('Y-m-d H:i:s'),
             'uri' => $article->getUri(),
         ];
-    }
-
-    /**
-     * @param array<mixed> $data
-     */
-    private function jsonResponse(array $data, int $status = 200): ResponseInterface
-    {
-        return new Response(
-            $status,
-            ['Content-Type' => 'application/json'],
-            json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE)
-        );
     }
 }

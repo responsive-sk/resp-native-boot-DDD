@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Web;
 
+use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Application\Blog\SearchArticles;
 use Blog\Infrastructure\View\ViewRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final readonly class SearchController
+final readonly class SearchController extends BaseController
 {
     public function __construct(
-        private SearchArticles $searchArticles,
         private ViewRenderer $viewRenderer
     ) {
     }
@@ -23,7 +23,17 @@ final readonly class SearchController
         $results = [];
 
         if ($query !== '') {
-            $results = ($this->searchArticles)($query);
+            $useCase = $this->useCaseHandler->get(SearchArticles::class);
+            
+            try {
+                $result = $this->executeUseCase($request, $useCase, [
+                    'query' => 'query:q'
+                ], 'web');
+                
+                $results = $result['articles'] ?? [];
+            } catch (\Exception $e) {
+                $results = [];
+            }
         }
 
         return $this->viewRenderer->renderResponse('search.index', [
