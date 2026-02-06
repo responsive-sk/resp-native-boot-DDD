@@ -52,6 +52,9 @@ class AuthController extends BaseController
             ], 'array');
 
             if ($result['success']) {
+                // Prevent session fixation
+                $this->session->regenerateId();
+
                 // Nastav session
                 $this->session->set('user_id', $result['data']['user']['id']);
                 $this->session->set('user_role', $result['data']['user']['role']);
@@ -109,6 +112,9 @@ class AuthController extends BaseController
 
             // Automatický login po úspešnej registrácii
             if ($result['success']) {
+                // Prevent session fixation
+                $this->session->regenerateId();
+
                 $this->session->set('user_id', $result['user']['id']);
                 $this->session->set('user_role', $result['user']['role']);
                 $this->session->set('last_activity', time()); // Add missing last_activity
