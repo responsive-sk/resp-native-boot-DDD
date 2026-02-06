@@ -5,6 +5,7 @@ namespace Blog\Infrastructure\Http\Controller;
 
 use Blog\Core\UseCaseHandler;
 use Blog\Security\Authorization;
+use Blog\Security\AuthorizationService;
 use Blog\Security\Exception\AuthenticationException;
 use Blog\Security\Exception\AuthorizationException;
 use Psr\Container\ContainerInterface;
@@ -15,7 +16,8 @@ abstract class BaseController
 {
     public function __construct(
         protected ContainerInterface $container,
-        protected UseCaseHandler $useCaseHandler
+        protected UseCaseHandler $useCaseHandler,
+        protected AuthorizationService $authorization
     ) {
     }
 
@@ -134,36 +136,6 @@ abstract class BaseController
                 'error' => 'Article not found',
                 'message' => 'The requested article does not exist'
             ], 404);
-        }
-    }
-
-    /**
-     * Require MARK role for admin operations
-     */
-    protected function requireMark(): ?array
-    {
-        try {
-            Authorization::requireMark();
-            return Authorization::getUser();
-        } catch (AuthorizationException $e) {
-            return $this->jsonResponse([
-                'success' => false,
-                'error' => 'Access denied',
-                'message' => 'MARK role required for this operation'
-            ], 403);
-        }
-    }
-
-    /**
-     * Require MARK role for web controllers (returns HTML error)
-     */
-    protected function requireMarkWeb(): ?array
-    {
-        try {
-            Authorization::requireMark();
-            return Authorization::getUser();
-        } catch (AuthorizationException $e) {
-            return $this->htmlResponse('Access denied: MARK role required', 403);
         }
     }
 
