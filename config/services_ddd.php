@@ -362,7 +362,7 @@ $services['middlewares'] = function (ContainerInterface $c) {
         $c->get(SessionMiddleware::class), // slim4-session
         $c->get(SessionTimeoutMiddleware::class),
         $c->get(RateLimitMiddleware::class),
-        // $c->get(CsrfMiddleware::class), // Temporárne vypnuté
+        $c->get(CsrfMiddleware::class), // Temporárne vypnuté
         $c->get(AuthMiddleware::class),
         $c->get(ApiAuthMiddleware::class), // API authentication
         $c->get(RouterMiddleware::class),

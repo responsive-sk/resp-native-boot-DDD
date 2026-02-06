@@ -54,6 +54,7 @@ class AuthController extends BaseController
                 // Nastav session
                 $this->session->set('user_id', $result['data']['user']['id']);
                 $this->session->set('user_role', $result['data']['user']['role']);
+                $this->session->set('last_activity', time()); // ✅ Add missing last_activity
 
                 // Audit log
                 $this->auditLogger->logLogin($result['data']['user']['id']);
@@ -109,6 +110,7 @@ class AuthController extends BaseController
             if ($result['success']) {
                 $this->session->set('user_id', $result['user']['id']);
                 $this->session->set('user_role', $result['user']['role']);
+                $this->session->set('last_activity', time()); // Add missing last_activity
 
                 $this->auditLogger->logRegistration($result['user']['id']);
 
