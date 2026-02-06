@@ -29,7 +29,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
                 'title' => $article->title()->toString(),
                 'slug' => $article->slug()?->toString(),
                 'content' => $article->content()->toString(),
-                'user_id' => $article->authorId()->toBytes(),  // ← user_id as bytes
+                'author_id' => $article->authorId()->toString(),
                 'status' => $article->status()->toString(),
                 'created_at' => $article->createdAt()->format('Y-m-d H:i:s'),
                 'updated_at' => $article->updatedAt()->format('Y-m-d H:i:s'),
@@ -45,7 +45,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
                 'title' => $article->title()->toString(),
                 'slug' => $article->slug()?->toString(),
                 'content' => $article->content()->toString(),
-                'user_id' => $article->authorId()->toBytes(),  // ← user_id as bytes
+                'author_id' => $article->authorId()->toString(),
                 'status' => $article->status()->toString(),
                 'updated_at' => $article->updatedAt()->format('Y-m-d H:i:s'),
                 'category_id' => $article->category()?->id()?->toString(),
@@ -176,7 +176,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
             ArticleId::fromInt((int) $row['id']),
             \Blog\Domain\Blog\ValueObject\Title::fromString($row['title']),
             \Blog\Domain\Blog\ValueObject\Content::fromString($row['content']),
-            \Blog\Domain\User\ValueObject\UserId::fromBytes($row['user_id']),
+            \Blog\Domain\Blog\ValueObject\AuthorId::fromString($row['author_id']),
             \Blog\Domain\Blog\ValueObject\ArticleStatus::fromString($row['status']),
             new \DateTimeImmutable($row['created_at']),
             new \DateTimeImmutable($row['updated_at']),
@@ -192,29 +192,24 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
             return [];
         }
 
-        // Split query into terms and add * wildcard to each for prefix matching
+        // Split query into terms for FTS5 (no wildcards needed for prefix matching)
         $terms = array_filter(explode(' ', trim($query)));
-        $ftsQuery = implode(' ', array_map(fn($term) => $term . '*', $terms));
+        $ftsQuery = implode(' ', $terms);
 
         // Use FTS5 virtual table for full-text search
         $sql = "
             SELECT a.*
             FROM articles a
-            INNER JOIN articles_fts fts ON a.id = fts.rowid
-            WHERE articles_fts MATCH :query
+            INNER JOIN articles_fts fts ON a.id = fts.article_id
+            WHERE articles_fts MATCH ?
             AND a.status = 'published'
             ORDER BY rank
             LIMIT 50
         ";
 
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue('query', $ftsQuery);
-        $result = $stmt->executeQuery();
+        $rows = $this->connection->fetchAllAssociative($sql, [$ftsQuery]);
 
-        return array_map(
-            [$this, 'hydrate'],
-            $result->fetchAllAssociative()
-        );
+        return array_map([$this, 'hydrate'], $rows);
     }
 
     public function getByCategory(CategoryId $categoryId): array

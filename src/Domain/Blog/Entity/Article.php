@@ -7,10 +7,10 @@ namespace Blog\Domain\Blog\Entity;
 use Blog\Domain\Blog\Event\ArticlePublishedEvent;
 use Blog\Domain\Blog\ValueObject\ArticleId;
 use Blog\Domain\Blog\ValueObject\ArticleStatus;
+use Blog\Domain\Blog\ValueObject\AuthorId;
 use Blog\Domain\Blog\ValueObject\Content;
 use Blog\Domain\Blog\ValueObject\Slug;
 use Blog\Domain\Blog\ValueObject\Title;
-use Blog\Domain\User\ValueObject\UserId;
 use DateTimeImmutable;
 
 final class Article
@@ -21,7 +21,7 @@ final class Article
         private ?ArticleId        $id,
         private Title             $title,
         private Content           $content,
-        private readonly UserId   $authorId,
+        private readonly AuthorId $authorId,
         private ArticleStatus     $status,
         private DateTimeImmutable $createdAt,
         private DateTimeImmutable $updatedAt,
@@ -35,7 +35,7 @@ final class Article
     public static function create(
         Title $title,
         Content $content,
-        UserId $authorId,
+        AuthorId $authorId,
         ?\Blog\Domain\Blog\Entity\Category $category = null,
         array $tags = []
     ): self {
@@ -59,7 +59,7 @@ final class Article
         ArticleId         $id,
         Title             $title,
         Content           $content,
-        UserId            $authorId,
+        AuthorId          $authorId,
         ArticleStatus     $status,
         DateTimeImmutable $createdAt,
         DateTimeImmutable $updatedAt,
@@ -108,9 +108,9 @@ final class Article
         $this->updatedAt = new DateTimeImmutable();
     }
 
-    public function isOwnedBy(UserId $userId): bool
+    public function isOwnedBy(AuthorId $authorId): bool
     {
-        return $this->authorId->equals($userId);
+        return $this->authorId->equals($authorId);
     }
 
     // Getters
@@ -126,7 +126,7 @@ final class Article
     {
         return $this->content;
     }
-    public function authorId(): UserId
+    public function authorId(): AuthorId
     {
         return $this->authorId;
     }
