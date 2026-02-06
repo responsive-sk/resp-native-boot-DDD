@@ -27,28 +27,23 @@ final class CreateArticle extends BaseUseCase
         $content = $input['content'];
         $authorId = $input['author_id'];
 
-        // 1. Vytvor Slug priamo z titulu - Slug trieda sa postará o normalizáciu
-        $slug = new Slug($title);
+        // 1. Vytvor základný Slug z titulu
+        $baseSlug = $title; // Slug will be created in Article::create
+        $slug = $baseSlug;
+        $suffix = 1;
 
-        // 2. Vytvor článok
+        // 2. Najdi unikátny slug (efektívnejšie ako v loope)
+        $uniqueSlug = $this->findUniqueSlug($baseSlug, $suffix);
+
+        // 3. Vytvor článok s unikátnym slugom
         $article = Article::create(
             Title::fromString($title),
             Content::fromString($content),
             UserId::fromString($authorId)
         );
 
-        // Nastav slug
-        $article->setSlug($slug);
-
-        // 3. Zabezpečiť unikátnosť
-        $i = 1;
-        $originalSlug = $slug->toString();
-
-        while ($this->articles->getBySlug($slug) !== null) {
-            $slug = new Slug($originalSlug . '-' . $i);
-            $article->setSlug($slug);
-            $i++;
-        }
+        // Nastav unikátny slug
+        $article->setSlug(new Slug($uniqueSlug));
 
         // 4. Uložiť
         $this->articles->add($article);
@@ -63,6 +58,28 @@ final class CreateArticle extends BaseUseCase
             'article_id' => $id->toInt(),
             'article' => $article
         ]);
+    }
+
+    /**
+     * Efektívne nájde unikátny slug bez zbytočných databázových dotazov
+     */
+    private function findUniqueSlug(string $baseSlug, int &$suffix): string
+    {
+        $maxAttempts = 100; // Ochrana proti infinite loop
+        $attempt = 0;
+
+        while ($attempt < $maxAttempts) {
+            $candidateSlug = $attempt === 0 ? $baseSlug : $baseSlug . '-' . $suffix;
+            
+            if ($this->articles->getBySlug(new Slug($candidateSlug)) === null) {
+                return $candidateSlug;
+            }
+            
+            $suffix++;
+            $attempt++;
+        }
+
+        throw new \RuntimeException('Unable to generate unique slug after ' . $maxAttempts . ' attempts');
     }
 
     protected function validate(array $input): void
