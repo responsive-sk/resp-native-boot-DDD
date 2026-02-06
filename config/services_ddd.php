@@ -318,7 +318,9 @@ $services += [
 
     \Blog\Infrastructure\DebugBar\BlogDebugBarStyles::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\DebugBar\BlogDebugBarStyles(),
 
-    \Blog\Infrastructure\Http\Middleware\BlogDebugBarMiddleware::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Middleware\BlogDebugBarMiddleware(),
+    \Blog\Infrastructure\Http\Middleware\Blog\Middleware\AuthMiddleware::class => fn(ContainerInterface $c) => new \Blog\Middleware\AuthMiddleware(
+        $c->get(\Blog\Security\AuthorizationService::class)
+    ),
 
     \Blog\Infrastructure\Http\Controller\BaseController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\BaseController(
         $c,

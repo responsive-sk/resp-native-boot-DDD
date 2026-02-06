@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Blog\Middleware;
 
-use Blog\Security\Authorization;
+use Blog\Security\AuthorizationService;
 use Blog\Security\Exception\AuthenticationException;
 use Blog\Security\Exception\AuthorizationException;
 use Nyholm\Psr7\Response;
@@ -16,6 +16,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class AuthMiddleware implements MiddlewareInterface
 {
+    public function __construct(
+        private readonly AuthorizationService $authorization
+    ) {}
     /**
      * Check if the request is an API request
      */
@@ -59,7 +62,7 @@ final class AuthMiddleware implements MiddlewareInterface
         $path = $request->getUri()->getPath();
 
         // Pridaj user do requestu (môže byť null ak nie je prihlásený)
-        $request = $request->withAttribute('user', Authorization::getUser());
+        $request = $request->withAttribute('user', $this->authorization->getUser());
 
         // Chránené cesty ktoré vyžadujú autentifikáciu
         $protectedPrefixes = [
@@ -85,7 +88,7 @@ final class AuthMiddleware implements MiddlewareInterface
 
         // Pre chránené cesty - kontroluj autentifikáciu
         try {
-            Authorization::requireAuth();
+            $this->authorization->requireAuth();
         } catch (AuthenticationException $e) {
             // Return appropriate response based on request type
             if ($this->isApiRequest($request)) {
@@ -99,7 +102,7 @@ final class AuthMiddleware implements MiddlewareInterface
         // Kontrola ROLE_MARK pre /mark/*
         if (str_starts_with($path, '/mark')) {
             try {
-                Authorization::requireMark();
+                $this->authorization->requireMark();
             } catch (AuthorizationException $e) {
                 // Return appropriate response based on request type
                 if ($this->isApiRequest($request)) {
