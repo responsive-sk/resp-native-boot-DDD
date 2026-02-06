@@ -7,162 +7,81 @@ namespace Blog\Security;
 use Blog\Security\Exception\AuthenticationException;
 use Blog\Security\Exception\AuthorizationException;
 use ResponsiveSk\Slim4Session\SessionInterface;
+use Psr\Container\ContainerInterface;
 
+/**
+ * @deprecated Use AuthorizationService instead. This class maintains backward compatibility.
+ */
 class Authorization
 {
-    private static ?SessionInterface $session = null;
-    
-    public static function setSession(SessionInterface $session): void
+    private static ?AuthorizationService $service = null;
+    private static ?ContainerInterface $container = null;
+
+    /**
+     * Set the container for service resolution
+     */
+    public static function setContainer(ContainerInterface $container): void
     {
-        self::$session = $session;
+        self::$container = $container;
     }
-    
-    private static function getSession(): SessionInterface
+
+    /**
+     * Get the authorization service from container
+     */
+    private static function getService(): AuthorizationService
     {
-        if (self::$session === null) {
-            // Fallback to direct session if not set
-            if (session_status() === PHP_SESSION_NONE) {
-                session_start();
+        if (self::$service === null) {
+            if (self::$container === null) {
+                throw new \RuntimeException('Authorization container not set. Call Authorization::setContainer() first.');
             }
-            // Create a simple wrapper
-            self::$session = new class implements SessionInterface {
-                public function get(string $key, mixed $default = null): mixed {
-                    return $_SESSION[$key] ?? $default;
-                }
-                public function set(string $key, mixed $value): void {
-                    $_SESSION[$key] = $value;
-                }
-                public function has(string $key): bool {
-                    return isset($_SESSION[$key]);
-                }
-                public function delete(string $key): void {
-                    unset($_SESSION[$key]);
-                }
-                public function clear(): void {
-                    $_SESSION = [];
-                }
-                public function all(): array {
-                    return $_SESSION;
-                }
-                public function regenerate(): void {
-                    session_regenerate_id(false);
-                }
-                public function destroy(): bool {
-                    return session_destroy();
-                }
-                public function getId(): string {
-                    return session_id();
-                }
-                public function getName(): string {
-                    return session_name();
-                }
-                public function save(): void {
-                    session_write_close();
-                }
-                public function isStarted(): bool {
-                    return session_status() === PHP_SESSION_ACTIVE;
-                }
-                public function migrate(bool $destroy = false): bool {
-                    return session_regenerate_id($destroy);
-                }
-                public function invalidate(): bool {
-                    return session_destroy();
-                }
-                public function remove(string $key): void {
-                    unset($_SESSION[$key]);
-                }
-                public function start(): bool {
-                    if (session_status() === PHP_SESSION_NONE) {
-                        return session_start();
-                    }
-                    return true;
-                }
-                public function regenerateId(bool $deleteOldSession = false): bool {
-                    return session_regenerate_id($deleteOldSession);
-                }
-            };
+            
+            self::$service = self::$container->get(AuthorizationService::class);
         }
         
-        return self::$session;
+        return self::$service;
+    }
+
+    /**
+     * @deprecated Use AuthorizationService::setSession() instead
+     */
+    public static function setSession(SessionInterface $session): void
+    {
+        // This method is deprecated but kept for backward compatibility
+        // The session should be injected via DI container
     }
 
     public static function isAuthenticated(): bool
     {
-        $session = self::getSession();
-        
-        return $session->has('user_id') && $session->has('user_role');
+        return self::getService()->isAuthenticated();
     }
 
     public static function getUser(): ?array
     {
-        $session = self::getSession();
-        
-        if (!$session->has('user_id') || !$session->has('user_role')) {
-            return null;
-        }
-
-        return [
-            'id' => $session->get('user_id'),
-            'role' => $session->get('user_role'),
-        ];
+        return self::getService()->getUser();
     }
 
     public static function hasRole(string $role): bool
     {
-        $user = self::getUser();
-
-        if ($user === null) {
-            return false;
-        }
-
-        // Normalize both roles for comparison
-        $normalizeRole = function(string $role): string {
-            $role = strtolower(trim($role));
-            // Remove ROLE_ prefix if present
-            if (str_starts_with($role, 'role_')) {
-                $role = substr($role, 5);
-            }
-            return $role;
-        };
-
-        return $normalizeRole($user['role']) === $normalizeRole($role);
+        return self::getService()->hasRole($role);
     }
 
     public static function isMark(): bool
     {
-        $session = self::getSession();
-        
-        // Check mark session flag first
-        if ($session->has('mark_session') && $session->get('mark_session') === true) {
-            return true;
-        }
-        
-        // Fallback to role check
-        return self::hasRole('mark') || self::hasRole('ROLE_MARK');
+        return self::getService()->isMark();
     }
 
     public static function requireAuth(): void
     {
-        if (!self::isAuthenticated()) {
-            throw AuthenticationException::notAuthenticated();
-        }
+        self::getService()->requireAuth();
     }
 
     public static function requireRole(string $role): void
     {
-        self::requireAuth();
-
-        if (!self::hasRole($role)) {
-            throw AuthorizationException::notAuthorized($role);
-        }
+        self::getService()->requireRole($role);
     }
 
     public static function requireMark(): void
     {
-        self::requireAuth();
-        
-        if (!self::isMark()) {
-            throw AuthorizationException::notAuthorized('MARK role required');
-        }
+        self::getService()->requireMark();
     }
 }

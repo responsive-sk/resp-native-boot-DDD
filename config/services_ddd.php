@@ -84,6 +84,18 @@ $services += [
     ),
 ];
 
+// === FÁZA 3: SECURITY SERVICES ===
+$services += [
+    \Blog\Security\AuthorizationService::class => fn(ContainerInterface $c) => new \Blog\Security\AuthorizationService(
+        $c->get(SessionInterface::class)
+    ),
+
+    \Blog\Security\Authorization::class => function (ContainerInterface $c) {
+        \Blog\Security\Authorization::setContainer($c);
+        return new \Blog\Security\Authorization();
+    },
+];
+
 // === FÁZA 3: REPOSITORIES ===
 $services += [
     ArticleRepository::class => fn() => new DoctrineArticleRepository(
