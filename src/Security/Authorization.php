@@ -23,6 +23,8 @@ class Authorization
     public static function setContainer(ContainerInterface $container): void
     {
         self::$container = $container;
+        // Debug: Log when container is set
+        error_log('Authorization container set successfully');
     }
 
     /**
