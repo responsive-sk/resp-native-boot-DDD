@@ -20,23 +20,24 @@ final class UpdateUserRole extends BaseUseCase
     public function execute(array $input): array
     {
         $this->validate($input);
-        
+
         $userId = UserId::fromString($input['user_id']);
         $newRole = UserRole::fromString($input['role']);
 
         $user = $this->users->findById($userId);
-        
+
         if (!$user) {
             throw new \DomainException('User not found');
         }
 
-        // Only MARK users can be promoted to ADMIN
-        if ($newRole->isAdmin() && !$user->role()->isMark()) {
-            throw new \DomainException('Only MARK users can be promoted to ADMIN');
-        }
+
 
         // Update user role
-        $user->changeRole($newRole);
+        if ($newRole->isMark()) {
+            $user->promoteToMark();
+        } elseif ($newRole->isUser()) {
+            $user->demoteToUser();
+        }
         $this->users->save($user);
 
         return $this->success([
@@ -48,21 +49,21 @@ final class UpdateUserRole extends BaseUseCase
             ]
         ]);
     }
-    
+
     protected function validate(array $input): void
     {
         if (empty($input['user_id'])) {
             throw new \InvalidArgumentException('User ID is required');
         }
-        
+
         if (empty($input['role'])) {
             throw new \InvalidArgumentException('Role is required');
         }
-        
-        if (!in_array($input['role'], ['ROLE_USER', 'ROLE_MARK', 'ROLE_ADMIN'])) {
+
+        if (!in_array($input['role'], ['ROLE_USER', 'ROLE_MARK'])) {
             throw new \InvalidArgumentException('Invalid role specified');
         }
-        
+
         // Validate UUID format
         if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $input['user_id'])) {
             throw new \InvalidArgumentException('Invalid user ID format');

@@ -1,0 +1,4 @@
+[2026-02-06 16:26:13] SESSION_TIMEOUT: Session expired for user_id=a05a8d5c-96a6-467a-96cd-6cb7a0c897d4, last_activity=2026-02-06 12:53:26
+[2026-02-06 16:26:31] CSRF_VALIDATION_FAILURE: Invalid token for user_id=a05a8d5c-96a6-467a-96cd-6cb7a0c897d4, ip=::1, endpoint=/login
+[2026-02-06 16:31:22] CSRF_VALIDATION_FAILURE: Invalid token for user_id=a05a8d5c-96a6-467a-96cd-6cb7a0c897d4, ip=::1, endpoint=/login
+[2026-02-06 16:31:45] CSRF_VALIDATION_FAILURE: Invalid token for user_id=a05a8d5c-96a6-467a-96cd-6cb7a0c897d4, ip=::1, endpoint=/login

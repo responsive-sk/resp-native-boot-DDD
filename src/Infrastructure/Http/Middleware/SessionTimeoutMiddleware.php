@@ -13,13 +13,15 @@ use ResponsiveSk\Slim4Paths\Paths;
 
 class SessionTimeoutMiddleware implements MiddlewareInterface
 {
+    private \Blog\Security\SecurityLogger $logger;
     private array $config;
     private Paths $paths;
 
-    public function __construct(?array $config = null, ?Paths $paths = null)
+    public function __construct(?array $config = null, ?Paths $paths = null, ?\Blog\Security\SecurityLogger $logger = null)
     {
         $this->paths = $paths ?? new Paths(__DIR__ . '/../../../../');
         $this->config = $config ?? require $this->paths->getPath('config') . '/session.php';
+        $this->logger = $logger ?? new \Blog\Security\SecurityLogger($this->paths->getPath('data') . '/logs/security.log');
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -100,7 +102,7 @@ class SessionTimeoutMiddleware implements MiddlewareInterface
     private function shouldValidateFingerprint(): bool
     {
         return $this->config['fingerprint']['enabled'] &&
-               isset($_SESSION['user_id'], $_SESSION['fingerprint']);
+            isset($_SESSION['user_id'], $_SESSION['fingerprint']);
     }
 
     private function validateSessionFingerprint(ServerRequestInterface $request): bool
@@ -158,8 +160,8 @@ class SessionTimeoutMiddleware implements MiddlewareInterface
 
     private function updateLastActivityIfNeeded(int $now): void
     {
-        // Optimalizácia: update iba ak uplynulo >60 sekúnd
-        if (!isset($_SESSION['last_activity']) || ($now - $_SESSION['last_activity']) > 60) {
+        // Update on every authenticated request to ensure strict timeout tracking
+        if (isset($_SESSION['last_activity'])) {
             $_SESSION['last_activity'] = $now;
         }
     }
@@ -168,8 +170,9 @@ class SessionTimeoutMiddleware implements MiddlewareInterface
     {
         $userId = $_SESSION['user_id'] ?? 'unknown';
         $ip = $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown';
+        $lastActivity = date('Y-m-d H:i:s', $_SESSION['last_activity'] ?? time());
 
-        error_log("[SESSION] Expired for user {$userId} from IP {$ip}");
+        $this->logger->logSessionTimeout($userId, $lastActivity);
         $this->destroySession();
     }
 
@@ -177,9 +180,8 @@ class SessionTimeoutMiddleware implements MiddlewareInterface
     {
         $userId = $_SESSION['user_id'] ?? 'unknown';
         $ip = $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown';
-        $ua = substr($request->getHeaderLine('User-Agent'), 0, 100);
 
-        error_log("[SECURITY] Fingerprint mismatch for user {$userId} - IP: {$ip}, UA: {$ua}");
+        $this->logger->logSessionHijackingDetected($userId, $ip);
         $this->destroySession();
     }
 

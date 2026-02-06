@@ -70,6 +70,11 @@ $services = [
         // === CORE USE-CASE TOOLS ===
     UseCaseMapper::class => fn() => new UseCaseMapper(),
     UseCaseHandler::class => fn(ContainerInterface $c) => new UseCaseHandler($c),
+
+    // Security Logger (File based)
+    \Blog\Security\SecurityLogger::class => fn() => new \Blog\Security\SecurityLogger(
+        \Blog\Infrastructure\Paths::basePath() . '/data/logs/security.log'
+    ),
 ];
 
 // === FÁZA 2: VIEW RENDERER ===
@@ -94,6 +99,10 @@ $services += [
         \Blog\Security\Authorization::setContainer($c);
         return new \Blog\Security\Authorization();
     },
+
+    \Blog\Security\CsrfProtection::class => fn(ContainerInterface $c) => new \Blog\Security\CsrfProtection(
+        $c->get(SessionInterface::class)
+    ),
 ];
 
 // === FÁZA 3: REPOSITORIES ===
@@ -304,7 +313,8 @@ $services += [
         $c->get(\Blog\Core\UseCaseHandler::class),
         $c->get(UserRepositoryInterface::class),
         $c->get(ViewRenderer::class),
-        $c->get(\Blog\Security\AuthorizationService::class)
+        $c->get(\Blog\Security\AuthorizationService::class),
+        $c->get(\ResponsiveSk\Slim4Session\SessionInterface::class)
     ),
 
     // API Controllers
@@ -360,10 +370,12 @@ $services += [
     ),
 
     AuthMiddleware::class => fn(ContainerInterface $c) => new AuthMiddleware(
-        $c->get(\Blog\Security\AuthorizationService::class)
+        $c->get(\Blog\Security\AuthorizationService::class),
+        $c->get(\Blog\Application\Audit\AuditLogger::class)
     ),
     ApiAuthMiddleware::class => fn(ContainerInterface $c) => new ApiAuthMiddleware(
-        $c->get(\Blog\Security\AuthorizationService::class)
+        $c->get(\Blog\Security\AuthorizationService::class),
+        $c->get(\Blog\Application\Audit\AuditLogger::class)
     ),
     ErrorHandlerMiddleware::class => fn(ContainerInterface $c) => new ErrorHandlerMiddleware(
         $c->get(ViewRenderer::class)
@@ -371,9 +383,13 @@ $services += [
     RequestContextMiddleware::class => fn() => new RequestContextMiddleware(),
     SessionTimeoutMiddleware::class => fn(ContainerInterface $c) => new SessionTimeoutMiddleware(
         null,
-        $c->get(Paths::class)
+        $c->get(Paths::class),
+        $c->get(\Blog\Security\SecurityLogger::class)
     ),
-    CsrfMiddleware::class => fn() => new CsrfMiddleware(),
+    CsrfMiddleware::class => fn(ContainerInterface $c) => new CsrfMiddleware(
+        $c->get(\Blog\Security\CsrfProtection::class),
+        $c->get(\Blog\Security\SecurityLogger::class)
+    ),
     RateLimitMiddleware::class => fn() => new RateLimitMiddleware(),
     CorsMiddleware::class => fn() => new CorsMiddleware(),
     PjaxMiddleware::class => fn() => new \Blog\Middleware\PjaxMiddleware(),

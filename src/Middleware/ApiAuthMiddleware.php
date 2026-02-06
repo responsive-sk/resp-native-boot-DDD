@@ -16,7 +16,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class ApiAuthMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private readonly \Blog\Security\AuthorizationService $authorization
+        private readonly \Blog\Security\AuthorizationService $authorization,
+        private readonly \Blog\Application\Audit\AuditLogger $auditLogger
     ) {
     }
 
@@ -52,6 +53,16 @@ final class ApiAuthMiddleware implements MiddlewareInterface
         try {
             $this->authorization->requireAuth();
         } catch (AuthenticationException $e) {
+            // Log security event
+            $this->auditLogger->logAuthorization(
+                'api_auth_required',
+                null,
+                $path,
+                false,
+                $request,
+                ['error' => $e->getMessage()]
+            );
+
             // Return JSON error for API requests
             return new Response(401, ['Content-Type' => 'application/json'], json_encode([
                 'success' => false,

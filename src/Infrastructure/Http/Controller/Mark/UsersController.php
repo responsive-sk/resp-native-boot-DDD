@@ -21,7 +21,8 @@ final class UsersController extends BaseController
         \Blog\Core\UseCaseHandler $useCaseHandler,
         private UserRepositoryInterface $userRepository,
         private ViewRenderer $viewRenderer,
-        \Blog\Security\AuthorizationService $authorization
+        \Blog\Security\AuthorizationService $authorization,
+        private \ResponsiveSk\Slim4Session\SessionInterface $session
     ) {
         parent::__construct($container, $useCaseHandler, $authorization);
     }
@@ -107,6 +108,13 @@ final class UsersController extends BaseController
                 'user_id' => 'route:id',
                 'role' => 'body:role'
             ], 'web');
+
+            // If updating self, regenerate session
+            $currentUserId = $this->session->get('user_id');
+            if ($currentUserId === $request->getAttribute('id')) {
+                $this->session->regenerateId();
+                $this->session->set('user_role', $request->getParsedBody()['role']);
+            }
 
             return $this->redirect('/mark/users');
         } catch (\Exception $e) {

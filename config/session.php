@@ -40,7 +40,7 @@ return [
         'use_strict_mode' => true,
         'use_cookies' => true,
         'use_only_cookies' => true,
-        'cookie_secure' => 'auto', // auto = based on request
+        'cookie_secure' => ($_ENV['APP_ENV'] ?? 'development') === 'production', // true for prod, false for dev
         'cookie_httponly' => true,
         'cookie_samesite' => 'Lax',
         'sid_length' => 48,

@@ -72,6 +72,15 @@ class AuthController extends BaseController
             // Ak login zlyhal
             $categories = $this->categoryRepository->getAll();
 
+            // Audit log failure
+            $this->auditLogger->logAuthentication(
+                'login_failed',
+                (string) ($request->getParsedBody()['email'] ?? 'unknown'),
+                false,
+                $request,
+                ['reason' => 'invalid_credentials']
+            );
+
             return $this->viewRenderer->renderResponse('auth.login', [
                 'categories' => $categories,
                 'title' => 'Login',

@@ -17,8 +17,10 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class AuthMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private readonly AuthorizationService $authorization
-    ) {}
+        private readonly AuthorizationService $authorization,
+        private readonly \Blog\Application\Audit\AuditLogger $auditLogger
+    ) {
+    }
     /**
      * Check if the request is an API request
      */
@@ -26,9 +28,9 @@ final class AuthMiddleware implements MiddlewareInterface
     {
         $path = $request->getUri()->getPath();
         $acceptHeader = $request->getHeaderLine('Accept');
-        
+
         // Check path prefix or Accept header
-        return str_starts_with($path, '/api/') 
+        return str_starts_with($path, '/api/')
             || str_contains($acceptHeader, 'application/json')
             || str_contains($acceptHeader, 'application/vnd.api+json');
     }
@@ -43,7 +45,7 @@ final class AuthMiddleware implements MiddlewareInterface
             'error' => $message,
             'message' => $message
         ]));
-        
+
         return $response;
     }
 
@@ -90,11 +92,21 @@ final class AuthMiddleware implements MiddlewareInterface
         try {
             $this->authorization->requireAuth();
         } catch (AuthenticationException $e) {
+            // Log security event
+            $this->auditLogger->logAuthorization(
+                'authentication_required',
+                null,
+                $path,
+                false,
+                $request,
+                ['error' => $e->getMessage()]
+            );
+
             // Return appropriate response based on request type
             if ($this->isApiRequest($request)) {
                 return $this->createJsonErrorResponse('Authentication required', 401);
             }
-            
+
             // Web request - redirect to login
             return $this->createRedirectResponse('/login');
         }
@@ -104,11 +116,21 @@ final class AuthMiddleware implements MiddlewareInterface
             try {
                 $this->authorization->requireMark();
             } catch (AuthorizationException $e) {
+                // Log security event
+                $this->auditLogger->logAuthorization(
+                    'access_denied',
+                    (string) ($request->getAttribute('user')['id'] ?? 'unknown'),
+                    $path,
+                    false,
+                    $request,
+                    ['required_role' => 'mark', 'error' => $e->getMessage()]
+                );
+
                 // Return appropriate response based on request type
                 if ($this->isApiRequest($request)) {
                     return $this->createJsonErrorResponse('MARK role required', 403);
                 }
-                
+
                 // Web request - redirect to a default authorized page (e.g., blog index)
                 return $this->createRedirectResponse('/blog');
             }
