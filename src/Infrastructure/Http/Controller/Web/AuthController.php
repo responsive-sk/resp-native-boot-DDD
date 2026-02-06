@@ -24,9 +24,10 @@ class AuthController extends BaseController
         private \ResponsiveSk\Slim4Paths\Paths $paths,
         private \Blog\Application\Audit\AuditLogger $auditLogger,
         private \ResponsiveSk\Slim4Session\SessionInterface $session,
-        private \Blog\Domain\Blog\Repository\CategoryRepository $categoryRepository
+        private \Blog\Domain\Blog\Repository\CategoryRepository $categoryRepository,
+        \Blog\Security\AuthorizationService $authorization
     ) {
-        parent::__construct($container, $useCaseHandler);
+        parent::__construct($container, $useCaseHandler, $authorization);
     }
 
     public function loginForm(ServerRequestInterface $request): ResponseInterface

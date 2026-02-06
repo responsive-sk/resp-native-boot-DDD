@@ -9,17 +9,17 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class ArticleApiController extends BaseController
 {
-    public function getAll(ServerRequestInterface $request): ResponseInterface
+    public function index(ServerRequestInterface $request): ResponseInterface
     {
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\GetAllArticles::class);
-        
+
         $data = $this->executeUseCase($request, $useCase, [
             'page' => 'query:page',
             'limit' => 'query:limit',
             'category' => 'query:category',
             'tag' => 'query:tag'
         ], 'api');
-        
+
         return $this->jsonResponse([
             'success' => true,
             'data' => $data,
@@ -29,35 +29,35 @@ class ArticleApiController extends BaseController
             ]
         ]);
     }
-    
+
     public function getBySlug(ServerRequestInterface $request, string $slug): ResponseInterface
     {
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\GetArticleBySlug::class);
-        
+
         $data = $this->executeUseCase($request, $useCase, [
             'slug' => 'route:slug'
         ], 'api');
-        
+
         return $this->jsonResponse([
             'success' => true,
             'data' => $data
         ]);
     }
-    
+
     public function getById(ServerRequestInterface $request, int $id): ResponseInterface
     {
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\GetArticleById::class);
-        
+
         $data = $this->executeUseCase($request, $useCase, [
             'article_id' => $id
         ], 'api');
-        
+
         return $this->jsonResponse([
             'success' => true,
             'data' => $data
         ]);
     }
-    
+
     public function create(ServerRequestInterface $request): ResponseInterface
     {
         // SECURITY: Require authentication
@@ -71,7 +71,7 @@ class ArticleApiController extends BaseController
         }
 
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\CreateArticle::class);
-        
+
         $data = $this->executeUseCase($request, $useCase, [
             'title' => 'body:title',
             'content' => 'body:content',
@@ -80,14 +80,14 @@ class ArticleApiController extends BaseController
             'status' => 'body:status',
             'author_id' => 'session:user_id'
         ], 'api');
-        
+
         return $this->jsonResponse([
             'success' => true,
             'data' => $data,
             'message' => 'Article created successfully'
         ], 201);
     }
-    
+
     public function update(ServerRequestInterface $request, int $id): ResponseInterface
     {
         // SECURITY: Require authentication and ownership
@@ -101,7 +101,7 @@ class ArticleApiController extends BaseController
         }
 
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\UpdateArticle::class);
-        
+
         $data = $this->executeUseCase($request, $useCase, [
             'article_id' => $id,
             'title' => 'body:title',
@@ -111,14 +111,14 @@ class ArticleApiController extends BaseController
             'tags' => 'body:tags',
             'status' => 'body:status'
         ], 'api');
-        
+
         return $this->jsonResponse([
             'success' => true,
             'data' => $data,
             'message' => 'Article updated successfully'
         ]);
     }
-    
+
     public function delete(ServerRequestInterface $request, int $id): ResponseInterface
     {
         // SECURITY: Require authentication and ownership
@@ -132,28 +132,28 @@ class ArticleApiController extends BaseController
         }
 
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\DeleteArticle::class);
-        
+
         $data = $this->executeUseCase($request, $useCase, [
             'article_id' => $id
         ], 'api');
-        
+
         return $this->jsonResponse([
             'success' => true,
             'data' => $data,
             'message' => 'Article deleted successfully'
         ]);
     }
-    
+
     public function search(ServerRequestInterface $request): ResponseInterface
     {
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\SearchArticles::class);
-        
+
         $data = $this->executeUseCase($request, $useCase, [
             'query' => 'query:q',
             'page' => 'query:page',
             'limit' => 'query:limit'
         ], 'api');
-        
+
         return $this->jsonResponse([
             'success' => true,
             'data' => $data,

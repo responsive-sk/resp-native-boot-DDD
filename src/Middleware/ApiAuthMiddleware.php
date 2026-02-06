@@ -15,6 +15,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class ApiAuthMiddleware implements MiddlewareInterface
 {
+    public function __construct(
+        private readonly \Blog\Security\AuthorizationService $authorization
+    ) {
+    }
+
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
@@ -22,7 +27,7 @@ final class ApiAuthMiddleware implements MiddlewareInterface
         $path = $request->getUri()->getPath();
 
         // Add user to request attributes (can be null if not authenticated)
-        $request = $request->withAttribute('user', Authorization::getUser());
+        $request = $request->withAttribute('user', $this->authorization->getUser());
 
         // API endpoints that require authentication
         $protectedApiPrefixes = [
@@ -45,7 +50,7 @@ final class ApiAuthMiddleware implements MiddlewareInterface
 
         // For protected API endpoints - check authentication
         try {
-            Authorization::requireAuth();
+            $this->authorization->requireAuth();
         } catch (AuthenticationException $e) {
             // Return JSON error for API requests
             return new Response(401, ['Content-Type' => 'application/json'], json_encode([

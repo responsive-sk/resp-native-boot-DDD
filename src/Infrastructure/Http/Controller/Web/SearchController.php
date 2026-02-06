@@ -18,9 +18,10 @@ final class SearchController extends BaseController
     public function __construct(
         ContainerInterface $container,
         UseCaseHandler $useCaseHandler,
-        private ViewRenderer $viewRenderer
+        private ViewRenderer $viewRenderer,
+        \Blog\Security\AuthorizationService $authorization
     ) {
-        parent::__construct($container, $useCaseHandler);
+        parent::__construct($container, $useCaseHandler, $authorization);
     }
 
     public function index(ServerRequestInterface $request): ResponseInterface

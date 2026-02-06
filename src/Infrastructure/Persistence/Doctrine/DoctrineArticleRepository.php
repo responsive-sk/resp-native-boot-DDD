@@ -107,7 +107,83 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
             return trim($row['status'] ?? '') === 'published';
         });
 
-        return array_map([$this, 'hydrate'], $rows);
+        if (empty($rows)) {
+            return [];
+        }
+
+        $articleIds = array_column($rows, 'id');
+        $categoryIds = array_filter(array_unique(array_column($rows, 'category_id')));
+
+        // 2. Load all categories at once
+        $categories = [];
+        if (!empty($categoryIds)) {
+            $categoriesData = $this->connection->fetchAllAssociative(
+                'SELECT * FROM categories WHERE id IN (?)',
+                [$categoryIds],
+                [\Doctrine\DBAL\ArrayParameterType::STRING]
+            );
+            foreach ($categoriesData as $cat) {
+                $categories[$cat['id']] = $cat;
+            }
+        }
+
+        // 3. Load all tags for these articles at once
+        $tagsData = [];
+        if (!empty($articleIds)) {
+            $tagsData = $this->connection->fetchAllAssociative(
+                'SELECT t.*, at.article_id 
+                 FROM tags t
+                 INNER JOIN article_tags at ON t.id = at.tag_id
+                 WHERE at.article_id IN (?)
+                 ORDER BY t.name ASC',
+                [$articleIds],
+                [\Doctrine\DBAL\ArrayParameterType::INTEGER]
+            );
+        }
+
+        $tagsByArticle = [];
+        foreach ($tagsData as $tag) {
+            $tagsByArticle[$tag['article_id']][] = $tag;
+        }
+
+        // 4. Hydrate with preloaded data
+        return array_map(function ($row) use ($categories, $tagsByArticle) {
+            return $this->hydrateWithPreloadedData(
+                $row,
+                $categories[$row['category_id'] ?? ''] ?? null,
+                $tagsByArticle[$row['id']] ?? []
+            );
+        }, $rows);
+    }
+
+    private function hydrateWithPreloadedData(array $row, ?array $categoryData, array $tagsData): Article
+    {
+        $category = null;
+        if ($categoryData) {
+            $category = \Blog\Domain\Blog\Entity\Category::reconstitute(
+                \Blog\Domain\Blog\ValueObject\CategoryId::fromString($categoryData['id']),
+                \Blog\Domain\Blog\ValueObject\CategoryName::fromString($categoryData['name']),
+                \Blog\Domain\Blog\ValueObject\CategorySlug::fromString($categoryData['slug']),
+                $categoryData['description'],
+                new \DateTimeImmutable($categoryData['created_at']),
+                new \DateTimeImmutable($categoryData['updated_at'])
+            );
+        }
+
+        $tags = array_map([$this, 'hydrateTag'], $tagsData);
+
+        return Article::reconstitute(
+            ArticleId::fromInt((int) $row['id']),
+            \Blog\Domain\Blog\ValueObject\Title::fromString($row['title']),
+            \Blog\Domain\Blog\ValueObject\Content::fromString($row['content']),
+            \Blog\Domain\User\ValueObject\UserId::fromBytes($row['user_id']),
+            \Blog\Domain\Blog\ValueObject\ArticleStatus::fromString($row['status']),
+            new \DateTimeImmutable($row['created_at']),
+            new \DateTimeImmutable($row['updated_at']),
+            $row['slug'] ? \Blog\Domain\Blog\ValueObject\Slug::fromString($row['slug']) : null,
+            $category,
+            $tags
+        );
     }
 
     public function search(string $query): array
@@ -197,29 +273,9 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
                 [$row['category_id']]
             );
 
-            if ($categoryData) {
-                $category = \Blog\Domain\Blog\Entity\Category::reconstitute(
-                    \Blog\Domain\Blog\ValueObject\CategoryId::fromString($categoryData['id']),
-                    \Blog\Domain\Blog\ValueObject\CategoryName::fromString($categoryData['name']),
-                    \Blog\Domain\Blog\ValueObject\CategorySlug::fromString($categoryData['slug']),
-                    $categoryData['description'],
-                    new \DateTimeImmutable($categoryData['created_at']),
-                    new \DateTimeImmutable($categoryData['updated_at'])
-                );
-            }
+            return $this->hydrateWithPreloadedData($row, $categoryData ?: null, $this->loadTagsForArticle((int) $row['id']));
         }
 
-        return Article::reconstitute(
-            ArticleId::fromInt((int) $row['id']),
-            \Blog\Domain\Blog\ValueObject\Title::fromString($row['title']),
-            \Blog\Domain\Blog\ValueObject\Content::fromString($row['content']),
-            \Blog\Domain\User\ValueObject\UserId::fromBytes($row['user_id']), // ← user_id from bytes
-            \Blog\Domain\Blog\ValueObject\ArticleStatus::fromString($row['status']),
-            new \DateTimeImmutable($row['created_at']),
-            new \DateTimeImmutable($row['updated_at']),
-            $row['slug'] ? \Blog\Domain\Blog\ValueObject\Slug::fromString($row['slug']) : null,
-            $category,
-            $this->loadTagsForArticle((int) $row['id'])
-        );
+        return $this->hydrateWithPreloadedData($row, null, $this->loadTagsForArticle((int) $row['id']));
     }
 }

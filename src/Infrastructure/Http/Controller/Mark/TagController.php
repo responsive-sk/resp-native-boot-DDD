@@ -22,9 +22,10 @@ final class TagController extends BaseController
         private TagRepository $tagRepository,
         private GetAllTags $getAllTags,
         private GetOrCreateTag $getOrCreateTag,
-        private ViewRenderer $viewRenderer
+        private ViewRenderer $viewRenderer,
+        \Blog\Security\AuthorizationService $authorization
     ) {
-        parent::__construct($container, $useCaseHandler);
+        parent::__construct($container, $useCaseHandler, $authorization);
     }
 
     public function index(ServerRequestInterface $request): ResponseInterface

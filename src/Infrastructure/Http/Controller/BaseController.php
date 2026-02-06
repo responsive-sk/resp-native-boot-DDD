@@ -78,7 +78,7 @@ abstract class BaseController
      */
     protected function getCurrentUser(): ?array
     {
-        return Authorization::getUser();
+        return $this->authorization->getUser();
     }
 
     /**
@@ -87,8 +87,8 @@ abstract class BaseController
     protected function requireAuth(): ?array
     {
         try {
-            Authorization::requireAuth();
-            return Authorization::getUser();
+            $this->authorization->requireAuth();
+            return $this->authorization->getUser();
         } catch (AuthenticationException $e) {
             return $this->jsonResponse([
                 'success' => false,
@@ -110,7 +110,7 @@ abstract class BaseController
 
         // Get the article to check ownership
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\GetArticleById::class);
-        
+
         try {
             $data = $this->executeUseCase(
                 new \Nyholm\Psr7\ServerRequest('GET', '/api/article/' . $articleId),
@@ -118,7 +118,7 @@ abstract class BaseController
                 ['article_id' => $articleId],
                 'api'
             );
-            
+
             $article = $data['article'] ?? null;
             if ($article && isset($article['author_id']) && $article['author_id'] !== $user['id']) {
                 return $this->jsonResponse([
@@ -127,15 +127,30 @@ abstract class BaseController
                     'message' => 'You can only modify your own articles'
                 ], 403);
             }
-            
+
             return $user;
-            
+
         } catch (\Exception $e) {
             return $this->jsonResponse([
                 'success' => false,
                 'error' => 'Article not found',
                 'message' => 'The requested article does not exist'
             ], 404);
+        }
+    }
+
+    /**
+     * Check MARK role for web controllers
+     */
+    protected function requireMarkWeb(): ?array
+    {
+        try {
+            $this->authorization->requireMark();
+            return $this->authorization->getUser();
+        } catch (AuthorizationException $e) {
+            return null; // Controller will handle the response
+        } catch (AuthenticationException $e) {
+            return null; // Controller will handle the response
         }
     }
 
@@ -151,7 +166,7 @@ abstract class BaseController
 
         // Get the article to check ownership
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\GetArticleById::class);
-        
+
         try {
             $data = $this->executeUseCase(
                 new \Nyholm\Psr7\ServerRequest('GET', '/api/article/' . $articleId),
@@ -159,14 +174,14 @@ abstract class BaseController
                 ['article_id' => $articleId],
                 'api'
             );
-            
+
             $article = $data['article'] ?? null;
             if ($article && isset($article['author_id']) && $article['author_id'] !== $user['id']) {
                 return $this->htmlResponse('Access denied: You can only modify your own articles', 403);
             }
-            
+
             return $user;
-            
+
         } catch (\Exception $e) {
             return $this->htmlResponse('Article not found', 404);
         }
@@ -179,39 +194,39 @@ abstract class BaseController
     {
         // Parse the URL to validate it
         $parsedUrl = parse_url($url);
-        
+
         // If parsing fails, redirect to home
         if ($parsedUrl === false) {
             return $this->redirect('/');
         }
-        
+
         // Check if URL has a scheme (http, https, etc.)
         if (isset($parsedUrl['scheme'])) {
             // Only allow same-origin redirects or relative URLs
             $host = $parsedUrl['host'] ?? '';
             $serverHost = $_SERVER['HTTP_HOST'] ?? '';
-            
+
             // If host is different, it's potentially malicious
             if ($host !== $serverHost && $host !== '') {
                 return $this->redirect('/');
             }
-            
+
             // Only allow http and https schemes
             if (!in_array($parsedUrl['scheme'], ['http', 'https'], true)) {
                 return $this->redirect('/');
             }
         }
-        
+
         // Allow relative URLs (no scheme and host)
         if (!isset($parsedUrl['scheme']) && !isset($parsedUrl['host'])) {
             return $this->redirect($url);
         }
-        
+
         // For absolute URLs, ensure they're same-origin
         if (isset($parsedUrl['host']) && $parsedUrl['host'] === $_SERVER['HTTP_HOST']) {
             return $this->redirect($url);
         }
-        
+
         // Default to safe redirect
         return $this->redirect('/');
     }
@@ -222,31 +237,31 @@ abstract class BaseController
     protected function getSafeRedirect(ServerRequestInterface $request, string $default = '/'): string
     {
         $redirect = $request->getQueryParams()['redirect'] ?? $default;
-        
+
         // Validate the redirect URL
         $parsedUrl = parse_url($redirect);
-        
+
         // If parsing fails, use default
         if ($parsedUrl === false) {
             return $default;
         }
-        
+
         // Only allow relative URLs or same-origin URLs
         if (isset($parsedUrl['scheme']) || isset($parsedUrl['host'])) {
             // If it has scheme or host, it must be same-origin
             $host = $parsedUrl['host'] ?? '';
             $serverHost = $_SERVER['HTTP_HOST'] ?? '';
-            
+
             if ($host !== $serverHost || $host === '') {
                 return $default;
             }
-            
+
             // Only allow http and https
             if (isset($parsedUrl['scheme']) && !in_array($parsedUrl['scheme'], ['http', 'https'], true)) {
                 return $default;
             }
         }
-        
+
         return $redirect;
     }
 }

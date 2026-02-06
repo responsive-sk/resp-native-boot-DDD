@@ -23,9 +23,10 @@ final class BlogController extends BaseController
         UseCaseHandler $useCaseHandler,
         private ArticleRepository $articleRepository,
         private CategoryRepository $categoryRepository,
-        private ViewRenderer $viewRenderer
+        private ViewRenderer $viewRenderer,
+        \Blog\Security\AuthorizationService $authorization
     ) {
-        parent::__construct($container, $useCaseHandler);
+        parent::__construct($container, $useCaseHandler, $authorization);
     }
 
     public function home(ServerRequestInterface $request): ResponseInterface

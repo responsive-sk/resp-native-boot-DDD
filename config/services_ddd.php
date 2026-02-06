@@ -127,12 +127,12 @@ $services += [
 $services += [
     SessionInterface::class => function () {
         $config = require __DIR__ . '/session.php';
-        
+
         // Override cookie_secure with proper HTTPS detection
         if (isset($config['security']['cookie_secure']) && $config['security']['cookie_secure'] === 'auto') {
             $config['security']['cookie_secure'] = \Blog\Security\HttpsDetector::isHttps();
         }
-        
+
         return SessionFactory::create($config);
     },
 
@@ -235,13 +235,15 @@ $services += [
         $c->get(\Blog\Core\UseCaseHandler::class),
         $c->get(\Blog\Domain\Blog\Repository\ArticleRepository::class),
         $c->get(\Blog\Domain\Blog\Repository\CategoryRepository::class),
-        $c->get(ViewRenderer::class)
+        $c->get(ViewRenderer::class),
+        $c->get(\Blog\Security\AuthorizationService::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Web\ArticleController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Web\ArticleController(
         $c,
         $c->get(\Blog\Core\UseCaseHandler::class),
-        $c->get(ViewRenderer::class)
+        $c->get(ViewRenderer::class),
+        $c->get(\Blog\Security\AuthorizationService::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Web\AuthController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Web\AuthController(
@@ -251,13 +253,15 @@ $services += [
         $c->get(\ResponsiveSk\Slim4Paths\Paths::class),
         $c->get(\Blog\Application\Audit\AuditLogger::class),
         $c->get(\ResponsiveSk\Slim4Session\SessionInterface::class),
-        $c->get(\Blog\Domain\Blog\Repository\CategoryRepository::class)
+        $c->get(\Blog\Domain\Blog\Repository\CategoryRepository::class),
+        $c->get(\Blog\Security\AuthorizationService::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Web\SearchController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Web\SearchController(
         $c,
         $c->get(\Blog\Core\UseCaseHandler::class),
-        $c->get(ViewRenderer::class)
+        $c->get(ViewRenderer::class),
+        $c->get(\Blog\Security\AuthorizationService::class)
     ),
 
     // Mark (System Operator) Controllers
@@ -265,21 +269,24 @@ $services += [
         $c,
         $c->get(\Blog\Core\UseCaseHandler::class),
         $c->get(\Blog\Domain\Blog\Repository\ArticleRepository::class),
-        $c->get(ViewRenderer::class)
+        $c->get(ViewRenderer::class),
+        $c->get(\Blog\Security\AuthorizationService::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Mark\ArticlesController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Mark\ArticlesController(
         $c,
         $c->get(\Blog\Core\UseCaseHandler::class),
         $c->get(\Blog\Domain\Blog\Repository\ArticleRepository::class),
-        $c->get(ViewRenderer::class)
+        $c->get(ViewRenderer::class),
+        $c->get(\Blog\Security\AuthorizationService::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Mark\CategoryController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Mark\CategoryController(
         $c,
         $c->get(\Blog\Core\UseCaseHandler::class),
         $c->get(\Blog\Domain\Blog\Repository\CategoryRepository::class),
-        $c->get(ViewRenderer::class)
+        $c->get(ViewRenderer::class),
+        $c->get(\Blog\Security\AuthorizationService::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Mark\TagController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Mark\TagController(
@@ -288,49 +295,49 @@ $services += [
         $c->get(\Blog\Domain\Blog\Repository\TagRepository::class),
         $c->get(\Blog\Application\Blog\GetAllTags::class),
         $c->get(\Blog\Application\Blog\GetOrCreateTag::class),
-        $c->get(ViewRenderer::class)
+        $c->get(ViewRenderer::class),
+        $c->get(\Blog\Security\AuthorizationService::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Mark\UsersController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Mark\UsersController(
         $c,
         $c->get(\Blog\Core\UseCaseHandler::class),
         $c->get(UserRepositoryInterface::class),
-        $c->get(ViewRenderer::class)
+        $c->get(ViewRenderer::class),
+        $c->get(\Blog\Security\AuthorizationService::class)
     ),
 
     // API Controllers
     \Blog\Infrastructure\Http\Controller\Api\ArticleApiController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Api\ArticleApiController(
         $c,
-        $c->get(\Blog\Core\UseCaseHandler::class)
+        $c->get(\Blog\Core\UseCaseHandler::class),
+        $c->get(\Blog\Security\AuthorizationService::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Api\AuthApiController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Api\AuthApiController(
         $c,
-        $c->get(\Blog\Core\UseCaseHandler::class)
+        $c->get(\Blog\Core\UseCaseHandler::class),
+        $c->get(\Blog\Security\AuthorizationService::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Api\SessionPingController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Api\SessionPingController(
         $c,
-        $c->get(\Blog\Core\UseCaseHandler::class)
+        $c->get(\Blog\Core\UseCaseHandler::class),
+        $c->get(\Blog\Security\AuthorizationService::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\DebugController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\DebugController(),
 
     \Blog\Infrastructure\DebugBar\BlogDebugBarStyles::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\DebugBar\BlogDebugBarStyles(),
 
-    \Blog\Infrastructure\Http\Middleware\Blog\Middleware\AuthMiddleware::class => fn(ContainerInterface $c) => new \Blog\Middleware\AuthMiddleware(
-        $c->get(\Blog\Security\AuthorizationService::class)
-    ),
 
-    \Blog\Infrastructure\Http\Controller\BaseController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\BaseController(
-        $c,
-        $c->get(\Blog\Core\UseCaseHandler::class),
-        $c->get(\Blog\Security\AuthorizationService::class)
-    ),
+
+
 
     \Blog\Infrastructure\Http\Controller\Api\ImageController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Api\ImageController(
         $c,
-        $c->get(\Blog\Core\UseCaseHandler::class)
+        $c->get(\Blog\Core\UseCaseHandler::class),
+        $c->get(\Blog\Security\AuthorizationService::class)
     ),
 
 ];
@@ -352,8 +359,12 @@ $services += [
         $c->get(ViewRenderer::class)
     ),
 
-    AuthMiddleware::class => fn() => new AuthMiddleware(),
-    ApiAuthMiddleware::class => fn() => new ApiAuthMiddleware(),
+    AuthMiddleware::class => fn(ContainerInterface $c) => new AuthMiddleware(
+        $c->get(\Blog\Security\AuthorizationService::class)
+    ),
+    ApiAuthMiddleware::class => fn(ContainerInterface $c) => new ApiAuthMiddleware(
+        $c->get(\Blog\Security\AuthorizationService::class)
+    ),
     ErrorHandlerMiddleware::class => fn(ContainerInterface $c) => new ErrorHandlerMiddleware(
         $c->get(ViewRenderer::class)
     ),

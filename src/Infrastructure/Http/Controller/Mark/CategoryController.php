@@ -19,9 +19,10 @@ final class CategoryController extends BaseController
         \Psr\Container\ContainerInterface $container,
         \Blog\Core\UseCaseHandler $useCaseHandler,
         private CategoryRepository $categoryRepository,
-        private ViewRenderer $viewRenderer
+        private ViewRenderer $viewRenderer,
+        \Blog\Security\AuthorizationService $authorization
     ) {
-        parent::__construct($container, $useCaseHandler);
+        parent::__construct($container, $useCaseHandler, $authorization);
     }
 
     public function index(ServerRequestInterface $request): ResponseInterface

@@ -9,10 +9,10 @@ use Psr\Container\NotFoundExceptionInterface;
 return function (): ContainerInterface {
     // 1. Načítaj základné služby
     $services = require __DIR__ . '/services_ddd.php';
-    
+
     // 2. Načítaj debugbar konfiguráciu
     $debugbarConfig = require __DIR__ . '/debugbar.php';
-    
+
     // 3. Pridaj config service
     $services['config'] = function () {
         return [
@@ -22,27 +22,27 @@ return function (): ContainerInterface {
             'debugbar' => $debugbarConfig['debugbar'] ?? [],
         ];
     };
-    
+
     // 4. Pridaj nové služby pre FÁZU 4
     $services += [
-        'use_case_handler' => fn () => new \Blog\Core\UseCaseHandler($this),
-        'image_repository' => fn () => new \Blog\Infrastructure\Persistence\Doctrine\DoctrineImageRepository(
+        'use_case_handler' => fn() => new \Blog\Core\UseCaseHandler($this),
+        'image_repository' => fn() => new \Blog\Infrastructure\Persistence\Doctrine\DoctrineImageRepository(
             $this->get('database')
         ),
-        'image_factory' => fn () => new \Blog\Domain\Image\Factory\ImageFactory(),
+        'image_factory' => fn() => new \Blog\Domain\Image\Factory\ImageFactory(),
     ];
-    
+
     // 5. Pridaj DebugBar služby ak sú potrebné
     if ($debugbarConfig['debugbar']['enabled'] ?? false) {
         // DebugBar middleware
-        $services[\ResponsiveSk\PhpDebugBarMiddleware\DebugBarMiddleware::class] = 
+        $services[\ResponsiveSk\PhpDebugBarMiddleware\DebugBarMiddleware::class] =
             \ResponsiveSk\PhpDebugBarMiddleware\DebugBarMiddlewareFactory::class;
-        
+
         // DebugBar assets handler
-        $services[\ResponsiveSk\PhpDebugBarMiddleware\DebugBarAssetsHandler::class] = 
+        $services[\ResponsiveSk\PhpDebugBarMiddleware\DebugBarAssetsHandler::class] =
             \ResponsiveSk\PhpDebugBarMiddleware\DebugBarAssetsHandlerFactory::class;
     }
-    
+
     return new class ($services) implements ContainerInterface {
         private array $services;
         private array $instances = [];
@@ -65,10 +65,16 @@ return function (): ContainerInterface {
 
             if (!isset($this->instances[$id])) {
                 $factory = $this->services[$id];
-                
+
+                // Ak je to string (factory class), vytvor inštanciu
                 // Ak je to string (factory class), vytvor inštanciu
                 if (is_string($factory) && class_exists($factory)) {
-                    $this->instances[$id] = new $factory();
+                    $factoryInstance = new $factory();
+                    if (is_callable($factoryInstance)) {
+                        $this->instances[$id] = $factoryInstance($this);
+                    } else {
+                        $this->instances[$id] = $factoryInstance;
+                    }
                 } else {
                     $this->instances[$id] = $factory($this);
                 }

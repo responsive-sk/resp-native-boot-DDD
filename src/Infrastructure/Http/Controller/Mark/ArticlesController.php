@@ -22,9 +22,10 @@ final class ArticlesController extends BaseController
         \Psr\Container\ContainerInterface $container,
         \Blog\Core\UseCaseHandler $useCaseHandler,
         private ArticleRepository $articleRepository,
-        private ViewRenderer $viewRenderer
+        private ViewRenderer $viewRenderer,
+        \Blog\Security\AuthorizationService $authorization
     ) {
-        parent::__construct($container, $useCaseHandler);
+        parent::__construct($container, $useCaseHandler, $authorization);
     }
 
     public function index(ServerRequestInterface $request): ResponseInterface

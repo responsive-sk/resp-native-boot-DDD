@@ -16,9 +16,10 @@ class ArticleController extends BaseController
     public function __construct(
         ContainerInterface $container,
         UseCaseHandler $useCaseHandler,
-        private ViewRenderer $renderer
+        private ViewRenderer $renderer,
+        \Blog\Security\AuthorizationService $authorization
     ) {
-        parent::__construct($container, $useCaseHandler);
+        parent::__construct($container, $useCaseHandler, $authorization);
     }
 
     public function show(ServerRequestInterface $request, string $slug): ResponseInterface
