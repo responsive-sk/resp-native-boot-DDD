@@ -206,9 +206,100 @@ final class AuthMiddlewareTest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
-    private function createServerRequest(string $method, string $uri): ServerRequestInterface
+    public function test_returns_json_error_for_api_authentication_failure(): void
     {
-        return new ServerRequest($method, $uri);
+        // Clear any existing session
+        $_SESSION = [];
+
+        $request = $this->createServerRequest('GET', '/article/create', [
+            'Accept' => 'application/json'
+        ]);
+        $handler = $this->createRequestHandler(new Response(200));
+
+        $response = $this->middleware->process($request, $handler);
+
+        $this->assertSame(401, $response->getStatusCode());
+        $this->assertSame('application/json', $response->getHeaderLine('Content-Type'));
+        
+        $body = json_decode((string) $response->getBody(), true);
+        $this->assertSame('Authentication required', $body['error']);
+        $this->assertSame('Authentication required', $body['message']);
+    }
+
+    public function test_returns_json_error_for_api_authorization_failure(): void
+    {
+        // Set up authenticated user without MARK role
+        $_SESSION['user_id'] = 'test-user-id';
+        $_SESSION['user_role'] = 'ROLE_USER';
+
+        $request = $this->createServerRequest('GET', '/mark/dashboard', [
+            'Accept' => 'application/json'
+        ]);
+        $handler = $this->createRequestHandler(new Response(200));
+
+        $response = $this->middleware->process($request, $handler);
+
+        $this->assertSame(403, $response->getStatusCode());
+        $this->assertSame('application/json', $response->getHeaderLine('Content-Type'));
+        
+        $body = json_decode((string) $response->getBody(), true);
+        $this->assertSame('MARK role required', $body['error']);
+        $this->assertSame('MARK role required', $body['message']);
+    }
+
+    public function test_detects_api_request_by_accept_header(): void
+    {
+        $_SESSION = [];
+
+        $request = $this->createServerRequest('GET', '/article/create', [
+            'Accept' => 'application/vnd.api+json'
+        ]);
+        $handler = $this->createRequestHandler(new Response(200));
+
+        $response = $this->middleware->process($request, $handler);
+
+        $this->assertSame(401, $response->getStatusCode());
+        $this->assertSame('application/json', $response->getHeaderLine('Content-Type'));
+    }
+
+    public function test_returns_redirect_for_web_authentication_failure(): void
+    {
+        // Clear any existing session
+        $_SESSION = [];
+
+        $request = $this->createServerRequest('GET', '/article/create');
+        $handler = $this->createRequestHandler(new Response(200));
+
+        $response = $this->middleware->process($request, $handler);
+
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertSame('/login', $response->getHeaderLine('Location'));
+    }
+
+    public function test_returns_redirect_for_web_authorization_failure(): void
+    {
+        // Set up authenticated user without MARK role
+        $_SESSION['user_id'] = 'test-user-id';
+        $_SESSION['user_role'] = 'ROLE_USER';
+
+        $request = $this->createServerRequest('GET', '/mark/dashboard');
+        $handler = $this->createRequestHandler(new Response(200));
+
+        $response = $this->middleware->process($request, $handler);
+
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertSame('/blog', $response->getHeaderLine('Location'));
+    }
+
+    private function createServerRequest(string $method, string $uri, array $headers = []): ServerRequestInterface
+    {
+        $request = new ServerRequest($method, $uri);
+        
+        foreach ($headers as $name => $value) {
+            $request = $request->withHeader($name, $value);
+        }
+        
+        return $request;
     }
 
     private function createRequestHandler(ResponseInterface $response): RequestHandlerInterface
