@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Blog\Middleware;
 
+use Blog\Security\HttpsDetector;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -24,7 +25,7 @@ final class SessionMiddleware implements MiddlewareInterface
             $sessionLifetime = (int) ($_ENV['SESSION_LIFETIME'] ?? 3600);
 
             session_start([
-                'cookie_secure' => isset($_SERVER['HTTPS']),
+                'cookie_secure' => HttpsDetector::isHttps(),
                 'cookie_httponly' => true,
                 'cookie_samesite' => 'Lax',
                 'use_strict_mode' => true,

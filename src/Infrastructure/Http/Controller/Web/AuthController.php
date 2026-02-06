@@ -58,7 +58,9 @@ class AuthController extends BaseController
                 // Audit log
                 $this->auditLogger->logLogin($result['data']['user']['id']);
 
-                return $this->redirect($this->paths->urlFor('home'));
+                // SECURITY: Use safe redirect to prevent open redirect attacks
+                $safeRedirect = $this->getSafeRedirect($request, $this->paths->urlFor('home'));
+                return $this->redirect($safeRedirect);
             }
 
             // Ak login zlyhal
@@ -110,7 +112,9 @@ class AuthController extends BaseController
 
                 $this->auditLogger->logRegistration($result['user']['id']);
 
-                return $this->redirect($this->paths->urlFor('home'));
+                // SECURITY: Use safe redirect to prevent open redirect attacks
+                $safeRedirect = $this->getSafeRedirect($request, $this->paths->urlFor('home'));
+                return $this->redirect($safeRedirect);
             }
 
             $categories = $this->categoryRepository->getAll();

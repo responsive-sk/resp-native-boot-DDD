@@ -45,6 +45,7 @@ use Blog\Infrastructure\Persistence\Doctrine\DoctrineUserRepository;
 use Blog\Infrastructure\View\PlatesRenderer;
 use Blog\Infrastructure\View\ViewRenderer;
 use Blog\Middleware\AuthMiddleware;
+use Blog\Middleware\ApiAuthMiddleware;
 use Blog\Middleware\CorsMiddleware;
 use Blog\Middleware\PjaxMiddleware;
 use Blog\Security\Authorization;
@@ -114,6 +115,12 @@ $services += [
 $services += [
     SessionInterface::class => function () {
         $config = require __DIR__ . '/session.php';
+        
+        // Override cookie_secure with proper HTTPS detection
+        if (isset($config['security']['cookie_secure']) && $config['security']['cookie_secure'] === 'auto') {
+            $config['security']['cookie_secure'] = \Blog\Security\HttpsDetector::isHttps();
+        }
+        
         return SessionFactory::create($config);
     },
 
@@ -257,11 +264,15 @@ $services += [
     ),
 
     \Blog\Infrastructure\Http\Controller\Mark\CategoryController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Mark\CategoryController(
+        $c,
+        $c->get(\Blog\Core\UseCaseHandler::class),
         $c->get(\Blog\Domain\Blog\Repository\CategoryRepository::class),
         $c->get(ViewRenderer::class)
     ),
 
     \Blog\Infrastructure\Http\Controller\Mark\TagController::class => fn(ContainerInterface $c) => new \Blog\Infrastructure\Http\Controller\Mark\TagController(
+        $c,
+        $c->get(\Blog\Core\UseCaseHandler::class),
         $c->get(\Blog\Domain\Blog\Repository\TagRepository::class),
         $c->get(\Blog\Application\Blog\GetAllTags::class),
         $c->get(\Blog\Application\Blog\GetOrCreateTag::class),
@@ -322,6 +333,7 @@ $services += [
     ),
 
     AuthMiddleware::class => fn() => new AuthMiddleware(),
+    ApiAuthMiddleware::class => fn() => new ApiAuthMiddleware(),
     ErrorHandlerMiddleware::class => fn(ContainerInterface $c) => new ErrorHandlerMiddleware(
         $c->get(ViewRenderer::class)
     ),
@@ -352,6 +364,7 @@ $services['middlewares'] = function (ContainerInterface $c) {
         $c->get(RateLimitMiddleware::class),
         // $c->get(CsrfMiddleware::class), // Temporárne vypnuté
         $c->get(AuthMiddleware::class),
+        $c->get(ApiAuthMiddleware::class), // API authentication
         $c->get(RouterMiddleware::class),
     ]);
 

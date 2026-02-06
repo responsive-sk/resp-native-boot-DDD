@@ -24,6 +24,12 @@ final class DashboardController extends BaseController
 
     public function index(ServerRequestInterface $request): ResponseInterface
     {
+        // ✅ SECURITY: Require MARK role for admin operations
+        $user = $this->requireMarkWeb();
+        if ($user === null) {
+            return $this->htmlResponse('Access denied: MARK role required', 403);
+        }
+
         $useCase = $this->useCaseHandler->get(GetAllArticles::class);
 
         try {

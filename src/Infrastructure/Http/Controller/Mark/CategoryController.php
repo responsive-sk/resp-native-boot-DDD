@@ -7,17 +7,21 @@ namespace Blog\Infrastructure\Http\Controller\Mark;
 use Blog\Domain\Blog\Entity\Category;
 use Blog\Domain\Blog\Repository\CategoryRepository;
 use Blog\Domain\Blog\ValueObject\CategoryName;
+use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Infrastructure\View\ViewRenderer;
 use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final readonly class CategoryController
+final class CategoryController extends BaseController
 {
     public function __construct(
+        \Psr\Container\ContainerInterface $container,
+        \Blog\Core\UseCaseHandler $useCaseHandler,
         private CategoryRepository $categoryRepository,
         private ViewRenderer $viewRenderer
     ) {
+        parent::__construct($container, $useCaseHandler);
     }
 
     public function index(ServerRequestInterface $request): ResponseInterface
@@ -32,6 +36,12 @@ final readonly class CategoryController
 
     public function createForm(ServerRequestInterface $request): ResponseInterface
     {
+        // SECURITY: Require MARK role for admin operations
+        $user = $this->requireMarkWeb();
+        if ($user === null) {
+            return $this->htmlResponse('Access denied: MARK role required', 403);
+        }
+
         return $this->viewRenderer->renderResponse('mark.categories.create', [
             'title' => 'Vytvoriť kategóriu',
         ]);
@@ -39,6 +49,12 @@ final readonly class CategoryController
 
     public function create(ServerRequestInterface $request): ResponseInterface
     {
+        // SECURITY: Require MARK role for admin operations
+        $user = $this->requireMarkWeb();
+        if ($user === null) {
+            return $this->htmlResponse('Access denied: MARK role required', 403);
+        }
+
         $data = $request->getParsedBody();
 
         try {

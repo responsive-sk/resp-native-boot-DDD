@@ -64,6 +64,12 @@ final class ArticlesController extends BaseController
 
     public function create(ServerRequestInterface $request): ResponseInterface
     {
+        // ✅ SECURITY: Require MARK role for admin operations
+        $user = $this->requireMarkWeb();
+        if ($user === null) {
+            return $this->htmlResponse('Access denied: MARK role required', 403);
+        }
+
         $useCase = $this->useCaseHandler->get(CreateArticle::class);
 
         try {
@@ -99,6 +105,13 @@ final class ArticlesController extends BaseController
 
     public function update(ServerRequestInterface $request): ResponseInterface
     {
+        // ✅ SECURITY: Require MARK role and ownership
+        $id = (int) $request->getAttribute('id');
+        $user = $this->requireArticleOwnershipWeb($id);
+        if ($user === null) {
+            return $this->htmlResponse('Access denied: You can only modify your own articles', 403);
+        }
+
         $useCase = $this->useCaseHandler->get(UpdateArticle::class);
 
         try {
@@ -120,6 +133,13 @@ final class ArticlesController extends BaseController
 
     public function delete(ServerRequestInterface $request): ResponseInterface
     {
+        // ✅ SECURITY: Require MARK role and ownership
+        $id = (int) $request->getAttribute('id');
+        $user = $this->requireArticleOwnershipWeb($id);
+        if ($user === null) {
+            return $this->htmlResponse('Access denied: You can only delete your own articles', 403);
+        }
+
         $useCase = $this->useCaseHandler->get(DeleteArticle::class);
 
         try {

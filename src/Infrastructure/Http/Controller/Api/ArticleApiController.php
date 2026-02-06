@@ -60,6 +60,16 @@ class ArticleApiController extends BaseController
     
     public function create(ServerRequestInterface $request): ResponseInterface
     {
+        // SECURITY: Require authentication
+        $user = $this->requireAuth();
+        if ($user === null) {
+            return $this->jsonResponse([
+                'success' => false,
+                'error' => 'Authentication required',
+                'message' => 'You must be logged in to create articles'
+            ], 401);
+        }
+
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\CreateArticle::class);
         
         $data = $this->executeUseCase($request, $useCase, [
@@ -80,6 +90,16 @@ class ArticleApiController extends BaseController
     
     public function update(ServerRequestInterface $request, int $id): ResponseInterface
     {
+        // SECURITY: Require authentication and ownership
+        $user = $this->requireArticleOwnership($id);
+        if ($user === null) {
+            return $this->jsonResponse([
+                'success' => false,
+                'error' => 'Access denied',
+                'message' => 'You can only modify your own articles'
+            ], 403);
+        }
+
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\UpdateArticle::class);
         
         $data = $this->executeUseCase($request, $useCase, [
@@ -101,6 +121,16 @@ class ArticleApiController extends BaseController
     
     public function delete(ServerRequestInterface $request, int $id): ResponseInterface
     {
+        // SECURITY: Require authentication and ownership
+        $user = $this->requireArticleOwnership($id);
+        if ($user === null) {
+            return $this->jsonResponse([
+                'success' => false,
+                'error' => 'Access denied',
+                'message' => 'You can only delete your own articles'
+            ], 403);
+        }
+
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\DeleteArticle::class);
         
         $data = $this->executeUseCase($request, $useCase, [

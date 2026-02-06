@@ -27,6 +27,12 @@ final class UsersController extends BaseController
 
     public function index(ServerRequestInterface $request): ResponseInterface
     {
+        // SECURITY: Require MARK role for admin operations
+        $user = $this->requireMarkWeb();
+        if ($user === null) {
+            return $this->htmlResponse('Access denied: MARK role required', 403);
+        }
+
         $users = $this->userRepository->findAll();
 
         return $this->viewRenderer->renderResponse('mark.users.index', [
@@ -36,11 +42,23 @@ final class UsersController extends BaseController
 
     public function createForm(ServerRequestInterface $request): ResponseInterface
     {
+        // SECURITY: Require MARK role for admin operations
+        $user = $this->requireMarkWeb();
+        if ($user === null) {
+            return $this->htmlResponse('Access denied: MARK role required', 403);
+        }
+
         return $this->viewRenderer->renderResponse('mark.users.create', []);
     }
 
     public function create(ServerRequestInterface $request): ResponseInterface
     {
+        // SECURITY: Require MARK role for admin operations
+        $user = $this->requireMarkWeb();
+        if ($user === null) {
+            return $this->htmlResponse('Access denied: MARK role required', 403);
+        }
+
         $useCase = $this->useCaseHandler->get(RegisterUser::class);
 
         try {
