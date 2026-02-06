@@ -35,7 +35,7 @@ class Authorization
                 throw new \RuntimeException('Authorization container not set. Call Authorization::setContainer() first.');
             }
             
-            self::$service = self::$container->get(AuthorizationService::class);
+            self::$service = self::$container->get(\Blog\Security\AuthorizationService::class);
         }
         
         return self::$service;
