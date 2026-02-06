@@ -58,7 +58,8 @@ class AuthController extends BaseController
                 // Nastav session
                 $this->session->set('user_id', $result['data']['user']['id']);
                 $this->session->set('user_role', $result['data']['user']['role']);
-                $this->session->set('last_activity', time()); // ✅ Add missing last_activity
+                $this->session->set('last_activity', time());
+                $this->session->set('fingerprint', $this->generateFingerprint($request)); # Add fingerprint
 
                 // Audit log
                 $this->auditLogger->logLogin($result['data']['user']['id']);
@@ -117,7 +118,8 @@ class AuthController extends BaseController
 
                 $this->session->set('user_id', $result['user']['id']);
                 $this->session->set('user_role', $result['user']['role']);
-                $this->session->set('last_activity', time()); // Add missing last_activity
+                $this->session->set('last_activity', time());
+                $this->session->set('fingerprint', $this->generateFingerprint($request)); # Add fingerprint
 
                 $this->auditLogger->logRegistration($result['user']['id']);
 
@@ -156,5 +158,29 @@ class AuthController extends BaseController
         $this->session->destroy();
 
         return $this->redirect($this->paths->urlFor('home'));
+    }
+
+    private function generateFingerprint(ServerRequestInterface $request): string
+    {
+        $sessionConfig = $this->container->get('config')['session'];
+        $components = $sessionConfig['fingerprint']['components'] ?? ['user_agent'];
+        $salt = $sessionConfig['fingerprint']['salt'] ?? '';
+
+        $data = [];
+        foreach ($components as $component) {
+            if ($component === 'user_agent') {
+                $data[] = $request->getHeaderLine('User-Agent');
+            } elseif ($component === 'ip_subnet') {
+                $ip = $request->getServerParams()['REMOTE_ADDR'] ?? '0.0.0.0';
+                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                    $data[] = substr($ip, 0, strrpos($ip, '.'));
+                }
+                // Match middleware logic: ignore if not IPv4
+            } elseif ($component === 'accept_language') {
+                $data[] = $request->getHeaderLine('Accept-Language');
+            }
+        }
+        $data[] = $salt;
+        return hash('sha256', implode('|', $data));
     }
 }

@@ -23,7 +23,7 @@ return [
 
     'fingerprint' => [
         'enabled' => true,
-        'components' => ['user_agent'], // Bez IP kvôli mobile data/VPN
+        'components' => ['user_agent', 'ip_subnet'], // Bind to UA and IP subnet
         'salt' => $_ENV['SESSION_FINGERPRINT_SALT'] ?? 'default-secret-change-me',
     ],
 
