@@ -62,6 +62,7 @@ $services = [
     Psr17Factory::class => fn() => new Psr17Factory(),
 
         // Database
+    'database' => fn() => \Blog\Database\DatabaseManager::getConnection('articles'),
     Database::class => fn() => DatabaseManager::getConnection(),
 
         // Paths
@@ -120,7 +121,7 @@ $services += [
     ),
 
     AuditLogRepository::class => fn(ContainerInterface $c) => new DoctrineAuditLogRepository(
-        $c->get(Database::class)
+        DatabaseManager::getConnection("app")
     ),
 
     UserRepositoryInterface::class => fn() => new DoctrineUserRepository(

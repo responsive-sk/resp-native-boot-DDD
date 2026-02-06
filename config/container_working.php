@@ -1,9 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
-
 return function () {
     $services = require __DIR__ . '/services_ddd.php';
     
@@ -12,7 +9,7 @@ return function () {
         return ['debugbar' => ['enabled' => false]];
     };
     
-    return new class($services) implements ContainerInterface {
+    return new class($services) {
         private array $services;
         private array $instances = [];
         
@@ -22,11 +19,7 @@ return function () {
         
         public function get(string $id) {
             if (!isset($this->services[$id])) {
-                throw new class extends \Exception implements NotFoundExceptionInterface {
-                    public function __construct(string $message) {
-                        parent::__construct($message);
-                    }
-                }("Service '$id' not found");
+                throw new Exception("Service '$id' not found");
             }
             
             if (!isset($this->instances[$id])) {
