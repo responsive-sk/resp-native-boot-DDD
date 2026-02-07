@@ -53,7 +53,7 @@ class CsrfMiddleware implements MiddlewareInterface
                 // Get user ID from session for logging
                 $userId = $_SESSION['user_id'] ?? null;
                 $ip = $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown';
-                
+
                 // Log CSRF failure with proper format
                 $this->logger->logCsrfValidationFailure($userId, $ip, $path);
 
@@ -75,12 +75,12 @@ class CsrfMiddleware implements MiddlewareInterface
     private function createCsrfErrorResponse(): ResponseInterface
     {
         $response = new Response();
-        
+
         // Always return JSON response as specified
         $response->getBody()->write(json_encode([
             "error" => "CSRF validation failed",
             "code" => "CSRF_TOKEN_INVALID",
-            "message" => "Invalid or missing CSRF token. Please refresh the page and try again."
+            "message" => "Invalid or missing CSRF token. Please refresh the page and try again.",
         ]));
 
         return $response

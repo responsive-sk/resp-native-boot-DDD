@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\User\Entity;
 
-use Blog\Domain\Common\DomainEvent;
 use Blog\Domain\User\Entity\User;
 use Blog\Domain\User\Event\UserRegisteredEvent;
 use Blog\Domain\User\ValueObject\Email;
@@ -167,7 +166,7 @@ final class UserTest extends TestCase
         $reflection = new \ReflectionClass(User::class);
         $constructor = $reflection->getConstructor();
         $constructor->setAccessible(true);
-        
+
         $user = $constructor->invokeArgs(
             null,
             [
@@ -175,7 +174,7 @@ final class UserTest extends TestCase
                 $this->email,
                 $this->password,
                 $this->userRole,
-                new DateTimeImmutable()
+                new DateTimeImmutable(),
             ]
         );
 

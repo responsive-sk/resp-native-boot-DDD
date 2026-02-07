@@ -6,7 +6,8 @@ namespace Blog\Application\Audit;
 
 use Blog\Domain\Audit\Entity\AuditLog;
 use Blog\Domain\Audit\Repository\AuditLogRepository;
-use Blog\Domain\Audit\ValueObject\AuditLogId;
+use Blog\Domain\Audit\ValueObject\AuditEventType;
+use Blog\Domain\Audit\AuditLogFactory;
 use Psr\Http\Message\ServerRequestInterface;
 
 class AuditLogger
@@ -16,6 +17,24 @@ class AuditLogger
     ) {
     }
 
+    public function log(
+        AuditEventType $eventType,
+        ?string $userId,
+        ?string $ipAddress,
+        ?string $userAgent,
+        array $metadata = []
+    ): void {
+        $auditLog = AuditLog::create(
+            $eventType,
+            $userId,
+            $ipAddress,
+            $userAgent,
+            $metadata
+        );
+        
+        $this->repository->save($auditLog);
+    }
+
     public function logAuthentication(
         string $eventType,
         string $email,
@@ -23,14 +42,16 @@ class AuditLogger
         ServerRequestInterface $request,
         array $context = []
     ): void {
+        $ipAddress = $this->getClientIp($request);
+        $userAgent = $request->getHeaderLine('User-Agent');
+        
         $log = AuditLog::createAuthenticationEvent(
-            AuditLogId::generate(),
-            $eventType,
             $email,
+            new AuditEventType($eventType),
             $success,
+            $ipAddress,
+            $userAgent,
             array_merge($context, [
-                'ip_address' => $this->getClientIp($request),
-                'user_agent' => $request->getHeaderLine('User-Agent'),
                 'timestamp' => date('c'),
             ])
         );
@@ -38,7 +59,7 @@ class AuditLogger
         $this->repository->save($log);
 
         // Rate limiting alert pre failed logins
-        if (!$success && $eventType === 'login_failed') {
+        if (!$success && $eventType === AuditEventType::LOGIN_FAILED) {
             $this->checkFailedLoginRate($email, $request);
         }
     }
@@ -51,21 +72,87 @@ class AuditLogger
         ServerRequestInterface $request,
         array $context = []
     ): void {
+        $ipAddress = $this->getClientIp($request);
+        $userAgent = $request->getHeaderLine('User-Agent');
+        
         $log = AuditLog::createAuthorizationEvent(
-            AuditLogId::generate(),
-            $eventType,
             $userId,
+            new AuditEventType($eventType),
             $resource,
             $granted,
+            $ipAddress,
+            $userAgent,
             array_merge($context, [
-                'ip_address' => $this->getClientIp($request),
-                'user_agent' => $request->getHeaderLine('User-Agent'),
                 'path' => $request->getUri()->getPath(),
                 'method' => $request->getMethod(),
             ])
         );
 
         $this->repository->save($log);
+    }
+
+    // Helper methods using factory
+    public function logLoginSuccess(
+        string $email,
+        ?string $ipAddress = null,
+        ?string $userAgent = null
+    ): void {
+        $auditLog = AuditLogFactory::createLoginSuccess($email, $ipAddress, $userAgent);
+        $this->repository->save($auditLog);
+    }
+    
+    public function logLoginFailed(
+        string $email,
+        ?string $ipAddress = null,
+        ?string $userAgent = null
+    ): void {
+        $auditLog = AuditLogFactory::createLoginFailed($email, $ipAddress, $userAgent);
+        $this->repository->save($auditLog);
+    }
+    
+    public function logAuthorizationDenied(
+        ?string $userId,
+        string $resource,
+        ?string $ipAddress = null,
+        ?string $userAgent = null
+    ): void {
+        $auditLog = AuditLogFactory::createAuthorizationDenied(
+            $userId,
+            $resource,
+            $ipAddress,
+            $userAgent
+        );
+        $this->repository->save($auditLog);
+    }
+    
+    public function logArticleCreated(
+        string $articleId,
+        ?string $userId,
+        ?string $ipAddress = null,
+        ?string $userAgent = null
+    ): void {
+        $auditLog = AuditLogFactory::createArticleCreated(
+            $articleId,
+            $userId,
+            $ipAddress,
+            $userAgent
+        );
+        $this->repository->save($auditLog);
+    }
+    
+    public function logImageUploaded(
+        string $imageId,
+        ?string $userId,
+        ?string $ipAddress = null,
+        ?string $userAgent = null
+    ): void {
+        $auditLog = AuditLogFactory::createImageUploaded(
+            $imageId,
+            $userId,
+            $ipAddress,
+            $userAgent
+        );
+        $this->repository->save($auditLog);
     }
 
     private function getClientIp(ServerRequestInterface $request): string
@@ -118,13 +205,14 @@ class AuditLogger
         // In a real scenario, we might want to pass the request object here too if needed
         // For now, we'll just log slightly less info or use a placeholder IP
         $log = AuditLog::createAuthenticationEvent(
-            AuditLogId::generate(),
-            'login_success',
-            $userId, // using userId as identifier
+            $userId,
+            new AuditEventType(AuditEventType::LOGIN_SUCCESS),
             true,
+            null,
+            null,
             [
                 'timestamp' => date('c'),
-                'details' => 'User logged in successfully'
+                'details' => 'User logged in successfully',
             ]
         );
         $this->repository->save($log);
@@ -133,13 +221,14 @@ class AuditLogger
     public function logRegistration(string $userId): void
     {
         $log = AuditLog::createAuthenticationEvent(
-            AuditLogId::generate(),
-            'registration',
             $userId,
+            new AuditEventType(AuditEventType::REGISTRATION),
             true,
+            null,
+            null,
             [
                 'timestamp' => date('c'),
-                'details' => 'New user registered'
+                'details' => 'New user registered',
             ]
         );
         $this->repository->save($log);
@@ -148,13 +237,14 @@ class AuditLogger
     public function logLogout(string $userId): void
     {
         $log = AuditLog::createAuthenticationEvent(
-            AuditLogId::generate(),
-            'logout',
             $userId,
+            new AuditEventType(AuditEventType::LOGOUT),
             true,
+            null,
+            null,
             [
                 'timestamp' => date('c'),
-                'details' => 'User logged out'
+                'details' => 'User logged out',
             ]
         );
         $this->repository->save($log);

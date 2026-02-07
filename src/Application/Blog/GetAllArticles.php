@@ -18,13 +18,13 @@ final class GetAllArticles extends BaseUseCase
     public function execute(array $input = []): array
     {
         $articles = $this->articles->getAll();
-        
+
         $articlesData = array_map(function (Article $article) {
             return [
                 'id' => $article->id()?->toInt(),
                 'title' => $article->title()->toString(),
                 'slug' => $article->slug()?->toString(),
-                'content' => $article->content()->toString(),
+                'content' => $article->content()->getRaw(),
                 'status' => $article->status()->toString(),
                 'author_id' => $article->authorId()->toString(),
                 'created_at' => $article->createdAt()->format('Y-m-d H:i:s'),
@@ -34,10 +34,10 @@ final class GetAllArticles extends BaseUseCase
 
         return $this->success([
             'articles' => $articlesData,
-            'count' => count($articlesData)
+            'count' => count($articlesData),
         ]);
     }
-    
+
     protected function validate(array $input): void
     {
         // No validation required for this use case

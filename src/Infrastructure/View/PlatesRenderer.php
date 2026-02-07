@@ -254,25 +254,25 @@ final class PlatesRenderer
         // Add blogCategories helper
         $this->plates->registerFunction('blogCategories', function () {
             static $categories = null;
-            
+
             if ($categories === null) {
                 try {
                     $categoryRepository = \Blog\Infrastructure\Persistence\Doctrine\DoctrineCategoryRepository::class;
                     $repo = new $categoryRepository(\Blog\Database\DatabaseManager::getConnection('articles'));
                     $cats = $repo->getAll();
-                    $categories = array_map(fn($cat) => $cat->slug()->toString(), $cats);
+                    $categories = array_map(fn ($cat) => $cat->slug()->toString(), $cats);
                 } catch (\Exception $e) {
                     $categories = [];
                 }
             }
-            
+
             return $categories;
         });
 
         // Add blogTags helper
         $this->plates->registerFunction('blogTags', function () {
             static $tags = null;
-            
+
             if ($tags === null) {
                 try {
                     $getAllTags = new \Blog\Application\Blog\GetAllTags(
@@ -281,12 +281,12 @@ final class PlatesRenderer
                         )
                     );
                     $tagEntities = $getAllTags();
-                    $tags = array_map(fn($tag) => $tag->name()->toString(), $tagEntities);
+                    $tags = array_map(fn ($tag) => $tag->name()->toString(), $tagEntities);
                 } catch (\Exception $e) {
                     $tags = [];
                 }
             }
-            
+
             return $tags;
         });
     }

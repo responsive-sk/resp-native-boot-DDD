@@ -60,7 +60,7 @@ final class MiddlewareDispatcher implements RequestHandlerInterface
 
     /**
      * Vráti zoznam všetkých middleware
-     * 
+     *
      * @return array<MiddlewareInterface>
      */
     public function getMiddlewares(): array

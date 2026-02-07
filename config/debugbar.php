@@ -1,12 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
-use ResponsiveSk\PhpDebugBarMiddleware\ConfigProvider;
 
 return [
     'debugbar' => [
         'enabled' => ($_ENV['APP_ENV'] ?? 'development') === 'development',
-        
+
         // Blog branding configuration
         'branding' => [
             'title' => 'Blog Debug',
@@ -14,7 +14,7 @@ return [
             'secondary_color' => '#1e40af',
             'accent_color' => '#f59e0b',
         ],
-        
+
         // Custom CSS - inline bez potreby triedy
         'custom_css' => <<<CSS
         /* Blog DebugBar Custom Styles */
@@ -45,7 +45,7 @@ return [
             color: #f59e0b;
         }
         CSS,
-        
+
         'collectors' => [
             'messages' => true,
             'time' => true,

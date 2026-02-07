@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Mark;
 
-use Blog\Infrastructure\Http\Controller\BaseController;
-use Blog\Domain\Blog\Entity\Article;
-use Blog\Domain\Blog\Repository\ArticleRepository;
-use Blog\Domain\Blog\ValueObject\ArticleId;
 use Blog\Application\Blog\CreateArticle;
-use Blog\Application\Blog\UpdateArticle;
 use Blog\Application\Blog\DeleteArticle;
 use Blog\Application\Blog\GetAllArticles;
+use Blog\Application\Blog\UpdateArticle;
+use Blog\Domain\Blog\Repository\ArticleRepository;
+use Blog\Domain\Blog\ValueObject\ArticleId;
+use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Infrastructure\View\ViewRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -77,7 +76,7 @@ final class ArticlesController extends BaseController
             $result = $this->executeUseCase($request, $useCase, [
                 'title' => 'body:title',
                 'content' => 'body:content',
-                'author_id' => 'session:user_id'
+                'author_id' => 'session:user_id',
             ], 'web');
 
             return $this->redirect('/mark/articles');
@@ -120,7 +119,7 @@ final class ArticlesController extends BaseController
                 'article_id' => 'route:id',
                 'title' => 'body:title',
                 'content' => 'body:content',
-                'slug' => 'body:slug'
+                'slug' => 'body:slug',
             ], 'web');
 
             return $this->redirect('/mark/articles');
@@ -145,7 +144,7 @@ final class ArticlesController extends BaseController
 
         try {
             $result = $this->executeUseCase($request, $useCase, [
-                'article_id' => 'route:id'
+                'article_id' => 'route:id',
             ], 'web');
 
             return $this->redirect('/mark/articles');

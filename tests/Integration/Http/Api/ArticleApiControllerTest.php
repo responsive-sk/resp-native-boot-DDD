@@ -6,10 +6,8 @@ namespace Tests\Integration\Http\Api;
 
 use Blog\Infrastructure\Http\Controller\Api\ArticleApiController;
 use Nyholm\Psr7\Factory\Psr17Factory;
-use Nyholm\Psr7\Response;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ResponseInterface;
 
 final class ArticleApiControllerTest extends TestCase
 {
@@ -75,14 +73,14 @@ final class ArticleApiControllerTest extends TestCase
         $request = $this->createServerRequest('POST', '/api/articles', [
             'title' => 'Test Article',
             'content' => 'Test content',
-            'authorId' => 'test-author-id'
+            'authorId' => 'test-author-id',
         ]);
 
         $response = $this->controller->create($request);
 
         $this->assertSame(401, $response->getStatusCode());
         $this->assertSame('application/json', $response->getHeaderLine('Content-Type'));
-        
+
         $body = json_decode((string) $response->getBody(), true);
         $this->assertSame('Authentication required', $body['error']);
     }
@@ -96,7 +94,7 @@ final class ArticleApiControllerTest extends TestCase
         $request = $this->createServerRequest('POST', '/api/articles', [
             'title' => 'Test Article',
             'content' => 'Test content',
-            'authorId' => 'test-user-id' // Should match authenticated user
+            'authorId' => 'test-user-id', // Should match authenticated user
         ]);
 
         $response = $this->controller->create($request);
@@ -115,14 +113,14 @@ final class ArticleApiControllerTest extends TestCase
         $request = $this->createServerRequest('POST', '/api/articles', [
             'title' => 'Test Article',
             'content' => 'Test content',
-            'authorId' => 'different-user-id' // Trying to impersonate another user
+            'authorId' => 'different-user-id', // Trying to impersonate another user
         ]);
 
         $response = $this->controller->create($request);
 
         // Should prevent impersonation
         $this->assertSame(403, $response->getStatusCode());
-        
+
         $body = json_decode((string) $response->getBody(), true);
         $this->assertSame('You can only create articles as yourself', $body['error']);
     }
@@ -133,14 +131,14 @@ final class ArticleApiControllerTest extends TestCase
 
         $request = $this->createServerRequest('PUT', '/api/articles/123', [
             'title' => 'Updated Article',
-            'content' => 'Updated content'
+            'content' => 'Updated content',
         ]);
 
         $response = $this->controller->update($request);
 
         $this->assertSame(401, $response->getStatusCode());
         $this->assertSame('application/json', $response->getHeaderLine('Content-Type'));
-        
+
         $body = json_decode((string) $response->getBody(), true);
         $this->assertSame('Authentication required', $body['error']);
     }
@@ -153,7 +151,7 @@ final class ArticleApiControllerTest extends TestCase
 
         $request = $this->createServerRequest('PUT', '/api/articles/123', [
             'title' => 'Updated Article',
-            'content' => 'Updated content'
+            'content' => 'Updated content',
         ]);
 
         $response = $this->controller->update($request);
@@ -172,7 +170,7 @@ final class ArticleApiControllerTest extends TestCase
 
         $this->assertSame(401, $response->getStatusCode());
         $this->assertSame('application/json', $response->getHeaderLine('Content-Type'));
-        
+
         $body = json_decode((string) $response->getBody(), true);
         $this->assertSame('Authentication required', $body['error']);
     }
@@ -198,7 +196,7 @@ final class ArticleApiControllerTest extends TestCase
 
         $request = $this->createServerRequest('POST', '/api/articles', [
             'title' => '', // Invalid: empty title
-            'content' => 'Test content'
+            'content' => 'Test content',
         ]);
 
         $response = $this->controller->create($request);
@@ -214,7 +212,7 @@ final class ArticleApiControllerTest extends TestCase
 
         $request = $this->createServerRequest('PUT', '/api/articles/nonexistent-id', [
             'title' => 'Updated Article',
-            'content' => 'Updated content'
+            'content' => 'Updated content',
         ]);
 
         $response = $this->controller->update($request);
@@ -226,23 +224,25 @@ final class ArticleApiControllerTest extends TestCase
     private function createServerRequest(string $method, string $uri, array $body = []): ServerRequest
     {
         $request = new ServerRequest($method, $uri);
-        
+
         if (!empty($body)) {
             $request = $request->withParsedBody($body);
         }
-        
+
         return $request;
     }
 
     private function createMockContainer()
     {
         $container = $this->createMock(\Psr\Container\ContainerInterface::class);
+
         return $container;
     }
 
     private function createMockUseCaseHandler()
     {
         $handler = $this->createMock(\Blog\Core\UseCaseHandler::class);
+
         return $handler;
     }
 

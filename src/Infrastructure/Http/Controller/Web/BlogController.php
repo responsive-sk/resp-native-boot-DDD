@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Web;
 
-use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Core\UseCaseHandler;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Domain\Blog\Repository\CategoryRepository;
 use Blog\Domain\Blog\ValueObject\ArticleId;
 use Blog\Domain\Blog\ValueObject\CategorySlug;
-use Blog\Domain\Blog\ValueObject\Slug;
+use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Infrastructure\View\ViewRenderer;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -57,7 +56,7 @@ final class BlogController extends BaseController
         return $this->viewRenderer->renderResponse('blog.index', [
             'articles' => $articles,
             'categories' => $categories,
-            'blogCategories' => array_map(fn($cat) => $cat->slug()->toString(), $categories),
+            'blogCategories' => array_map(fn ($cat) => $cat->slug()->toString(), $categories),
             'page' => $page,
         ]);
     }
@@ -96,7 +95,7 @@ final class BlogController extends BaseController
 
         try {
             $result = $this->executeUseCase($request, $useCase, [
-                'slug' => 'route:slug'
+                'slug' => 'route:slug',
             ], 'array');
 
             return $this->viewRenderer->renderResponse('blog.show', [
@@ -125,7 +124,7 @@ final class BlogController extends BaseController
         return $this->viewRenderer->renderResponse('blog.category', [
             'category' => $category,
             'articles' => $articles,
-            'blogCategories' => array_map(fn($cat) => $cat->slug()->toString(), $this->categoryRepository->getAll()),
+            'blogCategories' => array_map(fn ($cat) => $cat->slug()->toString(), $this->categoryRepository->getAll()),
         ]);
     }
 }

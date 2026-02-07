@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Middleware;
 
+use Blog\Infrastructure\DebugBar\BlogDebugBarStyles;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Blog\Infrastructure\DebugBar\BlogDebugBarStyles;
 
 /**
  * Custom DebugBar middleware with blog branding
@@ -40,7 +40,7 @@ class BlogDebugBarMiddleware implements \Psr\Http\Server\MiddlewareInterface
 
             // Add collectors
             $debugBar->addCollector(new \DebugBar\DataCollector\ConfigCollector([
-                'custom_css' => $this->customCss
+                'custom_css' => $this->customCss,
             ], 'blog_branding'));
 
             // Add memory collector
@@ -62,6 +62,7 @@ class BlogDebugBarMiddleware implements \Psr\Http\Server\MiddlewareInterface
 
         } catch (\Throwable $e) {
             error_log("BlogDebugBarMiddleware error: " . $e->getMessage());
+
             return $handler->handle($request);
         }
     }

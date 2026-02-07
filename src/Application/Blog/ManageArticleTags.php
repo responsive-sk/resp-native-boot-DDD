@@ -12,7 +12,8 @@ final readonly class ManageArticleTags
     public function __construct(
         private TagRepository $tagRepository,
         private GetOrCreateTag $getOrCreateTag
-    ) {}
+    ) {
+    }
 
     /**
      * Set tags for an article from array of tag names
@@ -43,7 +44,7 @@ final readonly class ManageArticleTags
 
     /**
      * Get tags for an article
-     * 
+     *
      * @return \Blog\Domain\Blog\Entity\Tag[]
      */
     public function getTags(Article $article): array
@@ -62,7 +63,7 @@ final readonly class ManageArticleTags
 
         // Split by comma or semicolon, clean up whitespace
         $tags = preg_split('/[,\s;]+/', trim($tagString));
-        
+
         return array_filter(array_unique(array_map('trim', $tags)));
     }
 }

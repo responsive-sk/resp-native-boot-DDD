@@ -16,35 +16,30 @@ class DatabaseManager
      */
     private static function getConfig(): array
     {
-        // Use Paths API for base directory
-        $dataPath = \Blog\Infrastructure\Paths::dataPath();
+        $configFile = \Blog\Infrastructure\Paths::configPath() . '/database.php';
+
+        if (file_exists($configFile) && is_readable($configFile)) {
+            $config = require $configFile;
+            if (is_array($config) && isset($config['connections'])) {
+                return $config;
+            }
+        }
+        
+        // Fallback to environment variables if config file is missing or invalid
         $basePath = \Blog\Infrastructure\Paths::basePath();
 
-        // Get database paths from environment or use defaults
-        // Convert relative paths to absolute
         $appDb = $_ENV['DB_PATH_APP'] ?? 'data/app';
         $articlesDb = $_ENV['DB_PATH_ARTICLES'] ?? 'data/articles';
         $usersDb = $_ENV['DB_PATH_USERS'] ?? 'data/users';
         $formsDb = $_ENV['DB_PATH_FORMS'] ?? 'data/forms';
-        
-        // Get database extension from environment or use default
-        $dbExtension = $_ENV['DB_EXTENSION'] ?? '.sqlite';
-        
-        // Add extension if not already present
-        if (!str_ends_with($appDb, $dbExtension)) {
-            $appDb .= $dbExtension;
-        }
-        if (!str_ends_with($articlesDb, $dbExtension)) {
-            $articlesDb .= $dbExtension;
-        }
-        if (!str_ends_with($usersDb, $dbExtension)) {
-            $usersDb .= $dbExtension;
-        }
-        if (!str_ends_with($formsDb, $dbExtension)) {
-            $formsDb .= $dbExtension;
-        }
 
-        // Make paths absolute if they're relative
+        $dbExtension = $_ENV['DB_EXTENSION'] ?? '.db';
+
+        if (!str_ends_with($appDb, $dbExtension)) $appDb .= $dbExtension;
+        if (!str_ends_with($articlesDb, $dbExtension)) $articlesDb .= $dbExtension;
+        if (!str_ends_with($usersDb, $dbExtension)) $usersDb .= $dbExtension;
+        if (!str_ends_with($formsDb, $dbExtension)) $formsDb .= $dbExtension;
+
         $appDb = self::makeAbsolutePath($appDb, $basePath);
         $articlesDb = self::makeAbsolutePath($articlesDb, $basePath);
         $usersDb = self::makeAbsolutePath($usersDb, $basePath);
@@ -52,22 +47,10 @@ class DatabaseManager
 
         return [
             'connections' => [
-                'app' => [
-                    'driver' => 'pdo_sqlite',
-                    'path' => $appDb,
-                ],
-                'articles' => [
-                    'driver' => 'pdo_sqlite',
-                    'path' => $articlesDb,
-                ],
-                'users' => [
-                    'driver' => 'pdo_sqlite',
-                    'path' => $usersDb,
-                ],
-                'forms' => [
-                    'driver' => 'pdo_sqlite',
-                    'path' => $formsDb,
-                ],
+                'app' => ['driver' => 'pdo_sqlite', 'path' => $appDb],
+                'articles' => ['driver' => 'pdo_sqlite', 'path' => $articlesDb],
+                'users' => ['driver' => 'pdo_sqlite', 'path' => $usersDb],
+                'forms' => ['driver' => 'pdo_sqlite', 'path' => $formsDb],
             ],
         ];
     }

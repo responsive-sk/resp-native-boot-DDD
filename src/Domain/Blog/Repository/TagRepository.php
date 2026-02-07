@@ -30,7 +30,7 @@ interface TagRepository
 
     /**
      * Get tags by article ID
-     * 
+     *
      * @return Tag[]
      */
     public function getByArticleId(int $articleId): array;

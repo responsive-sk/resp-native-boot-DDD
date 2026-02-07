@@ -23,13 +23,22 @@ final class SessionMiddleware implements MiddlewareInterface
 
             // Get session lifetime from environment (default 1 hour)
             $sessionLifetime = (int) ($_ENV['SESSION_LIFETIME'] ?? 3600);
+            
+            // Determine if session cookie should persist (default: true)
+            $sessionCookiePersistent = filter_var($_ENV['SESSION_COOKIE_PERSISTENT'] ?? 'true', FILTER_VALIDATE_BOOLEAN);
+
+            // Set session.gc_maxlifetime (server-side garbage collection)
+            ini_set('session.gc_maxlifetime', (string) $sessionLifetime);
+
+            // Determine cookie_lifetime: 0 means expires when browser closes
+            $cookieLifetime = $sessionCookiePersistent ? $sessionLifetime : 0;
 
             session_start([
                 'cookie_secure' => HttpsDetector::isHttps(),
                 'cookie_httponly' => true,
                 'cookie_samesite' => 'Lax',
                 'use_strict_mode' => true,
-                'cookie_lifetime' => $sessionLifetime,
+                'cookie_lifetime' => $cookieLifetime,
             ]);
         }
 

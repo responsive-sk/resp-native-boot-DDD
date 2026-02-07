@@ -14,13 +14,13 @@ use Throwable;
 final class ErrorHandlerMiddleware implements MiddlewareInterface
 {
     private string $env;
-    
+
     public function __construct(
         private \Blog\Infrastructure\View\ViewRenderer $viewRenderer
     ) {
         // Načíta APP_ENV z $_ENV (ktorý je nastavený v boot.php)
         $this->env = $_ENV['APP_ENV'] ?? 'development';
-        
+
         // Log init
         if ($this->env === 'development') {
             error_log("[ErrorHandler] Initialized for environment: {$this->env}");
@@ -30,8 +30,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         try {
             $response = $handler->handle($request);
 
@@ -85,8 +84,8 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
 
             // Data for view
             $data = [];
-            $message = $this->env === 'production' 
-                ? 'An unexpected error occurred.' 
+            $message = $this->env === 'production'
+                ? 'An unexpected error occurred.'
                 : $e->getMessage();
 
             if ($this->env !== 'production') {
@@ -115,7 +114,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
             } catch (Throwable $renderError) {
                 // Ultimate fallback
                 error_log("ViewRenderer failed: " . $renderError->getMessage());
-                
+
                 return new Response(
                     $statusCode,
                     ['Content-Type' => 'text/html'],

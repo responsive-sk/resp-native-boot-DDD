@@ -8,9 +8,9 @@ use Blog\Application\Blog\CreateArticle;
 use Blog\Domain\Blog\Entity\Article;
 use Blog\Domain\Blog\Repository\ArticleRepositoryInterface;
 use Blog\Domain\Blog\ValueObject\ArticleId;
+use Blog\Domain\Blog\ValueObject\Content;
 use Blog\Domain\Blog\ValueObject\Slug;
 use Blog\Domain\Blog\ValueObject\Title;
-use Blog\Domain\Blog\ValueObject\Content;
 use Blog\Domain\User\ValueObject\UserId;
 use PHPUnit\Framework\TestCase;
 
@@ -30,7 +30,7 @@ final class CreateArticleTest extends TestCase
         $input = [
             'title' => 'Test Article',
             'content' => 'Test content for article',
-            'author_id' => '123e4567-e89b-12d3-a456-426614174000'
+            'author_id' => '123e4567-e89b-12d3-a456-426614174000',
         ];
 
         // Mock repository to return null for slug check (unique)
@@ -45,7 +45,7 @@ final class CreateArticleTest extends TestCase
         $this->articleRepository->expects($this->once())
             ->method('add')
             ->with($this->callback(function ($article) {
-                return $article instanceof Article && 
+                return $article instanceof Article &&
                        $article->slug()->toString() === 'test-article';
             }));
 
@@ -61,7 +61,7 @@ final class CreateArticleTest extends TestCase
         $input = [
             'title' => 'Test Article',
             'content' => 'Test content for article',
-            'author_id' => '123e4567-e89b-12d3-a456-426614174000'
+            'author_id' => '123e4567-e89b-12d3-a456-426614174000',
         ];
 
         // Mock repository to simulate duplicate slug
@@ -83,7 +83,7 @@ final class CreateArticleTest extends TestCase
         $this->articleRepository->expects($this->once())
             ->method('add')
             ->with($this->callback(function ($article) {
-                return $article instanceof Article && 
+                return $article instanceof Article &&
                        $article->slug()->toString() === 'test-article-1';
             }));
 
@@ -98,7 +98,7 @@ final class CreateArticleTest extends TestCase
         $input = [
             'title' => 'Test Article',
             'content' => 'Test content for article',
-            'author_id' => '123e4567-e89b-12d3-a456-426614174000'
+            'author_id' => '123e4567-e89b-12d3-a456-426614174000',
         ];
 
         // Mock repository to simulate multiple duplicates
@@ -124,7 +124,7 @@ final class CreateArticleTest extends TestCase
         $this->articleRepository->expects($this->once())
             ->method('add')
             ->with($this->callback(function ($article) {
-                return $article instanceof Article && 
+                return $article instanceof Article &&
                        $article->slug()->toString() === 'test-article-2';
             }));
 
@@ -138,7 +138,7 @@ final class CreateArticleTest extends TestCase
         $input = [
             'title' => 'Test Article',
             'content' => 'Test content for article',
-            'author_id' => '123e4567-e89b-12d3-a456-426614174000'
+            'author_id' => '123e4567-e89b-12d3-a456-426614174000',
         ];
 
         // Mock repository to always return existing articles (simulate infinite duplicates)
@@ -158,7 +158,7 @@ final class CreateArticleTest extends TestCase
             'title' => '',
  // Missing title
             'content' => 'Test content',
-            'author_id' => '123e4567-e89b-12d3-a456-426614174000'
+            'author_id' => '123e4567-e89b-12d3-a456-426614174000',
         ];
 
         $this->expectException(\InvalidArgumentException::class);
@@ -172,7 +172,7 @@ final class CreateArticleTest extends TestCase
         $input = [
             'title' => 'Test Article',
             'content' => 'short', // Too short
-            'author_id' => '123e4567-e89b-12d3-a456-426614174000'
+            'author_id' => '123e4567-e89b-12d3-a456-426614174000',
         ];
 
         $this->expectException(\InvalidArgumentException::class);
@@ -186,7 +186,7 @@ final class CreateArticleTest extends TestCase
         $input = [
             'title' => str_repeat('a', 256), // Too long
             'content' => 'Test content for article',
-            'author_id' => '123e4567-e89b-12d3-a456-426614174000'
+            'author_id' => '123e4567-e89b-12d3-a456-426614174000',
         ];
 
         $this->expectException(\InvalidArgumentException::class);
@@ -200,7 +200,7 @@ final class CreateArticleTest extends TestCase
         $input = [
             'title' => 'Test Article',
             'content' => 'Test content for article',
-            'author_id' => '' // Missing author ID
+            'author_id' => '', // Missing author ID
         ];
 
         $this->expectException(\InvalidArgumentException::class);

@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Mark;
 
-use Blog\Infrastructure\Http\Controller\BaseController;
+use Blog\Application\User\RegisterUser;
+use Blog\Application\User\UpdateUserRole;
 use Blog\Domain\User\Entity\User;
 use Blog\Domain\User\Repository\UserRepositoryInterface;
-use Blog\Application\User\RegisterUser;
-use Blog\Application\User\LoginUser;
-use Blog\Application\User\UpdateUserRole;
+use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Infrastructure\View\ViewRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -66,7 +65,7 @@ final class UsersController extends BaseController
         try {
             $result = $this->executeUseCase($request, $useCase, [
                 'email' => 'body:email',
-                'password' => 'body:password'
+                'password' => 'body:password',
             ], 'web');
 
             return $this->redirect('/mark/users');
@@ -106,7 +105,7 @@ final class UsersController extends BaseController
         try {
             $result = $this->executeUseCase($request, $useCase, [
                 'user_id' => 'route:id',
-                'role' => 'body:role'
+                'role' => 'body:role',
             ], 'web');
 
             // If updating self, regenerate session

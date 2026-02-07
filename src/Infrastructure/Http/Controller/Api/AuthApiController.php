@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Api;
 
-use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Application\User\LoginUser;
 use Blog\Application\User\RegisterUser;
+use Blog\Infrastructure\Http\Controller\BaseController;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -15,12 +15,12 @@ final class AuthApiController extends BaseController
     public function register(ServerRequestInterface $request): ResponseInterface
     {
         $useCase = $this->useCaseHandler->get(RegisterUser::class);
-        
+
         try {
             $result = $this->executeUseCase($request, $useCase, [
                 'email' => 'body:email',
                 'password' => 'body:password',
-                'role' => 'body:role'
+                'role' => 'body:role',
             ], 'api');
 
             return $this->jsonResponse([
@@ -35,11 +35,11 @@ final class AuthApiController extends BaseController
     public function login(ServerRequestInterface $request): ResponseInterface
     {
         $useCase = $this->useCaseHandler->get(LoginUser::class);
-        
+
         try {
             $result = $this->executeUseCase($request, $useCase, [
                 'email' => 'body:email',
-                'password' => 'body:password'
+                'password' => 'body:password',
             ], 'api');
 
             // V reálnej aplikácii by tu bol JWT token

@@ -6,7 +6,6 @@ namespace Blog\Application\User;
 
 use Blog\Core\BaseUseCase;
 use Blog\Domain\User\Repository\UserRepositoryInterface;
-use Blog\Domain\User\ValueObject\Email;
 use Blog\Domain\User\ValueObject\UserId;
 use Blog\Domain\User\ValueObject\UserRole;
 
@@ -46,7 +45,7 @@ final class UpdateUserRole extends BaseUseCase
                 'email' => $user->email()->toString(),
                 'role' => $user->role()->toString(),
                 'updated_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
-            ]
+            ],
         ]);
     }
 

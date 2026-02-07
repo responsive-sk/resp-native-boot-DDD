@@ -17,16 +17,16 @@ final class SearchArticles extends BaseUseCase
     public function execute(array $input): array
     {
         $this->validate($input);
-        
+
         $query = $input['query'];
         $articles = $this->articles->search($query);
-        
+
         $articlesData = array_map(function ($article) {
             return [
                 'id' => $article->id()?->toInt(),
                 'title' => $article->title()->toString(),
                 'slug' => $article->slug()?->toString(),
-                'content' => substr($article->content()->toString(), 0, 200) . '...',
+                'content' => substr($article->content()->getRaw(), 0, 200) . '...',
                 'status' => $article->status()->toString(),
                 'author_id' => $article->authorId()->toString(),
                 'created_at' => $article->createdAt()->format('Y-m-d H:i:s'),
@@ -36,20 +36,20 @@ final class SearchArticles extends BaseUseCase
         return $this->success([
             'articles' => $articlesData,
             'count' => count($articlesData),
-            'query' => $query
+            'query' => $query,
         ]);
     }
-    
+
     protected function validate(array $input): void
     {
         if (empty($input['query'])) {
             throw new \InvalidArgumentException('Search query is required');
         }
-        
+
         if (strlen($input['query']) < 2) {
             throw new \InvalidArgumentException('Search query must be at least 2 characters long');
         }
-        
+
         if (strlen($input['query']) > 255) {
             throw new \InvalidArgumentException('Search query must not exceed 255 characters');
         }

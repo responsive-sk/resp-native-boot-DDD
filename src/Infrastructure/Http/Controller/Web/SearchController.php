@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Web;
 
-use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Application\Blog\SearchArticles;
+use Blog\Core\UseCaseHandler;
+use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Infrastructure\View\ViewRenderer;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-
-use Psr\Container\ContainerInterface;
-use Blog\Core\UseCaseHandler;
 
 final class SearchController extends BaseController
 {
@@ -34,7 +33,7 @@ final class SearchController extends BaseController
 
             try {
                 $result = $this->executeUseCase($request, $useCase, [
-                    'query' => 'query:q'
+                    'query' => 'query:q',
                 ], 'array');
 
                 $results = $result['data']['articles'] ?? [];

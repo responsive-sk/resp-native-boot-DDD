@@ -13,17 +13,18 @@ use Blog\Domain\User\ValueObject\HashedPassword;
 final class RegisterUser extends BaseUseCase
 {
     public function __construct(
-        private UserRepositoryInterface $users
+        private UserRepositoryInterface $users,
+        private array $passwordStrengthConfig
     ) {
     }
 
     public function execute(array $input): array
     {
         $this->validate($input);
-        
+
         $email = $input['email'];
         $password = $input['password'];
-        
+
         // Always create as ROLE_USER - role assignment is admin-only
         $role = 'ROLE_USER';
 
@@ -36,11 +37,10 @@ final class RegisterUser extends BaseUseCase
         }
 
         // 3. Create user
-        $user = User::register(
-            $emailVo,
-            HashedPassword::fromPlainPassword($password)
-        );
-
+                    $user = User::register(
+                        $emailVo,
+                        HashedPassword::fromPlainPassword($password, $this->passwordStrengthConfig)
+                    );
         // 4. Persist
         $this->users->save($user);
 
@@ -50,30 +50,22 @@ final class RegisterUser extends BaseUseCase
                 'email' => $user->email()->toString(),
                 'role' => $user->role()->toString(),
                 'created_at' => $user->createdAt()->format('Y-m-d H:i:s'),
-            ]
+            ],
         ]);
     }
-    
+
     protected function validate(array $input): void
     {
         if (empty($input['email'])) {
             throw new \InvalidArgumentException('Email is required');
         }
-        
+
         if (empty($input['password'])) {
             throw new \InvalidArgumentException('Password is required');
         }
-        
+
         if (!filter_var($input['email'], FILTER_VALIDATE_EMAIL)) {
             throw new \InvalidArgumentException('Invalid email format');
-        }
-        
-        if (strlen($input['password']) < 8) {
-            throw new \InvalidArgumentException('Password must be at least 8 characters long');
-        }
-        
-        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/', $input['password'])) {
-            throw new \InvalidArgumentException('Password must contain at least one uppercase letter, one lowercase letter, and one number');
         }
     }
 }

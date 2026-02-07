@@ -39,7 +39,7 @@ final class CreateArticleHandlerTest extends TestCase
 
         $this->assertNotNull($newArticle, 'Nový article nebol nájdený');
         $this->assertSame('Testovací článok', $newArticle->title()->toString());
-        $this->assertSame('Toto je obsah testovacieho článku.', $newArticle->content()->toString());
+        $this->assertSame('Toto je obsah testovacieho článku.', $newArticle->content()->getRaw());
         $this->assertSame($authorId, $newArticle->authorId()->toString());
         $this->assertSame('draft', $newArticle->status()->toString());
     }

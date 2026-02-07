@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Api;
@@ -17,7 +18,7 @@ class ArticleApiController extends BaseController
             'page' => 'query:page',
             'limit' => 'query:limit',
             'category' => 'query:category',
-            'tag' => 'query:tag'
+            'tag' => 'query:tag',
         ], 'api');
 
         return $this->jsonResponse([
@@ -25,8 +26,8 @@ class ArticleApiController extends BaseController
             'data' => $data,
             'meta' => [
                 'count' => count($data['articles'] ?? []),
-                'timestamp' => time()
-            ]
+                'timestamp' => time(),
+            ],
         ]);
     }
 
@@ -35,12 +36,12 @@ class ArticleApiController extends BaseController
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\GetArticleBySlug::class);
 
         $data = $this->executeUseCase($request, $useCase, [
-            'slug' => 'route:slug'
+            'slug' => 'route:slug',
         ], 'api');
 
         return $this->jsonResponse([
             'success' => true,
-            'data' => $data
+            'data' => $data,
         ]);
     }
 
@@ -49,12 +50,12 @@ class ArticleApiController extends BaseController
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\GetArticleById::class);
 
         $data = $this->executeUseCase($request, $useCase, [
-            'article_id' => $id
+            'article_id' => $id,
         ], 'api');
 
         return $this->jsonResponse([
             'success' => true,
-            'data' => $data
+            'data' => $data,
         ]);
     }
 
@@ -66,7 +67,7 @@ class ArticleApiController extends BaseController
             return $this->jsonResponse([
                 'success' => false,
                 'error' => 'Authentication required',
-                'message' => 'You must be logged in to create articles'
+                'message' => 'You must be logged in to create articles',
             ], 401);
         }
 
@@ -78,13 +79,13 @@ class ArticleApiController extends BaseController
             'category_id' => 'body:category_id',
             'tags' => 'body:tags',
             'status' => 'body:status',
-            'author_id' => 'session:user_id'
+            'author_id' => 'session:user_id',
         ], 'api');
 
         return $this->jsonResponse([
             'success' => true,
             'data' => $data,
-            'message' => 'Article created successfully'
+            'message' => 'Article created successfully',
         ], 201);
     }
 
@@ -96,7 +97,7 @@ class ArticleApiController extends BaseController
             return $this->jsonResponse([
                 'success' => false,
                 'error' => 'Access denied',
-                'message' => 'You can only modify your own articles'
+                'message' => 'You can only modify your own articles',
             ], 403);
         }
 
@@ -109,13 +110,13 @@ class ArticleApiController extends BaseController
             'slug' => 'body:slug',
             'category_id' => 'body:category_id',
             'tags' => 'body:tags',
-            'status' => 'body:status'
+            'status' => 'body:status',
         ], 'api');
 
         return $this->jsonResponse([
             'success' => true,
             'data' => $data,
-            'message' => 'Article updated successfully'
+            'message' => 'Article updated successfully',
         ]);
     }
 
@@ -127,20 +128,20 @@ class ArticleApiController extends BaseController
             return $this->jsonResponse([
                 'success' => false,
                 'error' => 'Access denied',
-                'message' => 'You can only delete your own articles'
+                'message' => 'You can only delete your own articles',
             ], 403);
         }
 
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\DeleteArticle::class);
 
         $data = $this->executeUseCase($request, $useCase, [
-            'article_id' => $id
+            'article_id' => $id,
         ], 'api');
 
         return $this->jsonResponse([
             'success' => true,
             'data' => $data,
-            'message' => 'Article deleted successfully'
+            'message' => 'Article deleted successfully',
         ]);
     }
 
@@ -151,7 +152,7 @@ class ArticleApiController extends BaseController
         $data = $this->executeUseCase($request, $useCase, [
             'query' => 'query:q',
             'page' => 'query:page',
-            'limit' => 'query:limit'
+            'limit' => 'query:limit',
         ], 'api');
 
         return $this->jsonResponse([
@@ -159,8 +160,8 @@ class ArticleApiController extends BaseController
             'data' => $data,
             'meta' => [
                 'count' => count($data['articles'] ?? []),
-                'query' => $request->getQueryParams()['q'] ?? ''
-            ]
+                'query' => $request->getQueryParams()['q'] ?? '',
+            ],
         ]);
     }
 }

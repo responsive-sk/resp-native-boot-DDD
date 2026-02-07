@@ -17,28 +17,28 @@ class DebugController
         $errorLog = ini_get('error_log');
         $displayErrors = ini_get('display_errors');
         $errorReporting = error_reporting();
-        
+
         // Get last few lines from error log
         $logContent = '';
         if (file_exists($errorLog)) {
             $lines = file($errorLog);
             $logContent = implode("\n", array_slice($lines, -20)); // Last 20 lines
         }
-        
+
         // Get exception from request if any
         $exception = $request->getAttribute('exception');
         $stackTrace = '';
-        
+
         if ($exception instanceof Throwable) {
             $stackTrace = $exception->getTraceAsString();
         }
-        
+
         // Get server parameters from request
         $serverParams = $request->getServerParams();
         $cookies = $request->getCookieParams();
         $post = $request->getParsedBody();
         $get = $request->getQueryParams();
-        
+
         // Build debug information
         $debugInfo = [
             'timestamp' => date('Y-m-d H:i:s'),
@@ -61,15 +61,16 @@ class DebugController
             'get_data' => $get,
             'headers' => $this->getAllHeaders($serverParams),
         ];
-        
+
         // Build HTML response
         $html = $this->buildDebugHtml($debugInfo, $logContent, $stackTrace, $exception);
-        
+
         // Create response
         $response = new \Laminas\Diactoros\Response\HtmlResponse($html);
+
         return $response->withStatus(500);
     }
-    
+
     private function getSessionInfo(): array
     {
         if (session_status() === PHP_SESSION_ACTIVE) {
@@ -79,14 +80,14 @@ class DebugController
                 'data' => $_SESSION,
             ];
         }
-        
+
         return [
             'status' => 'inactive',
             'id' => null,
             'data' => [],
         ];
     }
-    
+
     private function getAllHeaders(array $serverParams): array
     {
         $headers = [];
@@ -95,9 +96,10 @@ class DebugController
                 $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
             }
         }
+
         return $headers;
     }
-    
+
     private function buildDebugHtml(array $debugInfo, string $logContent, string $stackTrace, ?Throwable $exception): string
     {
         $html = '<!DOCTYPE html>
@@ -158,7 +160,7 @@ class DebugController
                 </table>
             </div>
         </div>';
-        
+
         if ($exception) {
             $html .= '
         <div class="section">
@@ -170,7 +172,7 @@ class DebugController
                     <strong>File:</strong> ' . htmlspecialchars($exception->getFile()) . ':' . $exception->getLine() . '<br>
                     <strong>Code:</strong> ' . $exception->getCode() . '
                 </div>';
-            
+
             if ($stackTrace) {
                 $html .= '
                 <div class="toggle" id="toggle-stack" onclick="toggleSection(\'stack\')">Zobraziť Stack Trace ▼</div>
@@ -178,12 +180,12 @@ class DebugController
                     <pre class="stack-trace">' . htmlspecialchars($stackTrace) . '</pre>
                 </div>';
             }
-            
+
             $html .= '
             </div>
         </div>';
         }
-        
+
         if ($debugInfo['last_error']) {
             $html .= '
         <div class="section">
@@ -198,7 +200,7 @@ class DebugController
             </div>
         </div>';
         }
-        
+
         $html .= '
         <div class="section">
             <h2>🌐 Request Information</h2>
@@ -211,7 +213,7 @@ class DebugController
                 </table>
             </div>
         </div>';
-        
+
         if (!empty($debugInfo['headers'])) {
             $html .= '
         <div class="section">
@@ -226,7 +228,7 @@ class DebugController
             </div>
         </div>';
         }
-        
+
         $html .= '
         <div class="section">
             <h2>🍪 Session Information</h2>
@@ -235,13 +237,13 @@ class DebugController
                     <tr><th>Status</th><td>' . htmlspecialchars($debugInfo['session']['status']) . '</td></tr>
                     <tr><th>Session ID</th><td>' . htmlspecialchars($debugInfo['session']['id'] ?? 'None') . '</td></tr>
                 </table>';
-            if (!empty($debugInfo['session']['data'])) {
-                $html .= '<h4>Session Data:</h4><pre>' . htmlspecialchars(print_r($debugInfo['session']['data'], true)) . '</pre>';
-            }
-            $html .= '
+        if (!empty($debugInfo['session']['data'])) {
+            $html .= '<h4>Session Data:</h4><pre>' . htmlspecialchars(print_r($debugInfo['session']['data'], true)) . '</pre>';
+        }
+        $html .= '
             </div>
         </div>';
-        
+
         if (!empty($debugInfo['post_data'])) {
             $html .= '
         <div class="section">
@@ -251,7 +253,7 @@ class DebugController
             </div>
         </div>';
         }
-        
+
         if (!empty($debugInfo['get_data'])) {
             $html .= '
         <div class="section">
@@ -261,7 +263,7 @@ class DebugController
             </div>
         </div>';
         }
-        
+
         if (!empty($debugInfo['cookies'])) {
             $html .= '
         <div class="section">
@@ -271,7 +273,7 @@ class DebugController
             </div>
         </div>';
         }
-        
+
         if ($logContent) {
             $html .= '
         <div class="section">
@@ -283,27 +285,27 @@ class DebugController
             </div>
         </div>';
         }
-        
+
         $html .= '
     </div>
 </body>
 </html>';
-        
+
         return $html;
     }
-    
+
     private function formatBytes(int $bytes): string
     {
         $units = ['B', 'KB', 'MB', 'GB'];
         $bytes = max($bytes, 0);
         $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
         $pow = min($pow, count($units) - 1);
-        
+
         $bytes /= (1 << (10 * $pow));
-        
+
         return round($bytes, 2) . ' ' . $units[$pow];
     }
-    
+
     private function errorReportingToString(int $level): string
     {
         $levels = [
@@ -323,14 +325,14 @@ class DebugController
             E_DEPRECATED => 'E_DEPRECATED',
             E_USER_DEPRECATED => 'E_USER_DEPRECATED',
         ];
-        
+
         $result = [];
         foreach ($levels as $levelNum => $levelName) {
             if ($level & $levelNum) {
                 $result[] = $levelName;
             }
         }
-        
+
         return implode(' | ', $result);
     }
 }

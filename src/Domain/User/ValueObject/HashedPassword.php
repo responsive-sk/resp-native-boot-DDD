@@ -8,32 +8,56 @@ use InvalidArgumentException;
 
 final readonly class HashedPassword
 {
-    private function __construct(private string $hash)
+    private array $config;
+
+    private function __construct(string $hash, array $config)
     {
         if (empty($hash)) {
             throw new InvalidArgumentException('Hash hesla nemôže byť prázdny');
         }
+        $this->config = $config;
     }
 
-    public static function fromPlainPassword(string $plainPassword): self
+    public static function fromPlainPassword(string $plainPassword, array $config): self
     {
-        if (strlen($plainPassword) < 6) {
-            throw new InvalidArgumentException('Heslo musí mať aspoň 6 znakov');
+        $min_length = $config['min_length'] ?? 8;
+        $require_uppercase = $config['require_uppercase'] ?? false;
+        $require_lowercase = $config['require_lowercase'] ?? false;
+        $require_number = $config['require_number'] ?? false;
+        $require_special_char = $config['require_special_char'] ?? false;
+
+        if (strlen($plainPassword) < $min_length) {
+            throw new InvalidArgumentException(sprintf('Heslo musí mať aspoň %d znakov', $min_length));
+        }
+
+        if ($require_uppercase && !preg_match('/[A-Z]/', $plainPassword)) {
+            throw new InvalidArgumentException('Heslo musí obsahovať aspoň jedno veľké písmeno');
+        }
+
+        if ($require_lowercase && !preg_match('/[a-z]/', $plainPassword)) {
+            throw new InvalidArgumentException('Heslo musí obsahovať aspoň jedno malé písmeno');
+        }
+
+        if ($require_number && !preg_match('/[0-9]/', $plainPassword)) {
+            throw new InvalidArgumentException('Heslo musí obsahovať aspoň jedno číslo');
+        }
+
+        if ($require_special_char && !preg_match('/[^a-zA-Z0-9]/', $plainPassword)) {
+            throw new InvalidArgumentException('Heslo musí obsahovať aspoň jeden špeciálny znak');
         }
 
         $hash = password_hash($plainPassword, PASSWORD_DEFAULT);
 
-        // @phpstan-ignore-next-line
         if (!is_string($hash)) {
             throw new \RuntimeException('Nepodarilo sa zahašovať heslo');
         }
 
-        return new self($hash);
+        return new self($hash, $config);
     }
 
-    public static function fromHash(string $hash): self
+    public static function fromHash(string $hash, array $config): self
     {
-        return new self($hash);
+        return new self($hash, $config);
     }
 
     public function verify(string $plainPassword): bool

@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Blog\Domain\Image\Factory;
 
 use Blog\Domain\Image\Entity\Image;
-use Blog\Domain\Image\ValueObject\ImageId;
 use Blog\Domain\Image\ValueObject\CloudinaryMetadata;
+use Blog\Domain\Image\ValueObject\ImageId;
 use Blog\Domain\User\ValueObject\UserId;
 
 class ImageFactory
@@ -37,11 +38,11 @@ class ImageFactory
             new \DateTimeImmutable()
         );
     }
-    
+
     public function createFromArray(array $data): Image
     {
         $metadata = CloudinaryMetadata::fromArray($data['metadata']);
-        
+
         return new Image(
             ImageId::fromString($data['id']),
             $data['public_id'],

@@ -1,4 +1,5 @@
 <?php
+
 // web.php - OPRAVENÁ VERZIA
 declare(strict_types=1);
 
@@ -33,7 +34,7 @@ try {
     http_response_code(500);
     header('Content-Type: text/plain');
     echo "Application error: " . $e->getMessage();
-    
+
     // Log
     error_log("Application error: " . $e->getMessage() . "\n" . $e->getTraceAsString());
 }

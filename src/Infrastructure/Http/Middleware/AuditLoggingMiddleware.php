@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Blog\Infrastructure\Http\Middleware;
 
 use Blog\Application\Audit\AuditLogger;
+use Blog\Domain\Audit\ValueObject\AuditEventType;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -28,7 +29,7 @@ class AuditLoggingMiddleware implements MiddlewareInterface
             $resource = $request->getUri()->getPath();
 
             $this->auditLogger->logAuthorization(
-                'authorization_denied',
+                AuditEventType::AUTHORIZATION_DENIED,
                 $userId,
                 $resource,
                 false,

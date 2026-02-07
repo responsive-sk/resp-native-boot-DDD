@@ -7,7 +7,6 @@ namespace Blog\Infrastructure\Http\Controller\Mark;
 use Blog\Application\Blog\GetAllTags;
 use Blog\Application\Blog\GetOrCreateTag;
 use Blog\Domain\Blog\Repository\TagRepository;
-use Blog\Domain\Blog\ValueObject\TagName;
 use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Infrastructure\View\ViewRenderer;
 use Nyholm\Psr7\Response;

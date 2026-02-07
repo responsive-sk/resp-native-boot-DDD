@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 return [
@@ -8,7 +9,7 @@ return [
         'api_secret' => $_ENV['CLOUDINARY_API_SECRET'] ?? '',
         'secure' => true,
     ],
-    
+
     'image' => [
         'max_size' => (int)($_ENV['IMAGE_MAX_SIZE'] ?? 5242880),
         'allowed_types' => explode(',', $_ENV['IMAGE_ALLOWED_TYPES'] ?? 'image/jpeg,image/png,image/webp'),

@@ -7,10 +7,10 @@ namespace Blog\Infrastructure\Persistence\Doctrine;
 use Blog\Domain\Blog\Entity\Article;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Domain\Blog\ValueObject\ArticleId;
-use Blog\Domain\Blog\ValueObject\CategorySlug;
 use Blog\Domain\Blog\ValueObject\CategoryId;
 use Blog\Domain\Blog\ValueObject\Slug;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 
 final readonly class DoctrineArticleRepository implements ArticleRepository
 {
@@ -28,7 +28,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
             $this->connection->insert('articles', [
                 'title' => $article->title()->toString(),
                 'slug' => $article->slug()?->toString(),
-                'content' => $article->content()->toString(),
+                'content' => $article->content()->getRaw(),
                 'author_id' => $article->authorId()->toString(),
                 'status' => $article->status()->toString(),
                 'created_at' => $article->createdAt()->format('Y-m-d H:i:s'),
@@ -44,7 +44,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
             $this->connection->update('articles', [
                 'title' => $article->title()->toString(),
                 'slug' => $article->slug()?->toString(),
-                'content' => $article->content()->toString(),
+                'content' => $article->content()->getRaw(),
                 'author_id' => $article->authorId()->toString(),
                 'status' => $article->status()->toString(),
                 'updated_at' => $article->updatedAt()->format('Y-m-d H:i:s'),
@@ -172,16 +172,20 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
 
         $tags = array_map([$this, 'hydrateTag'], $tagsData);
 
+        // Create simple markdown content wrapper
+        $markdownContent = new \Blog\Domain\Shared\Markdown\MarkdownContent($row['content']);
+
         return Article::reconstitute(
             ArticleId::fromInt((int) $row['id']),
             \Blog\Domain\Blog\ValueObject\Title::fromString($row['title']),
-            \Blog\Domain\Blog\ValueObject\Content::fromString($row['content']),
+            $markdownContent,
             \Blog\Domain\Blog\ValueObject\AuthorId::fromString($row['author_id']),
             \Blog\Domain\Blog\ValueObject\ArticleStatus::fromString($row['status']),
             new \DateTimeImmutable($row['created_at']),
             new \DateTimeImmutable($row['updated_at']),
             $row['slug'] ? \Blog\Domain\Blog\ValueObject\Slug::fromString($row['slug']) : null,
             $category,
+            null, // featuredImage - would need to be hydrated from database if available
             $tags
         );
     }
@@ -220,6 +224,48 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
         );
 
         return array_map([$this, 'hydrate'], $rows);
+    }
+
+    public function getRecentArticles(int $limit = 10): array
+    {
+        $rows = $this->connection->fetchAllAssociative(
+            "SELECT * FROM articles ORDER BY created_at DESC LIMIT ?",
+            [$limit],
+            [ParameterType::INTEGER]
+        );
+
+        return array_map([$this, 'hydrate'], $rows);
+    }
+
+    public function count(array $filters = []): int
+    {
+        $where = [];
+        $params = [];
+        $types = [];
+        
+        if (!empty($filters['status'])) {
+            $where[] = 'status = ?';
+            $params[] = $filters['status'];
+            $types[] = ParameterType::STRING;
+        }
+        
+        if (!empty($filters['start_date'])) {
+            $where[] = 'created_at >= ?';
+            $params[] = $filters['start_date'];
+            $types[] = ParameterType::STRING;
+        }
+        
+        if (!empty($filters['end_date'])) {
+            $where[] = 'created_at <= ?';
+            $params[] = $filters['end_date'];
+            $types[] = ParameterType::STRING;
+        }
+        
+        $whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
+        
+        $sql = "SELECT COUNT(*) FROM articles {$whereClause}";
+        
+        return (int)$this->connection->fetchOne($sql, $params, $types);
     }
 
     public function getCategories(): array

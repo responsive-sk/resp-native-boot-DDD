@@ -23,5 +23,12 @@ interface UserRepositoryInterface
      */
     public function findAll(): array;
 
+    /**
+     * @return User[]
+     */
+    public function getRecentUsers(int $limit = 10): array;
+
+    public function count(array $filters = []): int;
+
     public function remove(UserId $id): void;
 }

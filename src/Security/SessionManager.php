@@ -28,12 +28,12 @@ final class SessionManager
     public function startSession(string $userId, string $userRole): void
     {
         $now = time();
-        
+
         $this->session->set(self::USER_ID_KEY, $userId);
         $this->session->set(self::USER_ROLE_KEY, $userRole);
         $this->session->set(self::CREATED_AT_KEY, $now);
         $this->session->set(self::LAST_ACTIVITY_KEY, $now);
-        
+
         if ($this->binding === 'user_agent') {
             $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
             $this->session->set(self::USER_AGENT_HASH_KEY, hash('sha256', $userAgent));
@@ -52,20 +52,22 @@ final class SessionManager
         if ($this->binding === 'user_agent' && $this->session->has(self::USER_AGENT_HASH_KEY)) {
             $currentUserAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
             $expectedHash = $this->session->get(self::USER_AGENT_HASH_KEY);
-            
+
             if (!hash_equals($expectedHash, hash('sha256', $currentUserAgent))) {
                 $this->logger?->logSessionHijackingDetected($userId, $ip);
+
                 return false;
             }
         }
 
         $now = time();
-        
+
         if ($this->session->has(self::CREATED_AT_KEY)) {
             $createdAt = $this->session->get(self::CREATED_AT_KEY);
             if ($now - $createdAt > $this->lifetime) {
                 $lastActivity = date('Y-m-d H:i:s', $this->session->get(self::LAST_ACTIVITY_KEY, $createdAt));
                 $this->logger?->logSessionTimeout($userId, $lastActivity);
+
                 return false;
             }
         }
@@ -75,6 +77,7 @@ final class SessionManager
             if ($now - $lastActivity > $this->timeout) {
                 $lastActivityFormatted = date('Y-m-d H:i:s', $lastActivity);
                 $this->logger?->logSessionTimeout($userId, $lastActivityFormatted);
+
                 return false;
             }
         }
@@ -120,6 +123,7 @@ final class SessionManager
     {
         if (!$this->isValid()) {
             $this->destroy();
+
             throw AuthenticationException::notAuthenticated();
         }
     }

@@ -26,7 +26,7 @@ final class AuthorizationServiceTest extends TestCase
         $this->session->method('has')
             ->willReturnMap([
                 ['user_id' => true],
-                ['user_role' => true]
+                ['user_role' => true],
             ]);
 
         $this->assertTrue($this->authorization->isAuthenticated());
@@ -37,7 +37,7 @@ final class AuthorizationServiceTest extends TestCase
         $this->session->method('has')
             ->willReturnMap([
                 ['user_id' => true],
-                ['user_role' => false]
+                ['user_role' => false],
             ]);
 
         $this->assertFalse($this->authorization->isAuthenticated());
@@ -48,20 +48,20 @@ final class AuthorizationServiceTest extends TestCase
         $this->session->method('has')
             ->willReturnMap([
                 ['user_id' => true],
-                ['user_role' => true]
+                ['user_role' => true],
             ]);
 
         $this->session->method('get')
             ->willReturnMap([
                 ['user_id' => 'user-123'],
-                ['user_role' => 'ROLE_USER']
+                ['user_role' => 'ROLE_USER'],
             ]);
 
         $user = $this->authorization->getUser();
 
         $this->assertSame([
             'id' => 'user-123',
-            'role' => 'ROLE_USER'
+            'role' => 'ROLE_USER',
         ], $user);
     }
 
@@ -70,7 +70,7 @@ final class AuthorizationServiceTest extends TestCase
         $this->session->method('has')
             ->willReturnMap([
                 ['user_id' => false],
-                ['user_role' => false]
+                ['user_role' => false],
             ]);
 
         $user = $this->authorization->getUser();
@@ -83,7 +83,7 @@ final class AuthorizationServiceTest extends TestCase
         $this->session->method('has')
             ->willReturnMap([
                 ['user_id' => true],
-                ['user_role' => true]
+                ['user_role' => true],
             ]);
 
         $this->session->method('get')
@@ -98,7 +98,7 @@ final class AuthorizationServiceTest extends TestCase
         $this->session->method('has')
             ->willReturnMap([
                 ['user_id' => true],
-                ['user_role' => true]
+                ['user_role' => true],
             ]);
 
         $this->session->method('get')
@@ -113,7 +113,7 @@ final class AuthorizationServiceTest extends TestCase
         $this->session->method('has')
             ->willReturnMap([
                 ['user_id' => false],
-                ['user_role' => false]
+                ['user_role' => false],
             ]);
 
         $this->assertFalse($this->authorization->hasRole('user'));
@@ -125,13 +125,13 @@ final class AuthorizationServiceTest extends TestCase
             ->willReturnMap([
                 ['mark_session' => true],
                 ['user_id' => true],
-                ['user_role' => true]
+                ['user_role' => true],
             ]);
 
         $this->session->method('get')
             ->willReturnMap([
                 ['mark_session' => true],
-                ['user_role' => 'ROLE_USER']
+                ['user_role' => 'ROLE_USER'],
             ]);
 
         $this->assertTrue($this->authorization->isMark());
@@ -143,13 +143,13 @@ final class AuthorizationServiceTest extends TestCase
             ->willReturnMap([
                 ['mark_session' => false],
                 ['user_id' => true],
-                ['user_role' => true]
+                ['user_role' => true],
             ]);
 
         $this->session->method('get')
             ->willReturnMap([
                 ['mark_session' => false],
-                ['user_role' => 'ROLE_MARK']
+                ['user_role' => 'ROLE_MARK'],
             ]);
 
         $this->assertTrue($this->authorization->isMark());
@@ -161,13 +161,13 @@ final class AuthorizationServiceTest extends TestCase
             ->willReturnMap([
                 ['mark_session' => false],
                 ['user_id' => true],
-                ['user_role' => true]
+                ['user_role' => true],
             ]);
 
         $this->session->method('get')
             ->willReturnMap([
                 ['mark_session' => false],
-                ['user_role' => 'ROLE_USER']
+                ['user_role' => 'ROLE_USER'],
             ]);
 
         $this->assertFalse($this->authorization->isMark());
@@ -178,7 +178,7 @@ final class AuthorizationServiceTest extends TestCase
         $this->session->method('has')
             ->willReturnMap([
                 ['user_id' => false],
-                ['user_role' => false]
+                ['user_role' => false],
             ]);
 
         $this->expectException(AuthenticationException::class);
@@ -190,7 +190,7 @@ final class AuthorizationServiceTest extends TestCase
         $this->session->method('has')
             ->willReturnMap([
                 ['user_id' => true],
-                ['user_role' => true]
+                ['user_role' => true],
             ]);
 
         $this->expectNotToPerformAssertions();
@@ -202,7 +202,7 @@ final class AuthorizationServiceTest extends TestCase
         $this->session->method('has')
             ->willReturnMap([
                 ['user_id' => false],
-                ['user_role' => false]
+                ['user_role' => false],
             ]);
 
         $this->expectException(AuthenticationException::class);
@@ -214,7 +214,7 @@ final class AuthorizationServiceTest extends TestCase
         $this->session->method('has')
             ->willReturnMap([
                 ['user_id' => true],
-                ['user_role' => true]
+                ['user_role' => true],
             ]);
 
         $this->session->method('get')
@@ -229,7 +229,7 @@ final class AuthorizationServiceTest extends TestCase
         $this->session->method('has')
             ->willReturnMap([
                 ['user_id' => true],
-                ['user_role' => true]
+                ['user_role' => true],
             ]);
 
         $this->session->method('get')
@@ -245,7 +245,7 @@ final class AuthorizationServiceTest extends TestCase
             ->willReturnMap([
                 ['mark_session' => false],
                 ['user_id' => true],
-                ['user_role' => true]
+                ['user_role' => true],
             ]);
 
         $this->session->method('get')
@@ -261,7 +261,7 @@ final class AuthorizationServiceTest extends TestCase
             ->willReturnMap([
                 ['mark_session' => false],
                 ['user_id' => true],
-                ['user_role' => true]
+                ['user_role' => true],
             ]);
 
         $this->session->method('get')

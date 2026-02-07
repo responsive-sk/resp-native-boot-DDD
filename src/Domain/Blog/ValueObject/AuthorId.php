@@ -1,43 +1,41 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Blog\Domain\Blog\ValueObject;
 
-class AuthorId
+use InvalidArgumentException;
+
+final readonly class AuthorId
 {
-    private string $value;
+    private string $id;
 
-    private function __construct(string $value)
+    private function __construct(string $id)
     {
-        if (empty($value)) {
-            throw new \InvalidArgumentException('Author ID cannot be empty');
-        }
-
-        $this->value = $value;
+        $this->id = $id;
     }
 
     public static function fromString(string $value): self
     {
+        if (empty($value)) {
+            throw new InvalidArgumentException("Author ID cannot be empty.");
+        }
+        
         return new self($value);
-    }
-
-    public static function generate(): self
-    {
-        return new self(\Ramsey\Uuid\Uuid::uuid4()->toString());
     }
 
     public function toString(): string
     {
-        return $this->value;
-    }
-
-    public function __toString(): string
-    {
-        return $this->toString();
+        return $this->id;
     }
 
     public function equals(AuthorId $other): bool
     {
-        return $this->value === $other->value;
+        return $this->id === $other->id;
+    }
+
+    public function __toString(): string
+    {
+        return $this->id;
     }
 }

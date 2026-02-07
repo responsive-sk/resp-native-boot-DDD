@@ -12,6 +12,7 @@ use Blog\Domain\User\ValueObject\UserId;
 use Blog\Domain\User\ValueObject\UserRole;
 use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 
 final readonly class DoctrineUserRepository implements UserRepositoryInterface
 {
@@ -77,6 +78,48 @@ final readonly class DoctrineUserRepository implements UserRepositoryInterface
         );
 
         return $count > 0;
+    }
+
+    public function getRecentUsers(int $limit = 10): array
+    {
+        $rows = $this->connection->fetchAllAssociative(
+            'SELECT * FROM users ORDER BY created_at DESC LIMIT ?',
+            [$limit],
+            [ParameterType::INTEGER]
+        );
+
+        return array_map([$this, 'hydrate'], $rows);
+    }
+
+    public function count(array $filters = []): int
+    {
+        $where = [];
+        $params = [];
+        $types = [];
+        
+        if (!empty($filters['role'])) {
+            $where[] = 'role = ?';
+            $params[] = $filters['role'];
+            $types[] = ParameterType::STRING;
+        }
+        
+        if (!empty($filters['start_date'])) {
+            $where[] = 'created_at >= ?';
+            $params[] = $filters['start_date'];
+            $types[] = ParameterType::STRING;
+        }
+        
+        if (!empty($filters['end_date'])) {
+            $where[] = 'created_at <= ?';
+            $params[] = $filters['end_date'];
+            $types[] = ParameterType::STRING;
+        }
+        
+        $whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
+        
+        $sql = "SELECT COUNT(*) FROM users {$whereClause}";
+        
+        return (int)$this->connection->fetchOne($sql, $params, $types);
     }
 
     public function remove(UserId $id): void

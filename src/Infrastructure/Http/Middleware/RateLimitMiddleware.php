@@ -12,20 +12,31 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class RateLimitMiddleware implements MiddlewareInterface
 {
-    private array $limits = [
-        'login' => ['attempts' => 5, 'window' => 900, 'lockout' => 1800], // 5 attempts per 15 min, 30 min lockout
-        'register' => ['attempts' => 3, 'window' => 3600, 'lockout' => 3600], // 3 attempts per hour, 1 hour lockout
-        'default' => ['attempts' => 100, 'window' => 3600], // 100 requests per hour
-    ];
+    private array $config;
+
+    public function __construct(array $config)
+    {
+        $this->config = $config;
+    }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        // Check if rate limiting is globally enabled
+        if (!($this->config['enabled'] ?? true)) {
+            return $handler->handle($request);
+        }
+
         $path = $request->getUri()->getPath();
         $method = $request->getMethod();
         $ip = $this->getClientIp($request);
 
         // Determine rate limit type
         $limitType = $this->getLimitType($path, $method);
+
+        // Check if rate limiting is enabled for this specific type
+        if (!($this->config[$limitType]['enabled'] ?? true)) {
+            return $handler->handle($request);
+        }
 
         // Skip rate limiting for safe methods and API endpoints
         if (!in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE']) || str_starts_with($path, '/api/')) {
@@ -55,7 +66,7 @@ class RateLimitMiddleware implements MiddlewareInterface
 
     private function isRateLimited(string $ip, string $limitType): bool
     {
-        $limit = $this->limits[$limitType];
+        $limit = $this->config[$limitType]; // Use injected config
         $key = "rate_limit_{$limitType}_{$ip}";
         $lockoutKey = "rate_limit_lockout_{$limitType}_{$ip}";
 
@@ -129,7 +140,7 @@ class RateLimitMiddleware implements MiddlewareInterface
 
     private function createRateLimitResponse(string $limitType): ResponseInterface
     {
-        $limit = $this->limits[$limitType];
+        $limit = $this->config[$limitType]; // Use injected config
         $response = new Response();
 
         // Check if AJAX request
@@ -177,7 +188,7 @@ class RateLimitMiddleware implements MiddlewareInterface
 
     public function getRemainingAttempts(string $ip, string $limitType): array
     {
-        $limit = $this->limits[$limitType];
+        $limit = $this->config[$limitType]; // Use injected config
         $key = "rate_limit_{$limitType}_{$ip}";
 
         if (session_status() === PHP_SESSION_NONE) {

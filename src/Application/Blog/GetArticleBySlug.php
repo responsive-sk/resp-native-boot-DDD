@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Blog\Application\Blog;
 
 use Blog\Core\BaseUseCase;
-use Blog\Domain\Blog\Entity\Article;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Domain\Blog\ValueObject\Slug;
 
@@ -32,12 +31,12 @@ final class GetArticleBySlug extends BaseUseCase
                 'id' => $article->id()?->toInt(),
                 'title' => $article->title()->toString(),
                 'slug' => $article->slug()?->toString(),
-                'content' => $article->content()->toString(),
+                'content' => $article->content()->getRaw(),
                 'status' => $article->status()->toString(),
                 'author_id' => $article->authorId()->toString(),
                 'created_at' => $article->createdAt()->format('Y-m-d H:i:s'),
                 'updated_at' => $article->updatedAt()->format('Y-m-d H:i:s'),
-            ]
+            ],
         ]);
     }
 

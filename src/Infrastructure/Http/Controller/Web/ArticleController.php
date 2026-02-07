@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Web;
 
+use Blog\Core\UseCaseHandler;
 use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Infrastructure\View\ViewRenderer;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Container\ContainerInterface;
-use Blog\Core\UseCaseHandler;
 
 class ArticleController extends BaseController
 {
@@ -27,11 +27,11 @@ class ArticleController extends BaseController
         $useCase = $this->useCaseHandler->get(\Blog\Application\Blog\GetArticleBySlug::class);
 
         $result = $this->executeUseCase($request, $useCase, [
-            'slug' => 'route:slug'
+            'slug' => 'route:slug',
         ], 'web');
 
         $html = $this->renderer->renderResponse('article.show', [
-            'article' => $result['data']['article'] ?? null
+            'article' => $result['data']['article'] ?? null,
         ]);
 
         return $html;
@@ -44,13 +44,13 @@ class ArticleController extends BaseController
         $result = $this->executeUseCase($request, $useCase, [
             'page' => 'query:page',
             'category' => 'query:category',
-            'tag' => 'query:tag'
+            'tag' => 'query:tag',
         ], 'array');
 
         $html = $this->renderer->renderResponse('article.index', [
             'articles' => $result['data']['articles'] ?? [],
             'count' => $result['data']['count'] ?? 0,
-            'currentPage' => $request->getQueryParams()['page'] ?? 1
+            'currentPage' => $request->getQueryParams()['page'] ?? 1,
         ]);
 
         return $html;
@@ -69,7 +69,7 @@ class ArticleController extends BaseController
             $result = $this->executeUseCase($request, $useCase, [
                 'title' => 'body:title',
                 'content' => 'body:content',
-                'author_id' => 'session:user_id'
+                'author_id' => 'session:user_id',
             ], 'web');
 
             return $this->redirect('/blog/' . $result['article_id']);
@@ -93,7 +93,7 @@ class ArticleController extends BaseController
         }
 
         return $this->renderer->renderResponse('article.edit', [
-            'article' => $article
+            'article' => $article,
         ]);
     }
 
@@ -106,7 +106,7 @@ class ArticleController extends BaseController
                 'article_id' => 'route:id',
                 'title' => 'body:title',
                 'content' => 'body:content',
-                'slug' => 'body:slug'
+                'slug' => 'body:slug',
             ], 'web');
 
             return $this->redirect('/blog/' . $result['article_id']);
@@ -124,7 +124,7 @@ class ArticleController extends BaseController
 
         try {
             $result = $this->executeUseCase($request, $useCase, [
-                'article_id' => 'route:id'
+                'article_id' => 'route:id',
             ], 'web');
 
             return $this->redirect('/blog');

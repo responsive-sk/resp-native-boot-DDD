@@ -8,7 +8,8 @@ final class CsrfTokenHelper
 {
     public function __construct(
         private readonly CsrfProtection $csrfProtection
-    ) {}
+    ) {
+    }
 
     /**
      * Generate HTML hidden input field with CSRF token
@@ -16,7 +17,7 @@ final class CsrfTokenHelper
     public function generateHiddenInput(): string
     {
         $token = $this->csrfProtection->getToken();
-        
+
         return sprintf(
             '<input type="hidden" name="csrf_token" value="%s">',
             htmlspecialchars($token, ENT_QUOTES, 'UTF-8')
@@ -29,7 +30,7 @@ final class CsrfTokenHelper
     public function generateMetaTag(): string
     {
         $token = $this->csrfProtection->getToken();
-        
+
         return sprintf(
             '<meta name="csrf-token" content="%s">',
             htmlspecialchars($token, ENT_QUOTES, 'UTF-8')
@@ -50,7 +51,7 @@ final class CsrfTokenHelper
     public function generateJsSnippet(): string
     {
         $token = $this->csrfProtection->getToken();
-        
+
         return sprintf(
             '<script>window.csrfToken = "%s";</script>',
             htmlspecialchars($token, ENT_QUOTES, 'UTF-8')

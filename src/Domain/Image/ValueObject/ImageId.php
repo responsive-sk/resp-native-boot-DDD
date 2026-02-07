@@ -5,47 +5,33 @@ declare(strict_types=1);
 namespace Blog\Domain\Image\ValueObject;
 
 use InvalidArgumentException;
-use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 
 final readonly class ImageId
 {
-    private function __construct(private UuidInterface $uuid)
+    private string $id;
+
+    private function __construct(string $id)
     {
+        $this->id = $id;
     }
 
-    public static function generate(): self
+    public static function fromString(string $value): self
     {
-        return new self(Uuid::uuid4());
-    }
-
-    public static function fromString(string $id): self
-    {
-        if (!Uuid::isValid($id)) {
-            throw new InvalidArgumentException(sprintf('Invalid Image UUID: %s', $id));
+        if (empty($value)) {
+            throw new InvalidArgumentException("Image ID cannot be empty.");
         }
-
-        return new self(Uuid::fromString($id));
-    }
-
-    public static function fromBytes(string $bytes): self
-    {
-        return new self(Uuid::fromBytes($bytes));
+        
+        return new self($value);
     }
 
     public function toString(): string
     {
-        return $this->uuid->toString();
-    }
-
-    public function toBytes(): string
-    {
-        return $this->uuid->getBytes();
+        return $this->id;
     }
 
     public function equals(self $other): bool
     {
-        return $this->uuid->equals($other->uuid);
+        return $this->id === $other->id;
     }
 
     public function __toString(): string

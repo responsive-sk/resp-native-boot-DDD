@@ -212,7 +212,7 @@ final class AuthMiddlewareTest extends TestCase
         $_SESSION = [];
 
         $request = $this->createServerRequest('GET', '/article/create', [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $handler = $this->createRequestHandler(new Response(200));
 
@@ -220,7 +220,7 @@ final class AuthMiddlewareTest extends TestCase
 
         $this->assertSame(401, $response->getStatusCode());
         $this->assertSame('application/json', $response->getHeaderLine('Content-Type'));
-        
+
         $body = json_decode((string) $response->getBody(), true);
         $this->assertSame('Authentication required', $body['error']);
         $this->assertSame('Authentication required', $body['message']);
@@ -233,7 +233,7 @@ final class AuthMiddlewareTest extends TestCase
         $_SESSION['user_role'] = 'ROLE_USER';
 
         $request = $this->createServerRequest('GET', '/mark/dashboard', [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ]);
         $handler = $this->createRequestHandler(new Response(200));
 
@@ -241,7 +241,7 @@ final class AuthMiddlewareTest extends TestCase
 
         $this->assertSame(403, $response->getStatusCode());
         $this->assertSame('application/json', $response->getHeaderLine('Content-Type'));
-        
+
         $body = json_decode((string) $response->getBody(), true);
         $this->assertSame('MARK role required', $body['error']);
         $this->assertSame('MARK role required', $body['message']);
@@ -252,7 +252,7 @@ final class AuthMiddlewareTest extends TestCase
         $_SESSION = [];
 
         $request = $this->createServerRequest('GET', '/article/create', [
-            'Accept' => 'application/vnd.api+json'
+            'Accept' => 'application/vnd.api+json',
         ]);
         $handler = $this->createRequestHandler(new Response(200));
 
@@ -294,11 +294,11 @@ final class AuthMiddlewareTest extends TestCase
     private function createServerRequest(string $method, string $uri, array $headers = []): ServerRequestInterface
     {
         $request = new ServerRequest($method, $uri);
-        
+
         foreach ($headers as $name => $value) {
             $request = $request->withHeader($name, $value);
         }
-        
+
         return $request;
     }
 
@@ -306,6 +306,7 @@ final class AuthMiddlewareTest extends TestCase
     {
         $handler = $this->createMock(RequestHandlerInterface::class);
         $handler->method('handle')->willReturn($response);
+
         return $handler;
     }
 

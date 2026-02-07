@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Blog\Middleware;
 
-use Blog\Security\Authorization;
 use Blog\Security\Exception\AuthenticationException;
-use Blog\Security\Exception\AuthorizationException;
 use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -40,6 +38,7 @@ final class ApiAuthMiddleware implements MiddlewareInterface
         foreach ($protectedApiPrefixes as $prefix) {
             if (str_starts_with($path, $prefix)) {
                 $isProtectedApi = true;
+
                 break;
             }
         }
@@ -67,7 +66,7 @@ final class ApiAuthMiddleware implements MiddlewareInterface
             return new Response(401, ['Content-Type' => 'application/json'], json_encode([
                 'success' => false,
                 'error' => 'Authentication required',
-                'message' => 'You must be logged in to access this resource'
+                'message' => 'You must be logged in to access this resource',
             ]));
         }
 

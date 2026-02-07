@@ -66,7 +66,7 @@ final class SessionTimeoutMiddlewareTest extends TestCase
 
         $this->assertSame(302, $response->getStatusCode());
         $this->assertSame('/login', $response->getHeaderLine('Location'));
-        
+
         // Check that flash message was set
         $this->assertSame('Session expired', $_SESSION['flash_error']);
     }
@@ -208,7 +208,7 @@ final class SessionTimeoutMiddlewareTest extends TestCase
     {
         // Mock HTTPS environment
         $_SERVER['HTTPS'] = 'on';
-        
+
         // Set up valid session
         $_SESSION['user_id'] = 'test-user-id';
         $_SESSION['user_role'] = 'ROLE_USER';
@@ -232,6 +232,7 @@ final class SessionTimeoutMiddlewareTest extends TestCase
     {
         $handler = $this->createMock(RequestHandlerInterface::class);
         $handler->method('handle')->willReturn($response);
+
         return $handler;
     }
 

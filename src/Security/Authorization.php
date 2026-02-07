@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Blog\Security;
 
-use Blog\Security\Exception\AuthenticationException;
-use Blog\Security\Exception\AuthorizationException;
-use ResponsiveSk\Slim4Session\SessionInterface;
 use Psr\Container\ContainerInterface;
+use ResponsiveSk\Slim4Session\SessionInterface;
 
 /**
  * @deprecated Use AuthorizationService instead. This class maintains backward compatibility.
@@ -36,10 +34,10 @@ class Authorization
             if (self::$container === null) {
                 throw new \RuntimeException('Authorization container not set. Call Authorization::setContainer() first.');
             }
-            
+
             self::$service = self::$container->get(\Blog\Security\AuthorizationService::class);
         }
-        
+
         return self::$service;
     }
 

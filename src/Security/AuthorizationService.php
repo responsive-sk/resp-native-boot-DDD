@@ -12,11 +12,12 @@ final class AuthorizationService
 {
     public function __construct(
         private readonly SessionInterface $session
-    ) {}
+    ) {
+    }
 
     public function isAuthenticated(): bool
     {
-        return $this->session->has('user_id') 
+        return $this->session->has('user_id')
             && $this->session->has('user_role');
     }
 
@@ -41,12 +42,13 @@ final class AuthorizationService
         }
 
         // Normalize both roles for comparison
-        $normalizeRole = function(string $role): string {
+        $normalizeRole = function (string $role): string {
             $role = strtolower(trim($role));
             // Remove ROLE_ prefix if present
             if (str_starts_with($role, 'role_')) {
                 $role = substr($role, 5);
             }
+
             return $role;
         };
 

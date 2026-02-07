@@ -1,8 +1,13 @@
 <?php
+
 // config/session.php
 return [
     // === CORE SESSION SETTINGS ===
     'name' => $_ENV['SESSION_NAME'] ?? 'app_session', // Session cookie name
+    
+    // === STORAGE CONFIGURATION ===
+    'storage' => $_ENV['SESSION_STORAGE'] ?? 'database', // 'file' or 'database'
+    'save_path' => $_ENV['SESSION_SAVE_PATH'] ?? __DIR__ . '/../data/sessions', // For file storage
 
     // Cookie settings (pre slim4-session)
     'cookie_params' => [
@@ -17,7 +22,7 @@ return [
     // === APPLICATION SPECIFIC ===
     'timeout' => [
         'default' => 1800,     // 30 min - verejné stránky
-        'mark' => 7200,        // 2 hodiny - mark/admin panel  
+        'mark' => 7200,        // 2 hodiny - mark/admin panel
         'api' => 86400,        // 24 hodín - API tokeny
     ],
 
@@ -32,6 +37,12 @@ return [
         'session_prefix' => 'mark_',
         'regenerate_on_login' => true,
         'require_fingerprint' => true,
+    ],
+
+    // === DATABASE STORAGE (slim4-session) ===
+    'database' => [
+        'table' => 'sessions',
+        'connection' => 'app', // Sessions sa ukladajú do app.db spolu s audit logs
     ],
 
     // === SECURITY ===

@@ -25,7 +25,7 @@ final readonly class ArticleResponse
         return new self(
             id: $article->id()->toInt(),
             title: $article->title()->toString(),
-            content: $article->content()->toString(),
+            content: $article->content()->getRaw(),
             excerpt: $article->content()->excerpt(200),
             authorId: $article->authorId()->toString(),
             status: $article->status()->toString(),

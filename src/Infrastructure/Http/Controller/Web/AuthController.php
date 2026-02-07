@@ -1,19 +1,20 @@
 <?php
+
 // src/Infrastructure/Http/Controller/Web/AuthController.php - REFAKTOROVANÝ
 
 declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Web;
 
-use Blog\Infrastructure\Http\Controller\BaseController;
-use Blog\Infrastructure\View\ViewRenderer;
 use Blog\Application\User\LoginUser;
 use Blog\Application\User\RegisterUser;
+use Blog\Core\UseCaseHandler;
+use Blog\Infrastructure\Http\Controller\BaseController;
+use Blog\Infrastructure\View\ViewRenderer;
+use Blog\Domain\Audit\ValueObject\AuditEventType;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-
-use Psr\Container\ContainerInterface;
-use Blog\Core\UseCaseHandler;
 
 class AuthController extends BaseController
 {
@@ -61,20 +62,26 @@ class AuthController extends BaseController
                 $this->session->set('last_activity', time());
                 $this->session->set('fingerprint', $this->generateFingerprint($request)); # Add fingerprint
 
-                // Audit log
-                $this->auditLogger->logLogin($result['data']['user']['id']);
-
-                // SECURITY: Use safe redirect to prevent open redirect attacks
-                $safeRedirect = $this->getSafeRedirect($request, $this->paths->urlFor('home'));
-                return $this->redirect($safeRedirect);
-            }
+                                    // Audit log
+                                    $this->auditLogger->logLogin($result['data']['user']['id']);
+                
+                                    // Determine redirect route based on user role
+                                    $redirectRouteName = 'home'; // Default redirect
+                                    if ($result['data']['user']['role'] === 'ROLE_MARK') {
+                                        $redirectRouteName = 'mark.dashboard';
+                                    }
+                
+                                    // SECURITY: Use safe redirect to prevent open redirect attacks
+                                    $safeRedirect = $this->getSafeRedirect($request, $this->paths->urlFor($redirectRouteName));
+                
+                                    return $this->redirect($safeRedirect);            }
 
             // Ak login zlyhal
             $categories = $this->categoryRepository->getAll();
 
             // Audit log failure
             $this->auditLogger->logAuthentication(
-                'login_failed',
+                AuditEventType::LOGIN_FAILED,
                 (string) ($request->getParsedBody()['email'] ?? 'unknown'),
                 false,
                 $request,
@@ -134,6 +141,7 @@ class AuthController extends BaseController
 
                 // SECURITY: Use safe redirect to prevent open redirect attacks
                 $safeRedirect = $this->getSafeRedirect($request, $this->paths->urlFor('home'));
+
                 return $this->redirect($safeRedirect);
             }
 
@@ -190,6 +198,7 @@ class AuthController extends BaseController
             }
         }
         $data[] = $salt;
+
         return hash('sha256', implode('|', $data));
     }
 }

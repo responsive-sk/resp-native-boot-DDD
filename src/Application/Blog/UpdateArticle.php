@@ -8,7 +8,7 @@ use Blog\Core\BaseUseCase;
 use Blog\Domain\Blog\Entity\Article;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Domain\Blog\ValueObject\ArticleId;
-use Blog\Domain\Blog\ValueObject\Content;
+use Blog\Domain\Shared\Markdown\MarkdownContent;
 use Blog\Domain\Blog\ValueObject\Slug;
 use Blog\Domain\Blog\ValueObject\Title;
 use DomainException;
@@ -26,7 +26,7 @@ final class UpdateArticle extends BaseUseCase
 
         $articleId = ArticleId::fromInt((int) $input['article_id']);
         $title = Title::fromString($input['title']);
-        $content = Content::fromString($input['content']);
+        $content = new MarkdownContent($input['content']);
         $slug = isset($input['slug']) ? new Slug($input['slug']) : null;
 
         // 1. Nájsť článok
@@ -62,7 +62,7 @@ final class UpdateArticle extends BaseUseCase
 
         return $this->success([
             'article' => $article,
-            'article_id' => $articleId->toInt()
+            'article_id' => $articleId->toInt(),
         ]);
     }
 

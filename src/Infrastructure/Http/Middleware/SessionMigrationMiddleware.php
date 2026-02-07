@@ -8,8 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use ResponsiveSk\Slim4Session\SessionInterface;
 use Psr\Log\LoggerInterface;
+use ResponsiveSk\Slim4Session\SessionInterface;
 
 /**
  * Session Migration Middleware.

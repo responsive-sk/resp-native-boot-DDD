@@ -9,11 +9,12 @@ use Blog\Domain\Blog\Repository\TagRepository;
 use Blog\Domain\Blog\ValueObject\TagId;
 use Blog\Domain\Blog\ValueObject\TagSlug;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Types\Types;
 
 final class DoctrineTagRepository implements TagRepository
 {
-    public function __construct(private Connection $connection) {}
+    public function __construct(private Connection $connection)
+    {
+    }
 
     public function add(Tag $tag): void
     {
@@ -150,9 +151,9 @@ final class DoctrineTagRepository implements TagRepository
         // Create new tag
         $tagName = \Blog\Domain\Blog\ValueObject\TagName::fromString($name);
         $tag = Tag::create($tagName);
-        
+
         $this->add($tag);
-        
+
         return $tag;
     }
 

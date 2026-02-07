@@ -37,4 +37,11 @@ interface ArticleRepository
      */
     public function getByCategory(CategoryId $categoryId): array;
 
+    /**
+     * @return Article[]
+     */
+    public function getRecentArticles(int $limit = 10): array;
+
+    public function count(array $filters = []): int;
+
 }

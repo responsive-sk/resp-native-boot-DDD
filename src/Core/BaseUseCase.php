@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Blog\Core;
@@ -12,10 +13,10 @@ abstract class BaseUseCase implements UseCaseInterface
     {
         return [
             'success' => true,
-            'data' => $data
+            'data' => $data,
         ];
     }
-    
+
     /**
      * Create error response
      */
@@ -24,10 +25,10 @@ abstract class BaseUseCase implements UseCaseInterface
         return [
             'success' => false,
             'error' => $message,
-            'errors' => $errors
+            'errors' => $errors,
         ];
     }
-    
+
     /**
      * Validate input data - override in child classes
      */

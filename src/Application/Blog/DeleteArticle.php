@@ -18,7 +18,7 @@ final class DeleteArticle extends BaseUseCase
     public function execute(array $input): array
     {
         $this->validate($input);
-        
+
         $articleId = ArticleId::fromInt((int) $input['article_id']);
 
         // 1. Skontrolovať, či článok existuje
@@ -33,16 +33,16 @@ final class DeleteArticle extends BaseUseCase
 
         return $this->success([
             'message' => 'Article deleted successfully',
-            'article_id' => $articleId->toInt()
+            'article_id' => $articleId->toInt(),
         ]);
     }
-    
+
     protected function validate(array $input): void
     {
         if (empty($input['article_id'])) {
             throw new \InvalidArgumentException('Article ID is required');
         }
-        
+
         if (!is_numeric($input['article_id']) || (int) $input['article_id'] <= 0) {
             throw new \InvalidArgumentException('Invalid article ID');
         }

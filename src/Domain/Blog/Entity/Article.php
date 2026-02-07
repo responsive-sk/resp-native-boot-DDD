@@ -12,6 +12,8 @@ use Blog\Domain\Blog\ValueObject\Content;
 use Blog\Domain\Blog\ValueObject\Slug;
 use Blog\Domain\Blog\ValueObject\Title;
 use DateTimeImmutable;
+use Blog\Domain\Shared\Markdown\MarkdownContent;
+use Blog\Domain\Shared\Media\Image;
 
 final class Article
 {
@@ -20,13 +22,14 @@ final class Article
     private function __construct(
         private ?ArticleId        $id,
         private Title             $title,
-        private Content           $content,
+        private MarkdownContent    $content,
         private readonly AuthorId $authorId,
         private ArticleStatus     $status,
         private DateTimeImmutable $createdAt,
         private DateTimeImmutable $updatedAt,
         private ?Slug             $slug = null,
         private ?\Blog\Domain\Blog\Entity\Category $category = null,
+        private ?Image            $featuredImage = null,
         /** @var array<int, \Blog\Domain\Blog\Entity\Tag> */
         private array $tags = []
     ) {
@@ -34,10 +37,11 @@ final class Article
 
     public static function create(
         Title $title,
-        Content $content,
+        MarkdownContent $content,
         AuthorId $authorId,
         ?\Blog\Domain\Blog\Entity\Category $category = null,
-        array $tags = []
+        array $tags = [],
+        ?Image $featuredImage = null
     ): self {
         $now = new DateTimeImmutable();
 
@@ -51,6 +55,7 @@ final class Article
             updatedAt: $now,
             slug: Slug::fromString($title->toString()),
             category: $category,
+            featuredImage: $featuredImage,
             tags: $tags
         );
     }
@@ -58,19 +63,20 @@ final class Article
     public static function reconstitute(
         ArticleId         $id,
         Title             $title,
-        Content           $content,
+        MarkdownContent   $content,
         AuthorId          $authorId,
         ArticleStatus     $status,
         DateTimeImmutable $createdAt,
         DateTimeImmutable $updatedAt,
         ?Slug             $slug = null,
         ?\Blog\Domain\Blog\Entity\Category $category = null,
+        ?Image            $featuredImage = null,
         array $tags = []
     ): self {
-        return new self($id, $title, $content, $authorId, $status, $createdAt, $updatedAt, $slug, $category, $tags);
+        return new self($id, $title, $content, $authorId, $status, $createdAt, $updatedAt, $slug, $category, $featuredImage, $tags);
     }
 
-    public function update(Title $title, Content $content): void
+    public function update(Title $title, MarkdownContent $content): void
     {
         $this->title = $title;
         $this->content = $content;
@@ -122,9 +128,36 @@ final class Article
     {
         return $this->title;
     }
-    public function content(): Content
+    public function content(): MarkdownContent
     {
         return $this->content;
+    }
+
+    public function getHtmlContent(): string
+    {
+        return $this->content->getHtml();
+    }
+
+    public function getExcerpt(): string
+    {
+        return $this->content->getExcerpt();
+    }
+
+    public function updateContent(MarkdownContent $content): void
+    {
+        $this->content = $content;
+        $this->updatedAt = new DateTimeImmutable();
+    }
+
+    public function featuredImage(): ?Image
+    {
+        return $this->featuredImage;
+    }
+
+    public function setFeaturedImage(?Image $featuredImage): void
+    {
+        $this->featuredImage = $featuredImage;
+        $this->updatedAt = new DateTimeImmutable();
     }
     public function authorId(): AuthorId
     {
@@ -214,7 +247,7 @@ final class Article
         return $this->title();
     }
 
-    public function getContent(): Content
+    public function getContent(): MarkdownContent
     {
         return $this->content();
     }

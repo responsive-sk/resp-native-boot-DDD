@@ -7,7 +7,7 @@ namespace Blog\Application\Blog;
 use Blog\Core\BaseUseCase;
 use Blog\Domain\Blog\Entity\Article;
 use Blog\Domain\Blog\Repository\ArticleRepository;
-use Blog\Domain\Blog\ValueObject\Content;
+use Blog\Domain\Shared\Markdown\MarkdownContent;
 use Blog\Domain\Blog\ValueObject\Slug;
 use Blog\Domain\Blog\ValueObject\Title;
 use Blog\Domain\User\ValueObject\UserId;
@@ -38,7 +38,7 @@ final class CreateArticle extends BaseUseCase
         // 3. Vytvor článok s unikátnym slugom
         $article = Article::create(
             Title::fromString($title),
-            Content::fromString($content),
+            new MarkdownContent($content),
             UserId::fromString($authorId)
         );
 
@@ -56,7 +56,7 @@ final class CreateArticle extends BaseUseCase
 
         return $this->success([
             'article_id' => $id->toInt(),
-            'article' => $article
+            'article' => $article,
         ]);
     }
 
@@ -70,11 +70,11 @@ final class CreateArticle extends BaseUseCase
 
         while ($attempt < $maxAttempts) {
             $candidateSlug = $attempt === 0 ? $baseSlug : $baseSlug . '-' . $suffix;
-            
+
             if ($this->articles->getBySlug(new Slug($candidateSlug)) === null) {
                 return $candidateSlug;
             }
-            
+
             $suffix++;
             $attempt++;
         }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Blog\Domain\Image\ValueObject;
@@ -14,59 +15,61 @@ class CloudinaryMetadata
         private array $tags = [],
         private array $context = [],     // alt, caption, etc.
         private array $exif = []
-    ) {}
-    
+    ) {
+    }
+
     public function getPublicId(): string
     {
         return $this->publicId;
     }
-    
+
     public function getResourceType(): string
     {
         return $this->resourceType;
     }
-    
+
     public function getType(): string
     {
         return $this->type;
     }
-    
+
     public function getSignature(): string
     {
         return $this->signature;
     }
-    
+
     public function getVersion(): int
     {
         return $this->version;
     }
-    
+
     public function getTags(): array
     {
         return $this->tags;
     }
-    
+
     public function getContext(): array
     {
         return $this->context;
     }
-    
+
     public function getExif(): array
     {
         return $this->exif;
     }
-    
+
     public function getTransformationUrl(array $transformations = []): string
     {
         $params = [];
         foreach ($transformations as $key => $value) {
             $params[] = "{$key}_{$value}";
         }
-        
+
         $transformation = implode(',', $params);
+
         return "https://res.cloudinary.com/{cloud_name}/{$this->resourceType}/upload/{$transformation}/{$this->publicId}";
     }
-    
+
     public function toArray(): array
     {
         return [
@@ -80,7 +83,7 @@ class CloudinaryMetadata
             'exif' => $this->exif,
         ];
     }
-    
+
     public static function fromArray(array $data): self
     {
         return new self(

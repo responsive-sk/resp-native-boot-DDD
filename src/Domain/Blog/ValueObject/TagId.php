@@ -4,39 +4,38 @@ declare(strict_types=1);
 
 namespace Blog\Domain\Blog\ValueObject;
 
-use Ramsey\Uuid\Uuid;
+use InvalidArgumentException;
 
 final readonly class TagId
 {
-    private string $value;
+    private string $id;
 
-    private function __construct(string $value)
+    private function __construct(string $id)
     {
-        $this->value = $value;
-    }
-
-    public static function generate(): self
-    {
-        return new self(Uuid::uuid4()->toString());
+        $this->id = $id;
     }
 
     public static function fromString(string $value): self
     {
+        if (empty($value)) {
+            throw new InvalidArgumentException("Tag ID cannot be empty.");
+        }
+        
         return new self($value);
     }
 
     public function toString(): string
     {
-        return $this->value;
+        return $this->id;
     }
 
     public function equals(TagId $other): bool
     {
-        return $this->value === $other->value;
+        return $this->id === $other->id;
     }
 
     public function __toString(): string
     {
-        return $this->value;
+        return $this->id;
     }
 }

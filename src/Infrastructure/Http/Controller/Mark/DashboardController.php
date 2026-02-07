@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller\Mark;
 
-use Blog\Infrastructure\Http\Controller\BaseController;
-use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Application\Blog\GetAllArticles;
+use Blog\Domain\Blog\Repository\ArticleRepository;
+use Blog\Infrastructure\Http\Controller\BaseController;
 use Blog\Infrastructure\View\ViewRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

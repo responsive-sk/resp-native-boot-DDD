@@ -8,31 +8,33 @@ use InvalidArgumentException;
 
 final readonly class ArticleId
 {
-    private function __construct(private int $value)
+    private string $id;
+
+    private function __construct(string $id)
     {
-        if ($value <= 0) {
-            throw new InvalidArgumentException('Article ID musí byť kladné číslo');
+        if (empty($id)) {
+            throw new InvalidArgumentException('Article ID cannot be empty.');
         }
+        $this->id = $id;
     }
 
-    public static function fromInt(int $value): self
+    public static function fromString(string $value): self
     {
         return new self($value);
     }
 
-    public function toInt(): int
+    public function toString(): string
     {
-        return $this->value;
+        return $this->id;
     }
 
     public function equals(self $other): bool
     {
-        return $this->value === $other->value;
+        return $this->id === $other->id;
     }
 
     public function __toString(): string
     {
-        return (string) $this->value;
+        return $this->id;
     }
-
 }

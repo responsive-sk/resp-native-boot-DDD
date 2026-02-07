@@ -45,7 +45,7 @@ final class ApiAuthMiddlewareTest extends TestCase
         $response = $this->middleware->process($request, $handler);
 
         $this->assertSame(401, $response->getStatusCode());
-        
+
         $body = json_decode((string) $response->getBody(), true);
         $this->assertSame('Authentication required', $body['error']);
     }
@@ -60,7 +60,7 @@ final class ApiAuthMiddlewareTest extends TestCase
         $response = $this->middleware->process($request, $handler);
 
         $this->assertSame(401, $response->getStatusCode());
-        
+
         $body = json_decode((string) $response->getBody(), true);
         $this->assertSame('Authentication required', $body['error']);
     }
@@ -75,7 +75,7 @@ final class ApiAuthMiddlewareTest extends TestCase
         $response = $this->middleware->process($request, $handler);
 
         $this->assertSame(401, $response->getStatusCode());
-        
+
         $body = json_decode((string) $response->getBody(), true);
         $this->assertSame('Authentication required', $body['error']);
     }
@@ -166,7 +166,7 @@ final class ApiAuthMiddlewareTest extends TestCase
         $response = $this->middleware->process($request, $handler);
 
         $this->assertSame(401, $response->getStatusCode());
-        
+
         $body = json_decode((string) $response->getBody(), true);
         $this->assertSame('Authentication required', $body['error']);
     }
@@ -181,7 +181,7 @@ final class ApiAuthMiddlewareTest extends TestCase
         $response = $this->middleware->process($request, $handler);
 
         $this->assertSame(401, $response->getStatusCode());
-        
+
         $body = json_decode((string) $response->getBody(), true);
         $this->assertSame('Authentication required', $body['error']);
     }
@@ -244,6 +244,7 @@ final class ApiAuthMiddlewareTest extends TestCase
     {
         $handler = $this->createMock(RequestHandlerInterface::class);
         $handler->method('handle')->willReturn($response);
+
         return $handler;
     }
 

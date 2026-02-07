@@ -8,7 +8,6 @@ use Blog\Security\AuthorizationService;
 use Blog\Security\Exception\AuthenticationException;
 use Blog\Security\Exception\AuthorizationException;
 use Nyholm\Psr7\Response;
-use Nyholm\Psr7\ServerRequest as ServerRequest;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -43,7 +42,7 @@ final class AuthMiddleware implements MiddlewareInterface
         $response = new Response($status, ['Content-Type' => 'application/json']);
         $response->getBody()->write(json_encode([
             'error' => $message,
-            'message' => $message
+            'message' => $message,
         ]));
 
         return $response;

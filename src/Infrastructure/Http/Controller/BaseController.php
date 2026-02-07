@@ -1,10 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Blog\Infrastructure\Http\Controller;
 
 use Blog\Core\UseCaseHandler;
-use Blog\Security\Authorization;
 use Blog\Security\AuthorizationService;
 use Blog\Security\Exception\AuthenticationException;
 use Blog\Security\Exception\AuthorizationException;
@@ -88,12 +88,13 @@ abstract class BaseController
     {
         try {
             $this->authorization->requireAuth();
+
             return $this->authorization->getUser();
         } catch (AuthenticationException $e) {
             return $this->jsonResponse([
                 'success' => false,
                 'error' => 'Authentication required',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 401);
         }
     }
@@ -124,7 +125,7 @@ abstract class BaseController
                 return $this->jsonResponse([
                     'success' => false,
                     'error' => 'Access denied',
-                    'message' => 'You can only modify your own articles'
+                    'message' => 'You can only modify your own articles',
                 ], 403);
             }
 
@@ -134,7 +135,7 @@ abstract class BaseController
             return $this->jsonResponse([
                 'success' => false,
                 'error' => 'Article not found',
-                'message' => 'The requested article does not exist'
+                'message' => 'The requested article does not exist',
             ], 404);
         }
     }
@@ -146,6 +147,7 @@ abstract class BaseController
     {
         try {
             $this->authorization->requireMark();
+
             return $this->authorization->getUser();
         } catch (AuthorizationException $e) {
             return null; // Controller will handle the response
