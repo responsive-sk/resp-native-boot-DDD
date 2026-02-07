@@ -21,6 +21,7 @@ use Blog\Infrastructure\Http\Middleware\CsrfMiddleware;
 use Blog\Middleware\AuthMiddleware;
 use Blog\Middleware\ApiAuthMiddleware;
 use Blog\Infrastructure\Http\Middleware\ErrorHandlerMiddleware;
+use Blog\Application\Audit\ErrorLogger;
 use ResponsiveSk\Slim4Paths\Paths; // Used in SessionTimeoutMiddleware
 use Blog\Security\SecurityLogger; // Used in SessionTimeoutMiddleware and CsrfMiddleware
 use Blog\Security\CsrfProtection; // Used in CsrfMiddleware
@@ -50,7 +51,8 @@ $services += [
 
     ExceptionMiddleware::class => fn (ContainerInterface $c) => new ExceptionMiddleware(
         $c->get(Psr17Factory::class),
-        $c->get(ViewRenderer::class)
+        $c->get(ViewRenderer::class),
+        $c->get(ErrorLogger::class)
     ),
 
     AuthMiddleware::class => fn (ContainerInterface $c) => new AuthMiddleware(

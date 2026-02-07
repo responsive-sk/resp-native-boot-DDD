@@ -11,6 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Throwable;
+use Blog\Application\Audit\ErrorLogger; // Added
 
 /**
  * ExceptionMiddleware - zachytáva exceptions a konvertuje ich na HTTP response
@@ -21,7 +22,8 @@ final readonly class ExceptionMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private ResponseFactoryInterface $responseFactory,
-        private ViewRenderer $viewRenderer
+        private ViewRenderer $viewRenderer,
+        private ErrorLogger $errorLogger // Added
     ) {
     }
 
@@ -36,6 +38,8 @@ final readonly class ExceptionMiddleware implements MiddlewareInterface
 
     private function handleException(Throwable $e): ResponseInterface
     {
+        $this->errorLogger->log($e); // Log the exception
+
         $statusCode = $this->getStatusCode($e);
 
         $envDebug = $_ENV['APP_DEBUG'] ?? getenv('APP_DEBUG');

@@ -29,4 +29,9 @@ return [
     \Blog\Security\SecurityLogger::class => fn () => new \Blog\Security\SecurityLogger(
         \Blog\Infrastructure\Paths::basePath() . '/data/logs/security.log'
     ),
+
+    // Error Logger (File based)
+    \Blog\Application\Audit\ErrorLogger::class => fn () => new \Blog\Application\Audit\ErrorLogger(
+        \Blog\Infrastructure\Paths::basePath() . '/data/logs/error.log'
+    ),
 ];
