@@ -8,14 +8,13 @@ use InvalidArgumentException;
 
 final readonly class HashedPassword
 {
-    private array $config;
-
-    private function __construct(string $hash, array $config)
-    {
+    private function __construct(
+        private string $hash,
+        private array $config
+    ) {
         if (empty($hash)) {
             throw new InvalidArgumentException('Hash hesla nemôže byť prázdny');
         }
-        $this->config = $config;
     }
 
     public static function fromPlainPassword(string $plainPassword, array $config): self

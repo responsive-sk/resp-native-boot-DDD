@@ -37,8 +37,8 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
             ]);
 
             // Set the generated ID
-            $generatedId = (int) $this->connection->lastInsertId();
-            $article->setId(ArticleId::fromInt($generatedId));
+            $generatedId = (string) $this->connection->lastInsertId();
+            $article->setId(ArticleId::fromString($generatedId));
         } else {
             // UPDATE existing article
             $this->connection->update('articles', [
@@ -60,14 +60,14 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
 
     public function remove(ArticleId $id): void
     {
-        $this->connection->delete('articles', ['id' => $id->toInt()]);
+        $this->connection->delete('articles', ['id' => $id->toString()]);
     }
 
     public function getById(ArticleId $id): ?Article
     {
         $row = $this->connection->fetchAssociative(
             'SELECT * FROM articles WHERE id = ?',
-            [$id->toInt()]
+            [$id->toString()]
         );
 
         if (!$row) {
@@ -170,13 +170,10 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
             );
         }
 
-        $tags = array_map([$this, 'hydrateTag'], $tagsData);
-
-        // Create simple markdown content wrapper
         $markdownContent = new \Blog\Domain\Shared\Markdown\MarkdownContent($row['content']);
 
         return Article::reconstitute(
-            ArticleId::fromInt((int) $row['id']),
+            ArticleId::fromString((string) $row['id']),
             \Blog\Domain\Blog\ValueObject\Title::fromString($row['title']),
             $markdownContent,
             \Blog\Domain\Blog\ValueObject\AuthorId::fromString($row['author_id']),
@@ -186,7 +183,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
             $row['slug'] ? \Blog\Domain\Blog\ValueObject\Slug::fromString($row['slug']) : null,
             $category,
             null, // featuredImage - would need to be hydrated from database if available
-            $tags
+            $tagsData // Use already hydrated tags
         );
     }
 
@@ -273,7 +270,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
         return [];
     }
 
-    private function loadTagsForArticle(int $articleId): array
+    private function loadTagsForArticle(string $articleId): array
     {
         try {
             $qb = $this->connection->createQueryBuilder();
@@ -314,9 +311,9 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
                 [$row['category_id']]
             );
 
-            return $this->hydrateWithPreloadedData($row, $categoryData ?: null, $this->loadTagsForArticle((int) $row['id']));
+            return $this->hydrateWithPreloadedData($row, $categoryData ?: null, $this->loadTagsForArticle((string) $row['id']));
         }
 
-        return $this->hydrateWithPreloadedData($row, null, $this->loadTagsForArticle((int) $row['id']));
+        return $this->hydrateWithPreloadedData($row, null, $this->loadTagsForArticle((string) $row['id']));
     }
 }

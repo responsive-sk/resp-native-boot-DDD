@@ -23,7 +23,7 @@ final class SearchArticles extends BaseUseCase
 
         $articlesData = array_map(function ($article) {
             return [
-                'id' => $article->id()?->toInt(),
+                'id' => $article->id()?->toString(),
                 'title' => $article->title()->toString(),
                 'slug' => $article->slug()?->toString(),
                 'content' => substr($article->content()->getRaw(), 0, 200) . '...',

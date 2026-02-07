@@ -28,7 +28,7 @@ final class GetArticleBySlug extends BaseUseCase
 
         return $this->success([
             'article' => [
-                'id' => $article->id()?->toInt(),
+                'id' => $article->id()?->toString(),
                 'title' => $article->title()->toString(),
                 'slug' => $article->slug()?->toString(),
                 'content' => $article->content()->getRaw(),

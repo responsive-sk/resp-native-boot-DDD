@@ -17,7 +17,8 @@ use Doctrine\DBAL\ParameterType;
 final readonly class DoctrineUserRepository implements UserRepositoryInterface
 {
     public function __construct(
-        private Connection $connection
+        private Connection $connection,
+        private array $passwordStrengthConfig
     ) {
     }
 
@@ -154,7 +155,7 @@ final readonly class DoctrineUserRepository implements UserRepositoryInterface
         return User::reconstitute(
             UserId::fromBytes($row['id']),
             Email::fromString($row['email']),
-            HashedPassword::fromHash($row['password_hash']),
+            HashedPassword::fromHash($row['password_hash'], $this->passwordStrengthConfig),
             UserRole::fromString($row['role']),
             new DateTimeImmutable($row['created_at'])
         );

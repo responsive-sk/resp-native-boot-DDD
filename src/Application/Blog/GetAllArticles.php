@@ -21,7 +21,7 @@ final class GetAllArticles extends BaseUseCase
 
         $articlesData = array_map(function (Article $article) {
             return [
-                'id' => $article->id()?->toInt(),
+                'id' => $article->id()?->toString(),
                 'title' => $article->title()->toString(),
                 'slug' => $article->slug()?->toString(),
                 'content' => $article->content()->getRaw(),

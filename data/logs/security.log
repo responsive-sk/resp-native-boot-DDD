@@ -16,3 +16,5 @@
 [2026-02-07 19:20:16] CSRF_VALIDATION_FAILURE: Invalid token for user_id=a05a8d5c-96a6-467a-96cd-6cb7a0c897d4, ip=::1, endpoint=/mark/tags/create
 [2026-02-07 21:14:13] CSRF_VALIDATION_FAILURE: Invalid token for user_id=, ip=::1, endpoint=/login
 [2026-02-07 21:50:08] CSRF_VALIDATION_FAILURE: Invalid token for user_id=, ip=::1, endpoint=/login
+[2026-02-07 22:27:40] SESSION_TIMEOUT: Session expired for user_id=unknown, last_activity=2026-02-07 21:53:13
+[2026-02-07 22:31:15] CSRF_VALIDATION_FAILURE: Invalid token for user_id=, ip=::1, endpoint=/login
