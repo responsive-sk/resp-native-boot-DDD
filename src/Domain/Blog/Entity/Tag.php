@@ -16,8 +16,7 @@ final class Tag
         private TagName $name,
         private TagSlug $slug,
         private readonly DateTimeImmutable $createdAt
-    ) {
-    }
+    ) {}
 
     public static function create(TagName $name): self
     {

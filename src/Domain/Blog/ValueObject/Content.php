@@ -1,61 +1,62 @@
 <?php
-
+// src/Domain/Blog/ValueObject/Content.php
 declare(strict_types=1);
 
 namespace Blog\Domain\Blog\ValueObject;
 
+use Blog\Domain\Shared\ValueObject\StringValueObject;
 use InvalidArgumentException;
 
-final readonly class Content
+final readonly class Content extends StringValueObject
 {
-    private const MIN_LENGTH = 10;
-
-    private function __construct(private string $value)
+    protected function validate(): void
     {
+        if (empty(trim($this->value))) {
+            throw new InvalidArgumentException('Content cannot be empty');
+        }
+
+        // PHP limit for string is typically large, but logic may restrict it.
+        // The user request specified 10000 characters.
+        if (strlen($this->value) > 10000) {
+            throw new InvalidArgumentException('Content cannot exceed 10,000 characters');
+        }
     }
 
     public static function fromString(string $value): self
     {
-        $trimmed = trim($value);
+        return new self($value);
+    }
 
-        if (empty($trimmed)) {
-            throw new InvalidArgumentException('Obsah nemôže byť prázdny');
+    public function getExcerpt(int $length = 150): string
+    {
+        $text = strip_tags($this->value);
+        $text = trim($text);
+
+        if (strlen($text) <= $length) {
+            return $text;
         }
 
-        if (mb_strlen($trimmed) < self::MIN_LENGTH) {
-            throw new InvalidArgumentException(
-                sprintf('Obsah musí mať aspoň %d znakov', self::MIN_LENGTH)
-            );
+        return substr($text, 0, $length) . '...';
+    }
+
+    public function getWordCount(): int
+    {
+        $text = strip_tags($this->value);
+        $text = trim($text);
+
+        if (empty($text)) {
+            return 0;
         }
 
-        return new self($trimmed);
+        return count(preg_split('/\s+/', $text));
+    }
+
+    public function contains(string $search): bool
+    {
+        return stripos($this->value, $search) !== false;
     }
 
     public function toString(): string
-    {
-        return $this->value;
-    }
-
-    public function excerpt(int $length = 200): string
-    {
-        if (mb_strlen($this->value) <= $length) {
-            return $this->value;
-        }
-
-        return mb_substr($this->value, 0, $length) . '...';
-    }
-
-    public function wordCount(): int
-    {
-        return str_word_count($this->value);
-    }
-
-    public function equals(self $other): bool
-    {
-        return $this->value === $other->value;
-    }
-
-    public function __toString(): string
     {
         return $this->value;
     }

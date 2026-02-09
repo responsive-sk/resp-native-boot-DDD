@@ -1,41 +1,48 @@
 <?php
-
+// src/Domain/Blog/ValueObject/AuthorId.php
 declare(strict_types=1);
 
 namespace Blog\Domain\Blog\ValueObject;
 
+use Blog\Domain\Shared\ValueObject\UuidValue;
 use InvalidArgumentException;
 
-final readonly class AuthorId
+final readonly class AuthorId extends UuidValue
 {
-    private string $id;
-
-    private function __construct(string $id)
+    // Dědí vše z UuidValue
+    // Může přidat author-specific validaci pokud je potřeba
+    
+    public static function generate(): static
     {
-        $this->id = $id;
+        return new static(parent::generate()->toBytes());
     }
-
-    public static function fromString(string $value): self
+    
+    public static function fromString(string $uuidString): static
     {
-        if (empty($value)) {
-            throw new InvalidArgumentException("Author ID cannot be empty.");
+        // If it's a simple string ID (like "1", "2", "3"), convert it to a UUID
+        if (ctype_digit($uuidString)) {
+            // For simple numeric IDs, create a deterministic UUID based on the number
+            // This allows compatibility with the sample data that uses simple IDs
+            $numericId = (int)$uuidString;
+            $uuidString = sprintf('%08x-%04x-%04x-%04x-%012x', 
+                $numericId, 
+                0, 
+                0x4000, // UUID version 4
+                0x8000, // UUID variant
+                0 // rest as zeros for determinism
+            );
         }
         
-        return new self($value);
+        return new static(parent::fromString($uuidString)->toBytes());
     }
-
-    public function toString(): string
+    
+    public static function fromUserId(\Blog\Domain\User\ValueObject\UserId $userId): static
     {
-        return $this->id;
+        return new static($userId->toBytes());
     }
-
-    public function equals(AuthorId $other): bool
+    
+    public function toUserId(): \Blog\Domain\User\ValueObject\UserId
     {
-        return $this->id === $other->id;
-    }
-
-    public function __toString(): string
-    {
-        return $this->id;
+        return \Blog\Domain\User\ValueObject\UserId::fromBytes($this->toBytes());
     }
 }

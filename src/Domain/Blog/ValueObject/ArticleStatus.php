@@ -1,74 +1,46 @@
 <?php
-
+// src/Domain/Blog/ValueObject/ArticleStatus.php
 declare(strict_types=1);
 
 namespace Blog\Domain\Blog\ValueObject;
 
-use InvalidArgumentException;
-
-final readonly class ArticleStatus
+enum ArticleStatus: string
 {
-    private const string DRAFT = 'draft';
-    private const string PUBLISHED = 'published';
-    private const string ARCHIVED = 'archived';
-
-    private const array VALID_STATUSES = [
-        self::DRAFT,
-        self::PUBLISHED,
-        self::ARCHIVED,
-    ];
-
-    private function __construct(private string $value)
-    {
-        if (!in_array($value, self::VALID_STATUSES, true)) {
-            throw new InvalidArgumentException(
-                sprintf('Neplatný status: %s', $value)
-            );
-        }
-    }
-
-    public static function draft(): self
-    {
-        return new self(self::DRAFT);
-    }
-
-    public static function published(): self
-    {
-        return new self(self::PUBLISHED);
-    }
-
-    public static function archived(): self
-    {
-        return new self(self::ARCHIVED);
-    }
+    case DRAFT = 'draft';
+    case PUBLISHED = 'published';
+    case ARCHIVED = 'archived';
+    case SCHEDULED = 'scheduled';
 
     public static function fromString(string $value): self
     {
-        return new self($value);
-    }
-
-    public function isDraft(): bool
-    {
-        return $this->value === self::DRAFT;
+        return self::tryFrom($value) ?? throw new InvalidArgumentException("Invalid article status: {$value}");
     }
 
     public function isPublished(): bool
     {
-        return $this->value === self::PUBLISHED;
+        return $this === self::PUBLISHED;
     }
 
-    public function isArchived(): bool
+    public function isDraft(): bool
     {
-        return $this->value === self::ARCHIVED;
+        return $this === self::DRAFT;
     }
 
-    public function toString(): string
+    public function canEdit(): bool
     {
-        return $this->value;
+        return match ($this) {
+            self::DRAFT, self::SCHEDULED => true,
+            self::PUBLISHED, self::ARCHIVED => false,
+        };
     }
 
-    public function __toString(): string
+    public function getColor(): string
     {
-        return $this->value;
+        return match ($this) {
+            self::DRAFT => 'gray',
+            self::PUBLISHED => 'green',
+            self::ARCHIVED => 'blue',
+            self::SCHEDULED => 'orange',
+        };
     }
 }

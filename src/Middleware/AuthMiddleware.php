@@ -18,8 +18,7 @@ final class AuthMiddleware implements MiddlewareInterface
     public function __construct(
         private readonly AuthorizationService $authorization,
         private readonly \Blog\Application\Audit\AuditLogger $auditLogger
-    ) {
-    }
+    ) {}
     /**
      * Check if the request is an API request
      */

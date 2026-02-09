@@ -6,10 +6,9 @@ namespace Blog\Core;
 
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
+use Psr\Http\Message\ServerRequestInterface;
 
 use function FastRoute\simpleDispatcher;
-
-use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Native PHP Router - wrapper pre FastRoute
@@ -160,12 +159,10 @@ final class Router
      */
     public function getRoutes(): array
     {
-        return array_map(function ($route) {
-            return [
-                'method' => $route['method'],
-                'path' => $route['path'],
-                'name' => $route['name'],
-            ];
-        }, $this->routes);
+        return array_map(fn(array $route): array => [
+            'method' => $route['method'],
+            'path' => $route['path'],
+            'name' => $route['name'],
+        ], $this->routes);
     }
 }

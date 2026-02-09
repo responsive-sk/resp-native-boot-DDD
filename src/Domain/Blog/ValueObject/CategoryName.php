@@ -1,24 +1,23 @@
 <?php
-
+// src/Domain/Blog/ValueObject/CategoryName.php
 declare(strict_types=1);
 
 namespace Blog\Domain\Blog\ValueObject;
 
-final readonly class CategoryName
+use Blog\Domain\Shared\ValueObject\StringValueObject;
+use InvalidArgumentException;
+
+final readonly class CategoryName extends StringValueObject
 {
-    private string $value;
-
-    private function __construct(string $value)
+    protected function validate(): void
     {
-        if (empty(trim($value))) {
-            throw new \InvalidArgumentException('Názov kategórie nemôže byť prázdny');
+        if (empty(trim($this->value))) {
+            throw new InvalidArgumentException('Category name cannot be empty');
         }
 
-        if (strlen($value) > 100) {
-            throw new \InvalidArgumentException('Názov kategórie môže mať maximálne 100 znakov');
+        if (strlen($this->value) > 50) {
+            throw new InvalidArgumentException('Category name cannot exceed 50 characters');
         }
-
-        $this->value = trim($value);
     }
 
     public static function fromString(string $value): self
@@ -27,16 +26,6 @@ final readonly class CategoryName
     }
 
     public function toString(): string
-    {
-        return $this->value;
-    }
-
-    public function equals(CategoryName $other): bool
-    {
-        return strtolower($this->value) === strtolower($other->value);
-    }
-
-    public function __toString(): string
     {
         return $this->value;
     }

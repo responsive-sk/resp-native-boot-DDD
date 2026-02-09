@@ -1,64 +1,33 @@
 <?php
-
+// src/Domain/User/ValueObject/Email.php
 declare(strict_types=1);
 
 namespace Blog\Domain\User\ValueObject;
 
+use Blog\Domain\Shared\ValueObject\StringValueObject;
 use InvalidArgumentException;
 
-final readonly class Email
+final readonly class Email extends StringValueObject
 {
-    private function __construct(private string $value)
+    protected function validate(): void
     {
+        if (!filter_var($this->value, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidArgumentException('Invalid email format');
+        }
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
     public static function fromString(string $value): self
     {
-        $trimmed = trim($value);
-
-        if ($trimmed === '') {
-            throw new InvalidArgumentException('Email nemôže byť prázdny');
-        }
-
-        if (!filter_var($trimmed, FILTER_VALIDATE_EMAIL)) {
-            throw new InvalidArgumentException(
-                sprintf('Neplatný email formát: "%s"', $trimmed)
-            );
-        }
-
-        // Normalizácia – lowercase + odstránenie zbytočných medzier
-        return new self(strtolower($trimmed));
+        return new self($value);
     }
 
-    public function toString(): string
+    public function getDomain(): string
     {
-        return $this->value;
+        return explode('@', $this->value)[1] ?? '';
     }
 
-    public function equals(self $other): bool
+    public function getLocalPart(): string
     {
-        return $this->value === $other->value;
-    }
-
-    public function domain(): string
-    {
-        $parts = explode('@', $this->value);
-
-        return $parts[1] ?? '';
-    }
-
-    public function localPart(): string
-    {
-        $parts = explode('@', $this->value);
-
-        return $parts[0];
-    }
-
-    public function __toString(): string
-    {
-        return $this->value;
+        return explode('@', $this->value)[0] ?? '';
     }
 }

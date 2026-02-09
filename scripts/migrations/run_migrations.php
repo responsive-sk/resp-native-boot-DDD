@@ -143,5 +143,3 @@ class MigrationRunner
         return ($result ?: 0) + 1;
     }
 }
-
-

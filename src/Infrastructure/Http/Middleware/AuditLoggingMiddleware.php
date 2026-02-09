@@ -15,8 +15,7 @@ class AuditLoggingMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private AuditLogger $auditLogger
-    ) {
-    }
+    ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

@@ -13,8 +13,7 @@ final class UpdateUserRole extends BaseUseCase
 {
     public function __construct(
         private UserRepositoryInterface $users
-    ) {
-    }
+    ) {}
 
     public function execute(array $input): array
     {

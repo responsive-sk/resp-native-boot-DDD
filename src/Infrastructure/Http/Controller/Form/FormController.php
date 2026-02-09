@@ -15,8 +15,7 @@ final class FormController
     public function __construct(
         private CreateForm $createForm,
         private GetForm $getForm
-    ) {
-    }
+    ) {}
 
     public function create(ServerRequestInterface $request): ResponseInterface
     {

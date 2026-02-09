@@ -13,9 +13,7 @@ use Doctrine\DBAL\Types\Types;
 
 final class DoctrineCategoryRepository implements CategoryRepository
 {
-    public function __construct(private Connection $connection)
-    {
-    }
+    public function __construct(private Connection $connection) {}
 
     public function add(Category $category): void
     {

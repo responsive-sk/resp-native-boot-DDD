@@ -56,7 +56,7 @@ class Image
     {
         $this->contexts = array_filter(
             $this->contexts,
-            fn ($c) => $c !== $context
+            fn($c) => $c !== $context
         );
     }
 

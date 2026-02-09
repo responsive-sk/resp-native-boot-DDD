@@ -47,6 +47,14 @@ abstract class BaseController
     }
 
     /**
+     * Alias for jsonResponse commonly used in API controllers
+     */
+    protected function json($data, int $status = 200): ResponseInterface
+    {
+        return $this->jsonResponse($data, $status);
+    }
+
+    /**
      * HTML response helper
      */
     protected function htmlResponse(string $html, int $status = 200): ResponseInterface
@@ -84,7 +92,7 @@ abstract class BaseController
     /**
      * Require authentication for an action
      */
-    protected function requireAuth(): ?array
+    protected function requireAuth(): array|ResponseInterface|null
     {
         try {
             $this->authorization->requireAuth();
@@ -102,11 +110,11 @@ abstract class BaseController
     /**
      * Check if current user can modify an article
      */
-    protected function requireArticleOwnership(int $articleId): ?array
+    protected function requireArticleOwnership(int $articleId): array|ResponseInterface|null
     {
         $user = $this->requireAuth();
-        if ($user === null) {
-            return null;
+        if ($user === null || $user instanceof ResponseInterface) {
+            return $user;
         }
 
         // Get the article to check ownership
@@ -159,7 +167,10 @@ abstract class BaseController
     /**
      * Check article ownership for web controllers
      */
-    protected function requireArticleOwnershipWeb(int $articleId): ?array
+    /**
+     * Check article ownership for web controllers
+     */
+    protected function requireArticleOwnershipWeb(int $articleId): array|ResponseInterface|null
     {
         $user = $this->requireAuth();
         if ($user === null) {

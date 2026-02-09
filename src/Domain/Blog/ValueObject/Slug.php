@@ -1,138 +1,39 @@
 <?php
-
+// src/Domain/Blog/ValueObject/Slug.php
 declare(strict_types=1);
 
 namespace Blog\Domain\Blog\ValueObject;
 
-final readonly class Slug
-{
-    private string $value;
+use Blog\Domain\Shared\ValueObject\StringValueObject;
+use InvalidArgumentException;
 
-    public function __construct(string $slug)
+final readonly class Slug extends StringValueObject
+{
+    protected function validate(): void
     {
-        $this->value = self::normalize($slug);
+        if (!preg_match('/^[a-z0-9\-]+$/', $this->value)) {
+            throw new InvalidArgumentException(
+                'Slug can only contain lowercase letters, numbers and hyphens'
+            );
+        }
+
+        if (strlen($this->value) > 200) {
+            throw new InvalidArgumentException('Slug cannot exceed 200 characters');
+        }
     }
 
-    public static function fromString(string $slug): self
+    public static function fromString(string $text): self
     {
+        $slug = strtolower($text);
+        $slug = preg_replace('/[^a-z0-9\s\-]/', '', $slug);
+        $slug = preg_replace('/\s+/', '-', $slug);
+        $slug = preg_replace('/-+/', '-', $slug);
+        $slug = trim($slug, '-');
+
         return new self($slug);
     }
 
     public function toString(): string
-    {
-        return $this->value;
-    }
-
-    private static function normalize(string $slug): string
-    {
-        // 1. Odstrániť HTML tagy
-        $slug = strip_tags($slug);
-
-        // 2. Konvertovať na lowercase
-        $slug = mb_strtolower($slug, 'UTF-8');
-
-        // 3. NAJPRV transliterácia slovenských a českých znakov
-        $slug = self::transliterate($slug);
-
-        // 4. Až TERAZ odstrániť diakritiku pomocou iconv (zvyšok)
-        $converted = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $slug);
-
-        if ($converted !== false) {
-            $slug = $converted;
-        }
-
-        // 5. Nahradiť všetky znaky okrem a-z, 0-9 a - pomlčkou
-        $slug = (string) preg_replace('/[^a-z0-9]+/', '-', $slug);
-
-        // 6. Odstrániť začiatok a koniec pomlčiek
-        $slug = trim($slug, '-');
-
-        // 7. Zabezpečiť, aby nebol prázdny
-        if ($slug === '') {
-            throw new \InvalidArgumentException('Slug nemôže byť prázdny po normalizácii');
-        }
-
-        // 8. Obmedziť dĺžku
-        if (mb_strlen($slug) > 100) {
-            $slug = mb_substr($slug, 0, 100);
-            $slug = rtrim($slug, '-');
-        }
-
-        return $slug;
-    }
-
-    private static function transliterate(string $text): string
-    {
-        $replacements = [
-            // Slovenské
-            'á' => 'a',
-            'ä' => 'a',
-            'č' => 'c',
-            'ď' => 'd',
-            'é' => 'e',
-            'ě' => 'e',
-            'í' => 'i',
-            'ĺ' => 'l',
-            'ľ' => 'l',
-            'ň' => 'n',
-            'ó' => 'o',
-            'ô' => 'o',
-            'ŕ' => 'r',
-            'š' => 's',
-            'ť' => 't',
-            'ú' => 'u',
-            'ý' => 'y',
-            'ž' => 'z',
-
-            // Veľké slovenské
-            'Á' => 'a',
-            'Ä' => 'a',
-            'Č' => 'c',
-            'Ď' => 'd',
-            'É' => 'e',
-            'Ě' => 'e',
-            'Í' => 'i',
-            'Ĺ' => 'l',
-            'Ľ' => 'l',
-            'Ň' => 'n',
-            'Ó' => 'o',
-            'Ô' => 'o',
-            'Ŕ' => 'r',
-            'Š' => 's',
-            'Ť' => 't',
-            'Ú' => 'u',
-            'Ý' => 'y',
-            'Ž' => 'z',
-
-            // České (odstránené duplicitné, ktoré už boli v slovenských)
-            'ř' => 'r',
-            'Ř' => 'r',
-            'ů' => 'u',
-            'Ů' => 'u',
-
-            // Polské (pre kompatibilitu)
-            'ą' => 'a',
-            'ć' => 'c',
-            'ę' => 'e',
-            'ł' => 'l',
-            'ń' => 'n',
-            'ś' => 's',
-            'ź' => 'z',
-            'ż' => 'z',
-            'Ą' => 'a',
-            'Ć' => 'c',
-            'Ę' => 'e',
-            'Ł' => 'l',
-            'Ń' => 'n',
-            'Ś' => 's',
-            'Ź' => 'z',
-            'Ż' => 'z',
-        ];
-
-        return strtr($text, $replacements);
-    }
-
-    public function __toString(): string
     {
         return $this->value;
     }

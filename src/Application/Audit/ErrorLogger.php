@@ -20,7 +20,7 @@ final readonly class ErrorLogger
     {
         $dir = dirname($this->logFilePath);
         if (!is_dir($dir)) {
-            mkdir($dir, 0775, true);
+            mkdir($dir, 0o775, true);
         }
         if (!file_exists($this->logFilePath)) {
             file_put_contents($this->logFilePath, '');

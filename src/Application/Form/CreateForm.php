@@ -11,8 +11,7 @@ final readonly class CreateForm
 {
     public function __construct(
         private FormRepositoryInterface $formRepository
-    ) {
-    }
+    ) {}
 
     /**
      * @param array<int, mixed> $fields

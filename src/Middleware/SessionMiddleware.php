@@ -23,7 +23,7 @@ final class SessionMiddleware implements MiddlewareInterface
 
             // Get session lifetime from environment (default 1 hour)
             $sessionLifetime = (int) ($_ENV['SESSION_LIFETIME'] ?? 3600);
-            
+
             // Determine if session cookie should persist (default: true)
             $sessionCookiePersistent = filter_var($_ENV['SESSION_COOKIE_PERSISTENT'] ?? 'true', FILTER_VALIDATE_BOOLEAN);
 

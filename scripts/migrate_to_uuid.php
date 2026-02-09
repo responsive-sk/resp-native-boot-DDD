@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Migration: Convert user_id columns from INTEGER to BLOB (UUID)
- * 
+ *
  * This script:
  * 1. Alters the users table to use BLOB for id
  * 2. Alters the articles table to use BLOB for user_id
@@ -62,7 +63,7 @@ foreach ($existingUsers as $user) {
         ':email' => $user['email'],
         ':password' => $user['password'],
         ':role' => $user['role'],
-        ':created_at' => $user['created_at']
+        ':created_at' => $user['created_at'],
     ]);
 
     echo "   ✓ Migrated user: {$user['email']} (ID: {$oldId} → UUID: {$uuid->toString()})\n";
@@ -124,7 +125,7 @@ foreach ($existingArticles as $article) {
         ':slug' => $article['slug'],
         ':created_at' => $article['created_at'],
         ':updated_at' => $article['updated_at'],
-        ':category' => $article['category']
+        ':category' => $article['category'],
     ]);
 
     echo "   ✓ Migrated article: {$article['title']} (user_id: {$oldUserId} → UUID)\n";

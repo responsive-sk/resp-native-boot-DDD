@@ -155,7 +155,7 @@ class RateLimitMiddleware implements MiddlewareInterface
 
             return $response
                 ->withHeader('Content-Type', 'application/json')
-                ->withHeader('Retry-After', (string)($limit['lockout'] ?? $limit['window']))
+                ->withHeader('Retry-After', (string) ($limit['lockout'] ?? $limit['window']))
                 ->withStatus(429);
         }
 
@@ -182,7 +182,7 @@ class RateLimitMiddleware implements MiddlewareInterface
         ");
 
         return $response
-            ->withHeader('Retry-After', (string)($limit['lockout'] ?? $limit['window']))
+            ->withHeader('Retry-After', (string) ($limit['lockout'] ?? $limit['window']))
             ->withStatus(429);
     }
 

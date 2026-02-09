@@ -98,6 +98,6 @@ final class AuthorizationService
 
     public function clearMarkSession(): void
     {
-        $this->session->delete('mark_session');
+        $this->session->remove('mark_session');
     }
 }

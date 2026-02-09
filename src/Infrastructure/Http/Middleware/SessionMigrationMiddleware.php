@@ -20,8 +20,7 @@ class SessionMigrationMiddleware implements MiddlewareInterface
     public function __construct(
         private readonly SessionInterface $session,
         private readonly LoggerInterface $logger
-    ) {
-    }
+    ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

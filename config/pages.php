@@ -99,26 +99,26 @@ return [
         'description' => 'Edit user details',
         'template' => 'resp-front::mark/users/edit',
     ],
-    
+
     // Missing Mark configurations
     'mark.tags.index' => [
         'title' => 'Manage Tags - ChubbyBlog Mark',
         'description' => 'Manage blog tags in the Mark panel',
         'template' => 'resp-front::mark/tags/index',
     ],
-    
+
     'mark.categories.index' => [
         'title' => 'Manage Categories - ChubbyBlog Mark',
         'description' => 'Manage blog categories in the Mark panel',
         'template' => 'resp-front::mark/categories/index',
     ],
-    
+
     'mark.categories.create' => [
         'title' => 'Create Category - ChubbyBlog Mark',
         'description' => 'Create a new category',
         'template' => 'resp-front::mark/categories/create',
     ],
-    
+
     'mark.categories.edit' => [
         'title' => 'Edit Category - ChubbyBlog Mark',
         'description' => 'Edit category details',

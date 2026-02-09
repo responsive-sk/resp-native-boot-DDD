@@ -8,9 +8,7 @@ use Blog\Domain\Blog\Repository\TagRepository;
 
 final readonly class GetAllTags
 {
-    public function __construct(private TagRepository $tagRepository)
-    {
-    }
+    public function __construct(private TagRepository $tagRepository) {}
 
     /**
      * @return \Blog\Domain\Blog\Entity\Tag[]

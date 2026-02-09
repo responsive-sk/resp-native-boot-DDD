@@ -101,8 +101,8 @@ class SessionTimeoutMiddleware implements MiddlewareInterface
 
     private function shouldValidateFingerprint(): bool
     {
-        return $this->config['fingerprint']['enabled'] &&
-            isset($_SESSION['user_id'], $_SESSION['fingerprint']);
+        return $this->config['fingerprint']['enabled']
+            && isset($_SESSION['user_id'], $_SESSION['fingerprint']);
     }
 
     private function validateSessionFingerprint(ServerRequestInterface $request): bool

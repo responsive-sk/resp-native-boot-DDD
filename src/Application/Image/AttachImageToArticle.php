@@ -12,8 +12,7 @@ class AttachImageToArticle
     public function __construct(
         private ArticleRepository $articleRepository,
         private ImageRepositoryInterface $imageRepository
-    ) {
-    }
+    ) {}
 
     public function __invoke(array $input): array
     {

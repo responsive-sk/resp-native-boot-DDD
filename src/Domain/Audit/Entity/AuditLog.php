@@ -174,18 +174,18 @@ class AuditLog
         return $this->createdAt;
     }
 
-    
+
     public function getEventDescription(): string
     {
         $descriptions = AuditEventType::getAllTypes();
         return $descriptions[$this->eventType->value()] ?? $this->eventType->value();
     }
-    
+
     public function getUsername(): ?string
     {
         return $this->metadata['username'] ?? $this->userId ?? 'Unknown';
     }
-    
+
     public function toArray(): array
     {
         return [

@@ -11,8 +11,7 @@ class CloudinaryImageProcessor implements ImageProcessorInterface
     public function __construct(
         private \Cloudinary\Cloudinary $cloudinary,
         private array $transformations
-    ) {
-    }
+    ) {}
 
     public function createThumbnail(string $imageUrl, string $size = 'thumbnail'): string
     {

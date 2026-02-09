@@ -45,8 +45,8 @@ final class CreateArticleTest extends TestCase
         $this->articleRepository->expects($this->once())
             ->method('add')
             ->with($this->callback(function ($article) {
-                return $article instanceof Article &&
-                       $article->slug()->toString() === 'test-article';
+                return $article instanceof Article
+                       && $article->slug()->toString() === 'test-article';
             }));
 
         $result = $this->useCase->execute($input);
@@ -83,8 +83,8 @@ final class CreateArticleTest extends TestCase
         $this->articleRepository->expects($this->once())
             ->method('add')
             ->with($this->callback(function ($article) {
-                return $article instanceof Article &&
-                       $article->slug()->toString() === 'test-article-1';
+                return $article instanceof Article
+                       && $article->slug()->toString() === 'test-article-1';
             }));
 
         $result = $this->useCase->execute($input);
@@ -124,8 +124,8 @@ final class CreateArticleTest extends TestCase
         $this->articleRepository->expects($this->once())
             ->method('add')
             ->with($this->callback(function ($article) {
-                return $article instanceof Article &&
-                       $article->slug()->toString() === 'test-article-2';
+                return $article instanceof Article
+                       && $article->slug()->toString() === 'test-article-2';
             }));
 
         $result = $this->useCase->execute($input);
@@ -156,7 +156,7 @@ final class CreateArticleTest extends TestCase
     {
         $input = [
             'title' => '',
- // Missing title
+            // Missing title
             'content' => 'Test content',
             'author_id' => '123e4567-e89b-12d3-a456-426614174000',
         ];

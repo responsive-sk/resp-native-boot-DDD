@@ -1,7 +1,5 @@
 <?php
 
-// src/Core/Application.php - UPRAVENÁ PRE DEBUGBAR
-
 declare(strict_types=1);
 
 namespace Blog\Core;
@@ -10,8 +8,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-
-
 
 final class Application implements RequestHandlerInterface
 {
@@ -27,24 +23,31 @@ final class Application implements RequestHandlerInterface
         $this->dispatcher = new MiddlewareDispatcher($middlewares);
     }
 
+    public function setDebugBarMiddleware(\ResponsiveSk\PhpDebugBarMiddleware\DebugBarMiddleware $debugBarMiddleware): void
+    {
+        $this->debugBarMiddleware = $debugBarMiddleware;
+    }
+
     /**
      * Pridá middleware do aplikácie
      */
-    public function add(MiddlewareInterface $middleware): void
+    public function add(MiddlewareInterface $middleware): self
     {
         $this->additionalMiddlewares[] = $middleware;
+        return $this;
     }
 
     /**
      * Spracuje HTTP request
      */
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         // Vytvor nový dispatcher s pridanými middlewares
-        $allMiddlewares = array_merge($this->additionalMiddlewares, $this->dispatcher->getMiddlewares());
+        $allMiddlewares = [...$this->additionalMiddlewares, ...$this->dispatcher->getMiddlewares()];
         $newDispatcher = new MiddlewareDispatcher($allMiddlewares);
 
-        // Ak máme DebugBar, použime ho ako prvý
+        // Ak máme DebugBar, použime ho
         if ($this->debugBarMiddleware !== null) {
             return $this->debugBarMiddleware->process($request, $newDispatcher);
         }
@@ -56,7 +59,7 @@ final class Application implements RequestHandlerInterface
     /**
      * Emituje HTTP response
      */
-    public function emit(ResponseInterface $response): void
+    public function emit(ResponseInterface $response): never
     {
         if (!headers_sent()) {
             http_response_code($response->getStatusCode());
@@ -69,5 +72,6 @@ final class Application implements RequestHandlerInterface
         }
 
         echo (string) $response->getBody();
+        exit(0);
     }
 }

@@ -1,0 +1,588 @@
+ ------ ------------------------------------------ 
+  Line   config/routes.php                         
+ ------ ------------------------------------------ 
+  :29    Anonymous function has an unused use $c.  
+ ------ ------------------------------------------ 
+
+ ------ --------------------------------------------------------------------- 
+  Line   config/services/image.php                                            
+ ------ --------------------------------------------------------------------- 
+  :41    Class Blog\Infrastructure\Persistence\ImageRepository not found.     
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols  
+ ------ --------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   config/shared_services.php                                             
+ ------ ----------------------------------------------------------------------- 
+  :7     Array has 2 duplicate keys with value                                  
+         'Domain\\Shared\\Markdown\\MarkdownParserInterface'                    
+         (\Domain\Shared\Markdown\MarkdownParserInterface::class,               
+         \Domain\Shared\Markdown\MarkdownParserInterface::class).               
+  :7     Class Domain\Shared\Markdown\MarkdownParserInterface not found.        
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :8     Instantiated class Infrastructure\Shared\Markdown\ParsedownAdapter     
+         not found.                                                             
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :11    Class Domain\Shared\Media\ImageUploaderInterface not found.            
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :12    Instantiated class                                                     
+         Infrastructure\Shared\Media\CloudinaryImageUploader not found.         
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :28    Class Domain\Shared\Markdown\MarkdownParserInterface not found.        
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :29    Instantiated class Infrastructure\Shared\Markdown\CommonMarkParser     
+         not found.                                                             
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :33    Class Infrastructure\Shared\Media\ImageOptimizer not found.            
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :34    Instantiated class Infrastructure\Shared\Media\ImageOptimizer not      
+         found.                                                                 
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :37    Class Infrastructure\Shared\Media\FileStorage not found.               
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :38    Instantiated class Infrastructure\Shared\Media\FileStorage not found.  
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   src/Application/Audit/AuditLogger.php                                 
+ ------ ---------------------------------------------------------------------- 
+  :189   Call to an undefined method                                           
+         Blog\Domain\Audit\Repository\AuditLogRepository::findFailedLogins().  
+ ------ ---------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------- 
+  Line   src/Application/Blog/CreateArticle.php             
+ ------ --------------------------------------------------- 
+  :41    Parameter #3 $authorId of static method            
+         Blog\Domain\Blog\Entity\Article::create() expects  
+         Blog\Domain\Blog\ValueObject\AuthorId,             
+         Blog\Domain\User\ValueObject\UserId given.         
+  :57    Call to an undefined method                        
+         Blog\Domain\Blog\ValueObject\ArticleId::toInt().   
+ ------ --------------------------------------------------- 
+
+ ------ ---------------------------------------------------- 
+  Line   src/Application/Blog/DeleteArticle.php              
+ ------ ---------------------------------------------------- 
+  :21    Call to an undefined static method                  
+         Blog\Domain\Blog\ValueObject\ArticleId::fromInt().  
+ ------ ---------------------------------------------------- 
+
+ ------ -------------------------------------------------- 
+  Line   src/Application/Blog/ManageArticleTags.php        
+ ------ -------------------------------------------------- 
+  :23    Call to an undefined method                       
+         Blog\Domain\Blog\ValueObject\ArticleId::toInt().  
+  :25    Call to an undefined method                       
+         Blog\Domain\Blog\ValueObject\ArticleId::toInt().  
+  :36    Call to an undefined method                       
+         Blog\Domain\Blog\ValueObject\ArticleId::toInt().  
+  :51    Call to an undefined method                       
+         Blog\Domain\Blog\ValueObject\ArticleId::toInt().  
+ ------ -------------------------------------------------- 
+
+ ------ ---------------------------------------------------- 
+  Line   src/Application/Blog/UpdateArticle.php              
+ ------ ---------------------------------------------------- 
+  :26    Call to an undefined static method                  
+         Blog\Domain\Blog\ValueObject\ArticleId::fromInt().  
+ ------ ---------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Application/Image/AttachImageToArticle.php                         
+ ------ ----------------------------------------------------------------------- 
+  :41    Call to an undefined method Blog\Domain\Blog\Entity\Article::getId().  
+ ------ ----------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------- 
+  Line   src/Application/Image/UploadImage.php                               
+ ------ -------------------------------------------------------------------- 
+  :51    Call to an undefined method Blog\Domain\User\Entity\User::getId().  
+ ------ -------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Application/Shared/ParseMarkdown.php                               
+ ------ ----------------------------------------------------------------------- 
+  :13    Property Application\Shared\ParseMarkdown::$parser has unknown class   
+         Domain\Shared\Markdown\MarkdownParserInterface as its type.            
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :15    Parameter $parser of method                                            
+         Application\Shared\ParseMarkdown::__construct() has invalid type       
+         Domain\Shared\Markdown\MarkdownParserInterface.                        
+  :20    Method Application\Shared\ParseMarkdown::execute() has invalid return  
+         type Domain\Shared\Markdown\MarkdownContent.                           
+  :23    Instantiated class                                                     
+         Domain\Shared\Markdown\Exception\InvalidMarkdownException not found.   
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :23    Throwing object of an unknown class                                    
+         Domain\Shared\Markdown\Exception\InvalidMarkdownException.             
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :26    Call to method sanitize() on an unknown class                          
+         Domain\Shared\Markdown\MarkdownParserInterface.                        
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :28    Instantiated class Domain\Shared\Markdown\MarkdownContent not found.   
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :34    Instantiated class                                                     
+         Domain\Shared\Markdown\Exception\InvalidMarkdownException not found.   
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :34    Throwing object of an unknown class                                    
+         Domain\Shared\Markdown\Exception\InvalidMarkdownException.             
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :37    Call to method sanitize() on an unknown class                          
+         Domain\Shared\Markdown\MarkdownParserInterface.                        
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :38    Instantiated class Domain\Shared\Markdown\MarkdownContent not found.   
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :42    Call to method getHtml() on an unknown class                           
+         Domain\Shared\Markdown\MarkdownContent.                                
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :43    Call to method getPlainText() on an unknown class                      
+         Domain\Shared\Markdown\MarkdownContent.                                
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :44    Call to method getExcerpt() on an unknown class                        
+         Domain\Shared\Markdown\MarkdownContent.                                
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :45    Call to method getMetadata() on an unknown class                       
+         Domain\Shared\Markdown\MarkdownContent.                                
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :46    Call to method getMetadataValue() on an unknown class                  
+         Domain\Shared\Markdown\MarkdownContent.                                
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :47    Call to method getPlainText() on an unknown class                      
+         Domain\Shared\Markdown\MarkdownContent.                                
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :48    Call to method getPlainText() on an unknown class                      
+         Domain\Shared\Markdown\MarkdownContent.                                
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :97    Call to method getMetadataValue() on an unknown class                  
+         Domain\Shared\Markdown\MarkdownContent.                                
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   src/Application/Shared/UploadImage.php                                
+ ------ ---------------------------------------------------------------------- 
+  :13    Property Application\Shared\UploadImage::$uploader has unknown class  
+         Domain\Shared\Media\ImageUploaderInterface as its type.               
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :15    Parameter $uploader of method                                         
+         Application\Shared\UploadImage::__construct() has invalid type        
+         Domain\Shared\Media\ImageUploaderInterface.                           
+  :20    Method Application\Shared\UploadImage::execute() has invalid return   
+         type Domain\Shared\Media\Image.                                       
+  :22    Instantiated class Domain\Shared\Media\UploadedFile not found.        
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :29    Call to method upload() on an unknown class                           
+         Domain\Shared\Media\ImageUploaderInterface.                           
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :38    Method Application\Shared\UploadImage::executeWithVariants() has      
+         invalid return type Domain\Shared\Media\Image.                        
+  :40    Instantiated class Domain\Shared\Media\UploadedFile not found.        
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :47    Call to method upload() on an unknown class                           
+         Domain\Shared\Media\ImageUploaderInterface.                           
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :55    Call to method createVariants() on an unknown class                   
+         Domain\Shared\Media\ImageUploaderInterface.                           
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :59    Call to method generateDefaultVariants() on an unknown class          
+         Domain\Shared\Media\ImageUploaderInterface.                           
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :72    Instantiated class Domain\Shared\Media\UploadedFile not found.        
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :79    Call to method isImage() on an unknown class                          
+         Domain\Shared\Media\UploadedFile.                                     
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :79    Call to method isValid() on an unknown class                          
+         Domain\Shared\Media\UploadedFile.                                     
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :84    Instantiated class Domain\Shared\Media\UploadedFile not found.        
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :92    Call to method getClientOriginalName() on an unknown class            
+         Domain\Shared\Media\UploadedFile.                                     
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :93    Call to method getMimeType() on an unknown class                      
+         Domain\Shared\Media\UploadedFile.                                     
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :94    Call to method getSize() on an unknown class                          
+         Domain\Shared\Media\UploadedFile.                                     
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :95    Call to method getExtension() on an unknown class                     
+         Domain\Shared\Media\UploadedFile.                                     
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :96    Call to method getBasename() on an unknown class                      
+         Domain\Shared\Media\UploadedFile.                                     
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :97    Call to method isValid() on an unknown class                          
+         Domain\Shared\Media\UploadedFile.                                     
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :98    Call to method isImage() on an unknown class                          
+         Domain\Shared\Media\UploadedFile.                                     
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Core/Application.php                                               
+ ------ ----------------------------------------------------------------------- 
+  :17    Property Blog\Core\Application::$debugBarMiddleware                    
+         (ResponsiveSk\PhpDebugBarMiddleware\DebugBarMiddleware|null) is never  
+         assigned ResponsiveSk\PhpDebugBarMiddleware\DebugBarMiddleware so it   
+         can be removed from the property type.                                 
+ ------ ----------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------- 
+  Line   src/Domain/Blog/Exception/ArticleNotFoundException.php  
+ ------ -------------------------------------------------------- 
+  :13    Call to an undefined method                             
+         Blog\Domain\Blog\ValueObject\ArticleId::toInt().        
+ ------ -------------------------------------------------------- 
+
+ ------ -------------------------------------------------- 
+  Line   src/Domain/Form/Entity/Form.php                   
+ ------ -------------------------------------------------- 
+  :30    Call to an undefined static method                
+         Blog\Domain\Form\ValueObject\FormId::generate().  
+ ------ -------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Domain/Image/Entity/Image.php                                      
+ ------ ----------------------------------------------------------------------- 
+  :24    Deprecated in PHP 8.1: Required parameter $createdAt follows optional  
+         parameter $uploadedBy.                                                 
+  :88    Deprecated in PHP 8.4: Parameter #1 $transformation (string) is        
+         implicitly nullable via default value null.                            
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------- 
+  Line   src/Domain/Image/Factory/ImageFactory.php           
+ ------ ---------------------------------------------------- 
+  :28    Call to an undefined static method                  
+         Blog\Domain\Image\ValueObject\ImageId::generate().  
+ ------ ---------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------ 
+  Line   src/Domain/Shared/Markdown/DefaultMarkdownParser.php              
+ ------ ------------------------------------------------------------------ 
+  :35    Call to an undefined method                                       
+         Blog\Domain\Shared\Markdown\MarkdownParserInterface::sanitize().  
+ ------ ------------------------------------------------------------------ 
+
+ ------ ------------------------------------------------------------------ 
+  Line   src/Domain/Shared/Markdown/MarkdownPreviewService.php             
+ ------ ------------------------------------------------------------------ 
+  :31    Call to an undefined method                                       
+         Blog\Domain\Shared\Markdown\MarkdownParserInterface::sanitize().  
+ ------ ------------------------------------------------------------------ 
+
+ ------ -------------------------------------------------------------------- 
+  Line   src/Domain/Shared/Media/UploadedFile.php                            
+ ------ -------------------------------------------------------------------- 
+  :14    Property Blog\Domain\Shared\Media\UploadedFile::$fullPath           
+         (string|null) is never assigned null so it can be removed from the  
+         property type.                                                      
+ ------ -------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------------- 
+  Line   src/Domain/User/ValueObject/HashedPassword.php                               
+ ------ ----------------------------------------------------------------------------- 
+  :13    Property Blog\Domain\User\ValueObject\HashedPassword::$config is             
+         never read, only written.                                                    
+         💡 See:                                                                      
+            https://phpstan.org/developing-extensions/always-read-written-properties  
+  :50    Call to function is_string() with non-empty-string will always               
+         evaluate to true.                                                            
+ ------ ----------------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------- 
+  Line   src/Infrastructure/Http/Controller/Api/ArticleApiController.php      
+ ------ --------------------------------------------------------------------- 
+  :50    Class Blog\Application\Blog\GetArticleById not found.                
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols  
+ ------ --------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------------- 
+  Line   src/Infrastructure/Http/Controller/Api/Mark/ArticlesApiController.php        
+ ------ ----------------------------------------------------------------------------- 
+  :30    Call to an undefined method Blog\Domain\Blog\Entity\Article::getId().        
+  :33    Array has 2 duplicate keys with value 'status' ('status', 'status').         
+  :33    Call to an undefined method                                                  
+         Blog\Domain\Blog\Entity\Article::getStatus().                                
+  :34    Call to an undefined method                                                  
+         Blog\Domain\Blog\Entity\Article::getCreatedAt().                             
+  :35    Call to an undefined method                                                  
+         Blog\Domain\Blog\Entity\Article::getPublishedAt().                           
+  :36    Call to an undefined method                                                  
+         Blog\Domain\Blog\Entity\Article::getPublishedAt().                           
+  :37    Call to an undefined method                                                  
+         Blog\Domain\Blog\Entity\Article::getStatus().                                
+  :41    Call to an undefined method                                                  
+         Blog\Infrastructure\Http\Controller\Api\Mark\ArticlesApiController::json().  
+ ------ ----------------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------------- 
+  Line   src/Infrastructure/Http/Controller/Api/Mark/AuditLogApiController.php        
+ ------ ----------------------------------------------------------------------------- 
+  :42    Call to an undefined method                                                  
+         Blog\Infrastructure\Http\Controller\Api\Mark\AuditLogApiController::json().  
+ ------ ----------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------ 
+  Line   src/Infrastructure/Http/Controller/Api/Mark/DashboardApiController.php        
+ ------ ------------------------------------------------------------------------------ 
+  :77    Offset 'by_event' on array{total: int, by_event: array, by_day:               
+         array} on left side of ?? always exists and is not nullable.                  
+  :79    Offset 'by_event' on array{total: int, by_event: array, by_day:               
+         array} on left side of ?? always exists and is not nullable.                  
+  :90    Call to an undefined method                                                   
+         Blog\Infrastructure\Http\Controller\Api\Mark\DashboardApiController::json().  
+  :108   Call to an undefined method                                                   
+         Blog\Infrastructure\Http\Controller\Api\Mark\DashboardApiController::json().  
+  :117   Call to an undefined method Blog\Domain\Blog\Entity\Article::getId().         
+  :120   Call to an undefined method                                                   
+         Blog\Domain\Blog\Entity\Article::getStatus().                                 
+  :121   Call to an undefined method                                                   
+         Blog\Domain\Blog\Entity\Article::getCreatedAt().                              
+  :122   Call to an undefined method                                                   
+         Blog\Domain\Blog\Entity\Article::getPublishedAt().                            
+  :123   Call to an undefined method                                                   
+         Blog\Domain\Blog\Entity\Article::getPublishedAt().                            
+  :127   Call to an undefined method                                                   
+         Blog\Infrastructure\Http\Controller\Api\Mark\DashboardApiController::json().  
+  :136   Call to an undefined method Blog\Domain\User\Entity\User::getId().            
+  :137   Call to an undefined method Blog\Domain\User\Entity\User::getEmail().         
+  :138   Call to an undefined method                                                   
+         Blog\Domain\User\Entity\User::getUsername().                                  
+  :139   Call to an undefined method Blog\Domain\User\Entity\User::getRole().          
+  :140   Call to an undefined method                                                   
+         Blog\Domain\User\Entity\User::getCreatedAt().                                 
+  :141   Call to an undefined method                                                   
+         Blog\Domain\User\Entity\User::getLastLoginAt().                               
+  :142   Call to an undefined method                                                   
+         Blog\Domain\User\Entity\User::getLastLoginAt().                               
+  :146   Call to an undefined method                                                   
+         Blog\Infrastructure\Http\Controller\Api\Mark\DashboardApiController::json().  
+ ------ ------------------------------------------------------------------------------ 
+
+ ------ -------------------------------------------------------------------------- 
+  Line   src/Infrastructure/Http/Controller/Api/Mark/UsersApiController.php        
+ ------ -------------------------------------------------------------------------- 
+  :30    Call to an undefined method Blog\Domain\User\Entity\User::getId().        
+  :31    Call to an undefined method Blog\Domain\User\Entity\User::getEmail().     
+  :32    Call to an undefined method                                               
+         Blog\Domain\User\Entity\User::getUsername().                              
+  :33    Call to an undefined method Blog\Domain\User\Entity\User::getRole().      
+  :34    Call to an undefined method                                               
+         Blog\Domain\User\Entity\User::getCreatedAt().                             
+  :35    Call to an undefined method                                               
+         Blog\Domain\User\Entity\User::getLastLoginAt().                           
+  :36    Call to an undefined method                                               
+         Blog\Domain\User\Entity\User::getLastLoginAt().                           
+  :37    Call to an undefined method Blog\Domain\User\Entity\User::isActive().     
+  :41    Call to an undefined method                                               
+         Blog\Infrastructure\Http\Controller\Api\Mark\UsersApiController::json().  
+ ------ -------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------- 
+  Line   src/Infrastructure/Http/Controller/BaseController.php                             
+ ------ ---------------------------------------------------------------------------------- 
+  :93    Method                                                                            
+         Blog\Infrastructure\Http\Controller\BaseController::requireAuth()                 
+         should return array|null but returns                                              
+         Psr\Http\Message\ResponseInterface.                                               
+  :112   Class Blog\Application\Blog\GetArticleById not found.                             
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols               
+  :124   Method                                                                            
+         Blog\Infrastructure\Http\Controller\BaseController::requireArticleOwnership()     
+         should return array|null but returns                                              
+         Psr\Http\Message\ResponseInterface.                                               
+  :134   Method                                                                            
+         Blog\Infrastructure\Http\Controller\BaseController::requireArticleOwnership()     
+         should return array|null but returns                                              
+         Psr\Http\Message\ResponseInterface.                                               
+  :165   Method                                                                            
+         Blog\Infrastructure\Http\Controller\BaseController::requireArticleOwnershipWeb()  
+         should return array|null but returns                                              
+         Psr\Http\Message\ResponseInterface.                                               
+  :169   Class Blog\Application\Blog\GetArticleById not found.                             
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols               
+  :181   Method                                                                            
+         Blog\Infrastructure\Http\Controller\BaseController::requireArticleOwnershipWeb()  
+         should return array|null but returns                                              
+         Psr\Http\Message\ResponseInterface.                                               
+  :187   Method                                                                            
+         Blog\Infrastructure\Http\Controller\BaseController::requireArticleOwnershipWeb()  
+         should return array|null but returns                                              
+         Psr\Http\Message\ResponseInterface.                                               
+ ------ ---------------------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Infrastructure/Http/Controller/DebugController.php                 
+ ------ ----------------------------------------------------------------------- 
+  :69    Instantiated class Laminas\Diactoros\Response\HtmlResponse not found.  
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+  :71    Call to method withStatus() on an unknown class                        
+         Laminas\Diactoros\Response\HtmlResponse.                               
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols    
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------- 
+  Line   src/Infrastructure/Http/Controller/Mark/ArticlesController.php  
+ ------ ---------------------------------------------------------------- 
+  :49    Call to an undefined static method                              
+         Blog\Domain\Blog\ValueObject\ArticleId::fromInt().              
+  :95    Call to an undefined static method                              
+         Blog\Domain\Blog\ValueObject\ArticleId::fromInt().              
+ ------ ---------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------- 
+  Line   src/Infrastructure/Http/Controller/Mark/DashboardController.php                   
+ ------ ---------------------------------------------------------------------------------- 
+  :19    Property                                                                          
+         Blog\Infrastructure\Http\Controller\Mark\DashboardController::$articleRepository  
+         is never read, only written.                                                      
+         💡 See:                                                                           
+            https://phpstan.org/developing-extensions/always-read-written-properties       
+ ------ ---------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------- 
+  Line   src/Infrastructure/Http/Controller/Web/ArticleController.php  
+ ------ -------------------------------------------------------------- 
+  :89    Call to an undefined static method                            
+         Blog\Domain\Blog\ValueObject\ArticleId::fromInt().            
+ ------ -------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------- 
+  Line   src/Infrastructure/Http/Controller/Web/BlogController.php  
+ ------ ----------------------------------------------------------- 
+  :73    Call to an undefined static method                         
+         Blog\Domain\Blog\ValueObject\ArticleId::fromInt().         
+ ------ ----------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Infrastructure/Http/Middleware/CsrfMiddleware.php                  
+ ------ ----------------------------------------------------------------------- 
+  :51    Variable $token on left side of ?? always exists and is not nullable.  
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   src/Infrastructure/Http/Middleware/ErrorHandlerMiddleware.php         
+ ------ ---------------------------------------------------------------------- 
+  :97    Call to function method_exists() with                                 
+         Blog\Infrastructure\View\ViewRenderer and 'renderErrorResponse' will  
+         always evaluate to true.                                              
+ ------ ---------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------- 
+  Line   src/Infrastructure/Http/Response/ArticleResponse.php     
+ ------ --------------------------------------------------------- 
+  :25    Call to an undefined method                              
+         Blog\Domain\Blog\ValueObject\ArticleId::toInt().         
+  :28    Call to an undefined method                              
+         Blog\Domain\Shared\Markdown\MarkdownContent::excerpt().  
+ ------ --------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------------------- 
+  Line   src/Infrastructure/Image/CloudinaryImageProcessor.php                            
+ ------ --------------------------------------------------------------------------------- 
+  :21    Call to an undefined method Cloudinary\Asset\Image::gravity().                   
+  :21    Method Cloudinary\Asset\Image::resize() invoked with 3 parameters, 1             
+         required.                                                                        
+  :33    Call to an undefined method Cloudinary\Asset\Image::fetchFormat().               
+  :54    Call to an undefined method Cloudinary\Asset\Image::gravity().                   
+  :108   Method Cloudinary\Asset\Image::resize() invoked with 3 parameters, 1             
+         required.                                                                        
+  :120   Call to an undefined method Cloudinary\Asset\Image::gravity().                   
+  :129   Method                                                                           
+         Blog\Infrastructure\Image\CloudinaryImageProcessor::generateTransformationUrl()  
+         should return string but returns Psr\Http\Message\UriInterface.                  
+ ------ --------------------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Infrastructure/Persistence/Doctrine/DoctrineArticleRepository.php  
+ ------ ----------------------------------------------------------------------- 
+  :51    Call to an undefined method                                            
+         Blog\Domain\Blog\ValueObject\ArticleId::toInt().                       
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------------- 
+  Line   src/Infrastructure/Persistence/Doctrine/DoctrineImageRepository.php          
+ ------ ----------------------------------------------------------------------------- 
+  :14    Property                                                                     
+         Blog\Infrastructure\Persistence\Doctrine\DoctrineImageRepository::$database  
+         is never read, only written.                                                 
+         💡 See:                                                                      
+            https://phpstan.org/developing-extensions/always-read-written-properties  
+ ------ ----------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   src/Infrastructure/Shared/Markdown/CommonMarkParser.php               
+ ------ ---------------------------------------------------------------------- 
+  :30    Class League\CommonMark\CommonMarkConverter constructor invoked with  
+         2 parameters, 0-1 required.                                           
+ ------ ---------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------- 
+  Line   src/Infrastructure/Shared/Markdown/ParsedownAdapter.php              
+ ------ --------------------------------------------------------------------- 
+  :13    Property                                                             
+         Blog\Infrastructure\Shared\Markdown\ParsedownAdapter::$parser has    
+         unknown class ParsedownExtra as its type.                            
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols  
+  :30    Call to method text() on an unknown class ParsedownExtra.            
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols  
+ ------ --------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   src/Infrastructure/Shared/Media/CloudinaryImageUploader.php           
+ ------ ---------------------------------------------------------------------- 
+  :112   Method Cloudinary\Asset\Image::resize() invoked with 3 parameters, 1  
+         required.                                                             
+  :123   Parameter #2 $url of method                                           
+         Blog\Domain\Shared\Media\Image::addVariant() expects string,          
+         Psr\Http\Message\UriInterface given.                                  
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   src/Infrastructure/Shared/Media/CloudinaryUploader.php                
+ ------ ---------------------------------------------------------------------- 
+  :23    Call to static method fromArray() on an unknown class                 
+         Cloudinary\Configuration\CloudinaryConfiguration.                     
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+  :80    Method Cloudinary\Asset\Image::resize() invoked with 3 parameters, 1  
+         required.                                                             
+  :81    Parameter #1 $resize of method Cloudinary\Asset\Image::resize()       
+         expects Cloudinary\Transformation\BaseResizeAction, string given.     
+  :88    Method Cloudinary\Asset\Image::resize() invoked with 3 parameters, 1  
+         required.                                                             
+  :89    Parameter #1 $resize of method Cloudinary\Asset\Image::resize()       
+         expects Cloudinary\Transformation\BaseResizeAction, string given.     
+  :96    Method Cloudinary\Asset\Image::resize() invoked with 3 parameters, 1  
+         required.                                                             
+  :97    Parameter #1 $resize of method Cloudinary\Asset\Image::resize()       
+         expects Cloudinary\Transformation\BaseResizeAction, string given.     
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------- 
+  Line   src/Infrastructure/Shared/Media/FileStorage.php                    
+ ------ ------------------------------------------------------------------- 
+  :50    Class Blog\Domain\Shared\Media\ImageId constructor invoked with 0  
+         parameters, 1 required.                                            
+ ------ ------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------- 
+  Line   src/Infrastructure/Storage/CloudinaryStorage.php                     
+ ------ --------------------------------------------------------------------- 
+  :78    Method Blog\Infrastructure\Storage\CloudinaryStorage::generateUrl()  
+         should return string but returns Psr\Http\Message\UriInterface.      
+ ------ --------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------- 
+  Line   src/Security/AuthorizationService.php                  
+ ------ ------------------------------------------------------- 
+  :100   Call to an undefined method                            
+         ResponsiveSk\Slim4Session\SessionInterface::delete().  
+ ------ ------------------------------------------------------- 
+
+ [ERROR] Found 155 errors                                                       
+

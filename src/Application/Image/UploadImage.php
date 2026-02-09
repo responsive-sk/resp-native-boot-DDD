@@ -16,8 +16,7 @@ class UploadImage
         private UserRepositoryInterface $userRepository,
         private ImageFactory $imageFactory,
         private ImageRepositoryInterface $imageRepository
-    ) {
-    }
+    ) {}
 
     public function __invoke(array $input): array
     {

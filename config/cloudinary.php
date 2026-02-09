@@ -11,7 +11,7 @@ return [
     ],
 
     'image' => [
-        'max_size' => (int)($_ENV['IMAGE_MAX_SIZE'] ?? 5242880),
+        'max_size' => (int) ($_ENV['IMAGE_MAX_SIZE'] ?? 5242880),
         'allowed_types' => explode(',', $_ENV['IMAGE_ALLOWED_TYPES'] ?? 'image/jpeg,image/png,image/webp'),
         'default_folder' => $_ENV['IMAGE_DEFAULT_FOLDER'] ?? 'blog_uploads',
         'quality' => $_ENV['IMAGE_QUALITY'] ?? 'auto:good',

@@ -15,8 +15,7 @@ final class RegisterUser extends BaseUseCase
     public function __construct(
         private UserRepositoryInterface $users,
         private array $passwordStrengthConfig
-    ) {
-    }
+    ) {}
 
     public function execute(array $input): array
     {
@@ -37,10 +36,10 @@ final class RegisterUser extends BaseUseCase
         }
 
         // 3. Create user
-                    $user = User::register(
-                        $emailVo,
-                        HashedPassword::fromPlainPassword($password, $this->passwordStrengthConfig)
-                    );
+        $user = User::register(
+            $emailVo,
+            HashedPassword::fromPlainPassword($password, $this->passwordStrengthConfig)
+        );
         // 4. Persist
         $this->users->save($user);
 

@@ -9,7 +9,7 @@ use Psr\Container\ContainerInterface;
 use ResponsiveSk\Slim4Session\SessionInterface;
 
 return [
-    AuthorizationService::class => fn (ContainerInterface $c) => new AuthorizationService(
+    AuthorizationService::class => fn(ContainerInterface $c) => new AuthorizationService(
         $c->get(SessionInterface::class)
     ),
 
@@ -19,7 +19,7 @@ return [
         return new Authorization();
     },
 
-    CsrfProtection::class => fn (ContainerInterface $c) => new CsrfProtection(
+    CsrfProtection::class => fn(ContainerInterface $c) => new CsrfProtection(
         $c->get(SessionInterface::class)
     ),
 ];

@@ -1,7 +1,5 @@
 <?php
 
-// src/Core/UseCaseMapper.php
-
 declare(strict_types=1);
 
 namespace Blog\Core;
@@ -11,13 +9,14 @@ use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Core UseCaseMapper - mapuje HTTP request na vstup pre use-cases
- *
- * Toto je doménovo-agnostický mapper, ktorý sa používa v celej aplikácii
  */
-final class UseCaseMapper
+final readonly class UseCaseMapper
 {
     /**
      * Mapuje request na use-case vstupné dáta
+     * 
+     * @param array<string, string> $mappingConfig
+     * @return array<string, mixed>
      */
     public static function mapToUseCaseInput(
         ServerRequestInterface $request,
@@ -48,7 +47,7 @@ final class UseCaseMapper
             [$type, $key] = $parts;
         }
 
-        return match($type) {
+        return match ($type) {
             'body' => self::getFromBody($key, $request),
             'query' => self::getFromQuery($key, $request),
             'attribute' => self::getFromAttributes($key, $request),
@@ -109,8 +108,11 @@ final class UseCaseMapper
 
     /**
      * Mapuje use-case výstup na array pre templaty
+     * 
+     * @param mixed $useCaseResult
+     * @return array<string, mixed>
      */
-    public static function mapToViewData($useCaseResult, string $viewKey = 'data'): array
+    public static function mapToViewData(mixed $useCaseResult, string $viewKey = 'data'): array
     {
         if (is_array($useCaseResult)) {
             return [$viewKey => $useCaseResult];
@@ -138,8 +140,11 @@ final class UseCaseMapper
 
     /**
      * Mapuje use-case výstup na API response
+     * 
+     * @param mixed $useCaseResult
+     * @return array<mixed>
      */
-    public static function mapToApiResponse($useCaseResult): array
+    public static function mapToApiResponse(mixed $useCaseResult): array
     {
         if (is_array($useCaseResult)) {
             return $useCaseResult;
@@ -157,27 +162,5 @@ final class UseCaseMapper
 
         // Default: wrap scalar values
         return ['data' => $useCaseResult];
-    }
-
-    /**
-     * Validuje vstupné dáta podľa pravidiel
-     */
-    public static function validate(array $data, array $validationRules): void
-    {
-        $errors = [];
-
-        foreach ($validationRules as $field => $rules) {
-            $value = $data[$field] ?? null;
-
-            foreach ($rules as $rule) {
-                if (!$rule->isValid($value)) {
-                    $errors[$field][] = $rule->getMessage();
-                }
-            }
-        }
-
-        if (!empty($errors)) {
-            throw new \DomainException('Validation failed: ' . json_encode($errors));
-        }
     }
 }

@@ -16,8 +16,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
 {
     public function __construct(
         private Connection $connection
-    ) {
-    }
+    ) {}
 
     public function add(Article $article): void
     {
@@ -182,7 +181,12 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
             new \DateTimeImmutable($row['updated_at']),
             $row['slug'] ? \Blog\Domain\Blog\ValueObject\Slug::fromString($row['slug']) : null,
             $category,
+            null, // excerpt - would need to be hydrated from database if available
             null, // featuredImage - would need to be hydrated from database if available
+            null, // metaDescription - would need to be hydrated from database if available
+            0, // viewCount - would need to be hydrated from database if available
+            isset($row['published_at']) && $row['published_at'] ? new \DateTimeImmutable($row['published_at']) : null,
+            null, // scheduledAt - would need to be hydrated from database if available
             $tagsData // Use already hydrated tags
         );
     }
@@ -239,30 +243,30 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
         $where = [];
         $params = [];
         $types = [];
-        
+
         if (!empty($filters['status'])) {
             $where[] = 'status = ?';
             $params[] = $filters['status'];
             $types[] = ParameterType::STRING;
         }
-        
+
         if (!empty($filters['start_date'])) {
             $where[] = 'created_at >= ?';
             $params[] = $filters['start_date'];
             $types[] = ParameterType::STRING;
         }
-        
+
         if (!empty($filters['end_date'])) {
             $where[] = 'created_at <= ?';
             $params[] = $filters['end_date'];
             $types[] = ParameterType::STRING;
         }
-        
+
         $whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
-        
+
         $sql = "SELECT COUNT(*) FROM articles {$whereClause}";
-        
-        return (int)$this->connection->fetchOne($sql, $params, $types);
+
+        return (int) $this->connection->fetchOne($sql, $params, $types);
     }
 
     public function getCategories(): array

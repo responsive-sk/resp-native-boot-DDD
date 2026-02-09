@@ -17,8 +17,7 @@ final class UpdateArticle extends BaseUseCase
 {
     public function __construct(
         private ArticleRepository $articles
-    ) {
-    }
+    ) {}
 
     public function execute(array $input): array
     {

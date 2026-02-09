@@ -1,24 +1,29 @@
 <?php
-
+// src/Domain/Blog/ValueObject/TagName.php
 declare(strict_types=1);
 
 namespace Blog\Domain\Blog\ValueObject;
 
-final readonly class TagName
+use Blog\Domain\Shared\ValueObject\StringValueObject;
+use InvalidArgumentException;
+
+final readonly class TagName extends StringValueObject
 {
-    private string $value;
-
-    private function __construct(string $value)
+    protected function validate(): void
     {
-        if (empty(trim($value))) {
-            throw new \InvalidArgumentException('Názov tagu nemôže byť prázdny');
+        if (empty(trim($this->value))) {
+            throw new InvalidArgumentException('Tag name cannot be empty');
         }
 
-        if (strlen($value) > 50) {
-            throw new \InvalidArgumentException('Názov tagu môže mať maximálne 50 znakov');
+        if (strlen($this->value) > 30) {
+            throw new InvalidArgumentException('Tag name cannot exceed 30 characters');
         }
 
-        $this->value = trim($value);
+        // Tags should be lowercase and URL-friendly (approximately) based on prompt
+        $normalized = strtolower($this->value);
+        if (!preg_match('/^[a-z0-9\s\-]+$/', $normalized)) {
+            throw new InvalidArgumentException('Tag name can only contain letters, numbers, spaces and hyphens');
+        }
     }
 
     public static function fromString(string $value): self
@@ -26,18 +31,18 @@ final readonly class TagName
         return new self($value);
     }
 
-    public function toString(): string
+    public function normalize(): string
     {
-        return $this->value;
+        return strtolower(trim($this->value));
     }
 
-    public function equals(TagName $other): bool
+    public function toSlug(): string
     {
-        return strtolower($this->value) === strtolower($other->value);
-    }
+        $slug = strtolower($this->value);
+        $slug = preg_replace('/[^a-z0-9\s\-]/', '', $slug);
+        $slug = preg_replace('/\s+/', '-', $slug);
+        $slug = preg_replace('/-+/', '-', $slug);
 
-    public function __toString(): string
-    {
-        return $this->value;
+        return trim($slug, '-');
     }
 }

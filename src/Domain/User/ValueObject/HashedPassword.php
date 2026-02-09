@@ -9,8 +9,7 @@ use InvalidArgumentException;
 final readonly class HashedPassword
 {
     private function __construct(
-        private string $hash,
-        private array $config
+        private string $hash
     ) {
         if (empty($hash)) {
             throw new InvalidArgumentException('Hash hesla nemôže byť prázdny');
@@ -47,16 +46,18 @@ final readonly class HashedPassword
 
         $hash = password_hash($plainPassword, PASSWORD_DEFAULT);
 
-        if (!is_string($hash)) {
-            throw new \RuntimeException('Nepodarilo sa zahašovať heslo');
-        }
-
-        return new self($hash, $config);
+        return new self($hash);
     }
 
     public static function fromHash(string $hash, array $config): self
     {
-        return new self($hash, $config);
+        return new self($hash);
+    }
+
+    public static function hash(string $plainPassword): self
+    {
+        $hash = password_hash($plainPassword, PASSWORD_DEFAULT);
+        return new self($hash);
     }
 
     public function verify(string $plainPassword): bool

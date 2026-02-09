@@ -1,54 +1,31 @@
 <?php
-
+// src/Domain/Blog/ValueObject/Title.php
 declare(strict_types=1);
 
 namespace Blog\Domain\Blog\ValueObject;
 
+use Blog\Domain\Shared\ValueObject\StringValueObject;
 use InvalidArgumentException;
 
-final readonly class Title
+final readonly class Title extends StringValueObject
 {
-    private const MIN_LENGTH = 3;
-    private const MAX_LENGTH = 255;
-
-    private function __construct(private string $value)
+    protected function validate(): void
     {
+        if (empty($this->value)) {
+            throw new InvalidArgumentException('Title cannot be empty');
+        }
+
+        if (strlen($this->value) > 255) {
+            throw new InvalidArgumentException('Title cannot exceed 255 characters');
+        }
     }
 
-    public static function fromString(string $value): self
+    public static function fromString(string $value): static
     {
-        $trimmed = trim($value);
-
-        if (empty($trimmed)) {
-            throw new InvalidArgumentException('Titulok nemôže byť prázdny');
-        }
-
-        if (mb_strlen($trimmed) < self::MIN_LENGTH) {
-            throw new InvalidArgumentException(
-                sprintf('Titulok musí mať aspoň %d znaky', self::MIN_LENGTH)
-            );
-        }
-
-        if (mb_strlen($trimmed) > self::MAX_LENGTH) {
-            throw new InvalidArgumentException(
-                sprintf('Titulok môže mať maximálne %d znakov', self::MAX_LENGTH)
-            );
-        }
-
-        return new self($trimmed);
+        return new static($value);
     }
 
     public function toString(): string
-    {
-        return $this->value;
-    }
-
-    public function equals(self $other): bool
-    {
-        return $this->value === $other->value;
-    }
-
-    public function __toString(): string
     {
         return $this->value;
     }

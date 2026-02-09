@@ -1,4 +1,5 @@
 <?php
+
 // resp-blog/src/Infrastructure/Http/Controller/Api/Mark/DashboardApiController.php
 
 declare(strict_types=1);
@@ -17,7 +18,7 @@ class DashboardApiController extends BaseController
     private AuditLogRepository $auditLogRepository;
     private ArticleRepository $articleRepository;
     private UserRepositoryInterface $userRepository;
-    
+
     public function __construct(
         AuditLogRepository $auditLogRepository,
         ArticleRepository $articleRepository,
@@ -27,7 +28,7 @@ class DashboardApiController extends BaseController
         $this->articleRepository = $articleRepository;
         $this->userRepository = $userRepository;
     }
-    
+
     public function getStats(ServerRequestInterface $request): ResponseInterface
     {
         // Basic stats
@@ -47,7 +48,7 @@ class DashboardApiController extends BaseController
             'storageTotal' => 10240, // 10GB in MB
             'storageTrend' => 12, // 12% increase
         ];
-        
+
         // Chart data - last 7 days activity
         $chartData = [
             'labels' => [],
@@ -58,18 +59,18 @@ class DashboardApiController extends BaseController
                     'backgroundColor' => 'rgba(14, 165, 233, 0.2)',
                     'borderColor' => 'rgba(14, 165, 233, 1)',
                     'borderWidth' => 2,
-                ]
-            ]
+                ],
+            ],
         ];
-        
+
         for ($i = 6; $i >= 0; $i--) {
             $date = date('Y-m-d', strtotime("-$i days"));
             $chartData['labels'][] = date('M j', strtotime($date));
             $chartData['datasets'][0]['data'][] = $this->getAuditCountForDate($date);
         }
-        
+
         $stats['chartData'] = $chartData;
-        
+
         // Event distribution
         $eventStats = $this->auditLogRepository->getStatistics();
         $stats['eventDistribution'] = [
@@ -82,18 +83,18 @@ class DashboardApiController extends BaseController
                     '#f59e0b', // yellow
                     '#ef4444', // red
                     '#8b5cf6', // purple
-                ]
-            ]]
+                ],
+            ]],
         ];
-        
+
         return $this->json($stats);
     }
-    
+
     public function getRecentLogs(ServerRequestInterface $request): ResponseInterface
     {
         $logs = $this->auditLogRepository->getRecentLogs(10);
-        
-        $formattedLogs = array_map(function($log) {
+
+        $formattedLogs = array_map(function ($log) {
             return [
                 'id' => $log->getId()->value(),
                 'eventType' => $log->getEventType()->value(),
@@ -103,48 +104,48 @@ class DashboardApiController extends BaseController
                 'createdAt' => $log->getCreatedAt()->format('c'),
             ];
         }, $logs);
-        
+
         return $this->json($formattedLogs);
     }
-    
+
     public function getRecentArticles(ServerRequestInterface $request): ResponseInterface
     {
         $articles = $this->articleRepository->getRecentArticles(10);
-        
-        $formattedArticles = array_map(function($article) {
+
+        $formattedArticles = array_map(function ($article) {
             return [
                 'id' => $article->getId()->value(),
                 'title' => $article->getTitle(),
                 'excerpt' => $article->getExcerpt(),
                 'status' => $article->getStatus(),
                 'createdAt' => $article->getCreatedAt()->format('c'),
-                'publishedAt' => $article->getPublishedAt() ? 
-                    $article->getPublishedAt()->format('c') : null,
+                'publishedAt' => $article->getPublishedAt()
+                    ? $article->getPublishedAt()->format('c') : null,
             ];
         }, $articles);
-        
+
         return $this->json($formattedArticles);
     }
-    
+
     public function getRecentUsers(ServerRequestInterface $request): ResponseInterface
     {
         $users = $this->userRepository->getRecentUsers(10);
-        
-        $formattedUsers = array_map(function($user) {
+
+        $formattedUsers = array_map(function ($user) {
             return [
                 'id' => $user->getId()->value(),
                 'email' => $user->getEmail(),
                 'username' => $user->getUsername(),
                 'role' => $user->getRole(),
                 'createdAt' => $user->getCreatedAt()->format('c'),
-                'lastLoginAt' => $user->getLastLoginAt() ? 
-                    $user->getLastLoginAt()->format('c') : null,
+                'lastLoginAt' => $user->getLastLoginAt()
+                    ? $user->getLastLoginAt()->format('c') : null,
             ];
         }, $users);
-        
+
         return $this->json($formattedUsers);
     }
-    
+
     private function getTodayAuditCount(): int
     {
         $today = date('Y-m-d');
@@ -153,18 +154,18 @@ class DashboardApiController extends BaseController
             'end_date' => $today . ' 23:59:59',
         ]);
     }
-    
+
     private function getWeekAuditCount(): int
     {
         $weekStart = date('Y-m-d', strtotime('-7 days'));
         $today = date('Y-m-d');
-        
+
         return $this->auditLogRepository->count([
             'start_date' => $weekStart . ' 00:00:00',
             'end_date' => $today . ' 23:59:59',
         ]);
     }
-    
+
     private function getAuditCountForDate(string $date): int
     {
         return $this->auditLogRepository->count([
@@ -172,7 +173,7 @@ class DashboardApiController extends BaseController
             'end_date' => $date . ' 23:59:59',
         ]);
     }
-    
+
     private function getArticlesTrend(): float
     {
         // Calculate percentage change from last week
@@ -180,28 +181,30 @@ class DashboardApiController extends BaseController
             'start_date' => date('Y-m-d', strtotime('-7 days')) . ' 00:00:00',
             'end_date' => date('Y-m-d') . ' 23:59:59',
         ]);
-        
+
         $previousWeek = $this->articleRepository->count([
             'start_date' => date('Y-m-d', strtotime('-14 days')) . ' 00:00:00',
             'end_date' => date('Y-m-d', strtotime('-7 days')) . ' 23:59:59',
         ]);
-        
-        if ($previousWeek === 0) return 100;
+
+        if ($previousWeek === 0) {
+            return 100;
+        }
         return round((($currentWeek - $previousWeek) / $previousWeek) * 100, 1);
     }
-    
+
     private function getUsersTrend(): float
     {
         // Similar calculation for users
         return 5.2; // Example static value
     }
-    
+
     private function getActivityTrend(): float
     {
         // Similar calculation for activity
         return 8.7; // Example static value
     }
-    
+
     private function getStorageUsed(): int
     {
         // Calculate storage used in MB

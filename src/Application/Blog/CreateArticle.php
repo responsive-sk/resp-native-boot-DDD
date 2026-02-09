@@ -10,6 +10,7 @@ use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Domain\Shared\Markdown\MarkdownContent;
 use Blog\Domain\Blog\ValueObject\Slug;
 use Blog\Domain\Blog\ValueObject\Title;
+use Blog\Domain\Blog\ValueObject\AuthorId;
 use Blog\Domain\User\ValueObject\UserId;
 
 final class CreateArticle extends BaseUseCase
@@ -36,10 +37,11 @@ final class CreateArticle extends BaseUseCase
         $uniqueSlug = $this->findUniqueSlug($baseSlug, $suffix);
 
         // 3. Vytvor článok s unikátnym slugom
+        // 3. Vytvor článok s unikátnym slugom
         $article = Article::create(
             Title::fromString($title),
             new MarkdownContent($content),
-            UserId::fromString($authorId)
+            AuthorId::fromString((string) $authorId)
         );
 
         // Nastav unikátny slug

@@ -12,9 +12,7 @@ use Doctrine\DBAL\Connection;
 
 final class DoctrineTagRepository implements TagRepository
 {
-    public function __construct(private Connection $connection)
-    {
-    }
+    public function __construct(private Connection $connection) {}
 
     public function add(Tag $tag): void
     {

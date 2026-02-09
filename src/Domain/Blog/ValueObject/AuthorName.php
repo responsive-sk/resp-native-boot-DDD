@@ -1,43 +1,53 @@
 <?php
-
+// src/Domain/Blog/ValueObject/AuthorName.php
 declare(strict_types=1);
 
 namespace Blog\Domain\Blog\ValueObject;
 
-class AuthorName
+use Blog\Domain\Shared\ValueObject\StringValueObject;
+use InvalidArgumentException;
+
+final readonly class AuthorName extends StringValueObject
 {
-    private string $value;
-
-    public function __construct(string $value)
+    protected function validate(): void
     {
-        if (empty(trim($value))) {
-            throw new \InvalidArgumentException('Author name cannot be empty');
+        if (empty(trim($this->value))) {
+            throw new InvalidArgumentException('Author name cannot be empty');
         }
 
-        if (strlen($value) > 255) {
-            throw new \InvalidArgumentException('Author name cannot be longer than 255 characters');
+        if (strlen($this->value) > 100) {
+            throw new InvalidArgumentException('Author name cannot exceed 100 characters');
+        }
+    }
+
+    public function getFirstName(): string
+    {
+        $parts = explode(' ', $this->value);
+        return $parts[0] ?? '';
+    }
+
+    public function getLastName(): string
+    {
+        $parts = explode(' ', $this->value);
+
+        if (count($parts) < 2) {
+            return '';
         }
 
-        $this->value = trim($value);
+        return $parts[count($parts) - 1];
     }
 
-    public static function fromString(string $value): self
+    public function getInitials(): string
     {
-        return new self($value);
-    }
+        $parts = explode(' ', $this->value);
+        $initials = '';
 
-    public function toString(): string
-    {
-        return $this->value;
-    }
+        foreach ($parts as $part) {
+            if (!empty($part)) {
+                $initials .= strtoupper(substr($part, 0, 1));
+            }
+        }
 
-    public function __toString(): string
-    {
-        return $this->toString();
-    }
-
-    public function equals(AuthorName $other): bool
-    {
-        return $this->value === $other->value;
+        return $initials;
     }
 }

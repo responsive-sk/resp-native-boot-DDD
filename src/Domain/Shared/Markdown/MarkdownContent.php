@@ -23,7 +23,7 @@ class MarkdownContent
         }
 
         $this->raw = $markdown;
-        $parser = $parser ?? new \Blog\Domain\Shared\Markdown\DefaultMarkdownParser();
+        $parser ??= new \Blog\Domain\Shared\Markdown\DefaultMarkdownParser();
 
         $this->html = $parser->toHtml($markdown);
         $this->plainText = $parser->toPlainText($markdown);
@@ -87,6 +87,11 @@ class MarkdownContent
     }
 
     public function __toString(): string
+    {
+        return $this->raw;
+    }
+
+    public function toString(): string
     {
         return $this->raw;
     }

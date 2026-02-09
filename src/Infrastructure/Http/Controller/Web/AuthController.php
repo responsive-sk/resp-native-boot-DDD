@@ -62,19 +62,20 @@ class AuthController extends BaseController
                 $this->session->set('last_activity', time());
                 $this->session->set('fingerprint', $this->generateFingerprint($request)); # Add fingerprint
 
-                                    // Audit log
-                                    $this->auditLogger->logLogin($result['data']['user']['id']);
-                
-                                    // Determine redirect route based on user role
-                                    $redirectRouteName = 'home'; // Default redirect
-                                    if ($result['data']['user']['role'] === 'ROLE_MARK') {
-                                        $redirectRouteName = 'mark.dashboard';
-                                    }
-                
-                                    // SECURITY: Use safe redirect to prevent open redirect attacks
-                                    $safeRedirect = $this->getSafeRedirect($request, $this->paths->urlFor($redirectRouteName));
-                
-                                    return $this->redirect($safeRedirect);            }
+                // Audit log
+                $this->auditLogger->logLogin($result['data']['user']['id']);
+
+                // Determine redirect route based on user role
+                $redirectRouteName = 'home'; // Default redirect
+                if ($result['data']['user']['role'] === 'ROLE_MARK') {
+                    $redirectRouteName = 'mark.dashboard';
+                }
+
+                // SECURITY: Use safe redirect to prevent open redirect attacks
+                $safeRedirect = $this->getSafeRedirect($request, $this->paths->urlFor($redirectRouteName));
+
+                return $this->redirect($safeRedirect);
+            }
 
             // Ak login zlyhal
             $categories = $this->categoryRepository->getAll();

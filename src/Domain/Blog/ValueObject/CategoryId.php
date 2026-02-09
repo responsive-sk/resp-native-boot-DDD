@@ -1,75 +1,32 @@
 <?php
-
+// src/Domain/Blog/ValueObject/CategoryId.php
 declare(strict_types=1);
 
 namespace Blog\Domain\Blog\ValueObject;
 
+use Blog\Domain\Shared\ValueObject\IntValueObject;
 use InvalidArgumentException;
 
-
-
-final readonly class CategoryId
-
+final readonly class CategoryId extends IntValueObject
 {
-
-    private string $id;
-
-
-
-    private function __construct(string $id)
-
+    protected function validate(): void
     {
-
-        $this->id = $id;
-
+        if ($this->value <= 0) {
+            throw new InvalidArgumentException('Category ID must be positive');
+        }
     }
 
-
-
-    public static function fromString(string $value): self
-
+    public static function fromString(string $value): static
     {
-
-        if (empty($value)) {
-
-            throw new InvalidArgumentException("Category ID cannot be empty.");
-
+        if (!is_numeric($value)) {
+            throw new InvalidArgumentException('Category ID must be numeric');
         }
 
-        
-
-        return new self($value);
-
+        return new static((int)$value);
     }
 
-
-
-    public function toString(): string
-
+    public static function fromInt(int $value): static
     {
-
-        return $this->id;
-
+        return new static($value);
     }
-
-
-
-    public function equals(CategoryId $other): bool
-
-    {
-
-        return $this->id === $other->id;
-
-    }
-
-
-
-    public function __toString(): string
-
-    {
-
-        return $this->id;
-
-    }
-
 }

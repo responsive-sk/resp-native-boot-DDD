@@ -1,4 +1,5 @@
 <?php
+
 // src/Infrastructure/Shared/Markdown/CommonMarkParser.php
 
 declare(strict_types=1);
@@ -22,21 +23,21 @@ class CommonMarkParser implements MarkdownParserInterface
             'html_input' => 'strip',
             'allow_unsafe_links' => false,
         ]);
-        
+
         $environment->addExtension(new CommonMarkCoreExtension());
         $environment->addExtension(new FrontMatterExtension());
-        
+
         $this->converter = new CommonMarkConverter([], $environment);
     }
 
     public function toHtml(string $markdown): string
     {
         $result = $this->converter->convert($markdown);
-        
+
         if ($result instanceof RenderedContentWithFrontMatter) {
             return $result->getContent();
         }
-        
+
         return (string) $result;
     }
 
@@ -45,18 +46,18 @@ class CommonMarkParser implements MarkdownParserInterface
         $html = $this->toHtml($markdown);
         $plain = strip_tags($html);
         $plain = preg_replace('/\s+/', ' ', $plain);
-        
+
         return trim($plain);
     }
 
     public function extractMetadata(string $markdown): array
     {
         $result = $this->converter->convert($markdown);
-        
+
         if ($result instanceof RenderedContentWithFrontMatter) {
             return $result->getFrontMatter() ?? [];
         }
-        
+
         return [];
     }
 

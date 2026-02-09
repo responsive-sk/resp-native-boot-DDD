@@ -13,8 +13,7 @@ final readonly class UserResponse
         public string $email,
         public string $role,
         public string $createdAt
-    ) {
-    }
+    ) {}
 
     public static function fromEntity(User $user): self
     {

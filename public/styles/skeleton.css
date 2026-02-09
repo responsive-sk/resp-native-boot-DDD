@@ -42,7 +42,6 @@
    ============================================ */
 
 /* Header */
-boson-header:not(:defined),
 resp-header:not(:defined) {
     visibility: visible;
     display: block;
@@ -56,7 +55,6 @@ resp-header:not(:defined) {
 }
 
 /* Footer */
-boson-footer:not(:defined),
 resp-footer:not(:defined) {
     visibility: visible;
     display: block;
@@ -167,7 +165,7 @@ boson-breadcrumbs:not(:defined) {
    Isolate components to prevent layout thrashing
    ============================================ */
 hero-section,
-boson-header,
+resp-header,
 boson-footer,
 call-to-action-section,
 article-list-section {
@@ -184,7 +182,6 @@ article-list-section {
         padding: 2rem 1rem;
     }
 
-    boson-header:not(:defined),
     resp-header:not(:defined) {
         height: 64px;
     }

@@ -12,8 +12,7 @@ class CloudinaryStorage implements ImageStorageInterface
     public function __construct(
         private Cloudinary $cloudinary,
         private array $config
-    ) {
-    }
+    ) {}
 
     public function upload(\Psr\Http\Message\UploadedFileInterface $file, array $options = []): array
     {

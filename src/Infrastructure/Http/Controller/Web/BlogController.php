@@ -56,7 +56,7 @@ final class BlogController extends BaseController
         return $this->viewRenderer->renderResponse('blog.index', [
             'articles' => $articles,
             'categories' => $categories,
-            'blogCategories' => array_map(fn ($cat) => $cat->slug()->toString(), $categories),
+            'blogCategories' => array_map(fn($cat) => $cat->slug()->toString(), $categories),
             'page' => $page,
         ]);
     }
@@ -124,7 +124,7 @@ final class BlogController extends BaseController
         return $this->viewRenderer->renderResponse('blog.category', [
             'category' => $category,
             'articles' => $articles,
-            'blogCategories' => array_map(fn ($cat) => $cat->slug()->toString(), $this->categoryRepository->getAll()),
+            'blogCategories' => array_map(fn($cat) => $cat->slug()->toString(), $this->categoryRepository->getAll()),
         ]);
     }
 }

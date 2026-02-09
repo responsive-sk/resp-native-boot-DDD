@@ -1,8 +1,20 @@
-includes:
-    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
-
 parameters:
-    level: 5 # A reasonable starting level. Increase over time.
+    level: 9
     paths:
         - src
-        - tests
+        - config
+    excludePaths:
+        - var/*
+        - data/*
+        - resources/views/*
+    checkMissingIterableValueType: false
+    phpVersion: 80400
+    inferPrivatePropertyTypeFromConstructor: true
+    reportUnmatchedIgnoredErrors: false
+    treatPhpDocTypesAsCertain: true
+    usePhpDocParserWithoutContext: false
+    parallel:
+        maximumNumberOfProcesses: 4
+    scanFiles:
+        - boot.php
+        - web.php

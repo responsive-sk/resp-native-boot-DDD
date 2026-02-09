@@ -14,8 +14,7 @@ final readonly class ViewRenderer
     public function __construct(
         private PlatesRenderer $plates,
         private array $pageConfig
-    ) {
-    }
+    ) {}
 
     public function renderResponse(
         string $pageKey,

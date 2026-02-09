@@ -1,4 +1,5 @@
 <?php
+
 // resp-blog/src/Infrastructure/Http/Controller/Api/Mark/AuditLogApiController.php
 
 declare(strict_types=1);
@@ -13,18 +14,18 @@ use Psr\Http\Message\ServerRequestInterface;
 class AuditLogApiController extends BaseController
 {
     private AuditLogRepository $auditLogRepository;
-    
+
     public function __construct(AuditLogRepository $auditLogRepository)
     {
         $this->auditLogRepository = $auditLogRepository;
     }
-    
+
     public function getRecent(ServerRequestInterface $request): ResponseInterface
     {
-        $limit = (int)($request->getQueryParams()['limit'] ?? 10);
+        $limit = (int) ($request->getQueryParams()['limit'] ?? 10);
         $logs = $this->auditLogRepository->getRecentLogs($limit);
-        
-        $formattedLogs = array_map(function($log) {
+
+        $formattedLogs = array_map(function ($log) {
             return [
                 'id' => $log->getId()->value(),
                 'eventType' => $log->getEventType()->value(),
@@ -37,15 +38,15 @@ class AuditLogApiController extends BaseController
                 'time' => $this->formatTimeAgo($log->getCreatedAt()),
             ];
         }, $logs);
-        
+
         return $this->json($formattedLogs);
     }
-    
+
     private function formatTimeAgo(\DateTimeImmutable $date): string
     {
         $now = new \DateTimeImmutable();
         $diff = $now->diff($date);
-        
+
         if ($diff->days === 0) {
             if ($diff->h === 0) {
                 if ($diff->i === 0) {
@@ -55,7 +56,7 @@ class AuditLogApiController extends BaseController
             }
             return $diff->h . ' hour' . ($diff->h > 1 ? 's' : '') . ' ago';
         }
-        
+
         return $diff->days . ' day' . ($diff->days > 1 ? 's' : '') . ' ago';
     }
 }

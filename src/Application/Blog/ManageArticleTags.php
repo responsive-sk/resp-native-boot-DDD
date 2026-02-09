@@ -12,8 +12,7 @@ final readonly class ManageArticleTags
     public function __construct(
         private TagRepository $tagRepository,
         private GetOrCreateTag $getOrCreateTag
-    ) {
-    }
+    ) {}
 
     /**
      * Set tags for an article from array of tag names

@@ -1,175 +1,110 @@
 <?php
-
 // src/Domain/Audit/ValueObject/AuditEventType.php
-
 declare(strict_types=1);
 
 namespace Blog\Domain\Audit\ValueObject;
 
-use InvalidArgumentException;
-
-class AuditEventType
+enum AuditEventType: string
 {
-    // Security events
-    public const LOGIN_SUCCESS = 'login_success';
-    public const LOGIN_FAILED = 'login_failed';
-    public const LOGOUT = 'logout';
-    public const REGISTRATION = 'registration';
-    public const PASSWORD_RESET_REQUEST = 'password_reset_request';
-    public const PASSWORD_RESET_COMPLETE = 'password_reset_complete';
-    public const AUTHORIZATION_DENIED = 'authorization_denied';
-    public const SESSION_EXPIRED = 'session_expired';
-    public const SESSION_HIJACK = 'session_hijack';
-    public const AUTHENTICATION_REQUIRED = 'authentication_required'; // <-- TOTO CHÝBA!
-    public const INVALID_CSRF = 'invalid_csrf';
-    public const RATE_LIMIT_EXCEEDED = 'rate_limit_exceeded';
+    case USER_LOGIN = 'user.login';
+    case USER_LOGOUT = 'user.logout';
+    case USER_REGISTER = 'user.register';
+    case USER_UPDATE = 'user.update';
+    case USER_DELETE = 'user.delete';
+    case LOGIN_SUCCESS = 'login.success'; // Added for compatibility with AuditLogger.php usage
+    case LOGIN_FAILED = 'login.failed'; // Added for compatibility
+    case REGISTRATION = 'registration'; // Added for compatibility
+    case LOGOUT = 'logout'; // Added for compatibility
+    case AUTHORIZATION_DENIED = 'auth.denied'; // Added for compatibility
 
-    // Article events
-    public const ARTICLE_CREATED = 'article_created';
-    public const ARTICLE_UPDATED = 'article_updated';
-    public const ARTICLE_DELETED = 'article_deleted';
-    public const ARTICLE_PUBLISHED = 'article_published';
-    public const ARTICLE_VIEWED = 'article_viewed';
-    public const ARTICLE_SEARCHED = 'article_searched';
+    case ARTICLE_CREATE = 'article.create';
+    case ARTICLE_UPDATE = 'article.update';
+    case ARTICLE_DELETE = 'article.delete';
+    case ARTICLE_PUBLISH = 'article.publish';
 
-    // User events
-    public const USER_CREATED = 'user_created';
-    public const USER_UPDATED = 'user_updated';
-    public const USER_DELETED = 'user_deleted';
-    public const USER_ROLE_CHANGED = 'user_role_changed';
-    public const USER_PROFILE_UPDATED = 'user_profile_updated';
+    case CATEGORY_CREATE = 'category.create';
+    case CATEGORY_UPDATE = 'category.update';
+    case CATEGORY_DELETE = 'category.delete';
 
-    // Image events
-    public const IMAGE_UPLOADED = 'image_uploaded';
-    public const IMAGE_DELETED = 'image_deleted';
-    public const IMAGE_ATTACHED = 'image_attached';
-    public const IMAGE_DETACHED = 'image_detached';
+    case TAG_CREATE = 'tag.create';
+    case TAG_UPDATE = 'tag.update';
+    case TAG_DELETE = 'tag.delete';
 
-    // Form events
-    public const FORM_CREATED = 'form_created';
-    public const FORM_UPDATED = 'form_updated';
-    public const FORM_SUBMITTED = 'form_submitted';
-    public const FORM_DELETED = 'form_deleted';
+    case IMAGE_UPLOAD = 'image.upload';
+    case IMAGE_DELETE = 'image.delete';
 
-    // Category/Tag events
-    public const CATEGORY_CREATED = 'category_created';
-    public const CATEGORY_UPDATED = 'category_updated';
-    public const CATEGORY_DELETED = 'category_deleted';
-    public const TAG_CREATED = 'tag_created';
-    public const TAG_UPDATED = 'tag_updated';
-    public const TAG_DELETED = 'tag_deleted';
+    case FORM_SUBMIT = 'form.submit';
 
-    // System events
-    public const SYSTEM_BACKUP = 'system_backup';
-    public const SYSTEM_UPDATE = 'system_update';
-    public const ERROR_OCCURRED = 'error_occurred';
-    public const MAINTENANCE_MODE_ON = 'maintenance_mode_on';
-    public const MAINTENANCE_MODE_OFF = 'maintenance_mode_off';
-    
-    // API events
-    public const API_REQUEST = 'api_request';
-    public const API_RESPONSE = 'api_response';
-    public const API_ERROR = 'api_error';
+    case SYSTEM_ERROR = 'system.error';
+    case SECURITY_ALERT = 'security.alert';
 
-    private string $value;
-
-    public function __construct(string $value)
+    public function getCategory(): string
     {
-        $validTypes = self::getAllTypes();
+        return match ($this) {
+            self::USER_LOGIN, self::USER_LOGOUT, self::USER_REGISTER,
+            self::USER_UPDATE, self::USER_DELETE,
+            self::LOGIN_SUCCESS, self::LOGIN_FAILED, self::REGISTRATION, self::LOGOUT, self::AUTHORIZATION_DENIED => 'user',
 
-        if (!isset($validTypes[$value])) {
-            // Debug info
-            error_log("Invalid audit event type: '$value'. Valid types: " . implode(', ', array_keys($validTypes)));
+            self::ARTICLE_CREATE, self::ARTICLE_UPDATE, self::ARTICLE_DELETE,
+            self::ARTICLE_PUBLISH => 'article',
 
-            throw new InvalidArgumentException("Invalid audit event type: '$value'");
-        }
+            self::CATEGORY_CREATE, self::CATEGORY_UPDATE, self::CATEGORY_DELETE => 'category',
 
-        $this->value = $value;
+            self::TAG_CREATE, self::TAG_UPDATE, self::TAG_DELETE => 'tag',
+
+            self::IMAGE_UPLOAD, self::IMAGE_DELETE => 'image',
+
+            self::FORM_SUBMIT => 'form',
+
+            self::SYSTEM_ERROR, self::SECURITY_ALERT => 'system',
+        };
     }
 
-    public function value(): string
+    public function getSeverity(): string
     {
-        return $this->value;
+        return match ($this) {
+            self::USER_DELETE, self::ARTICLE_DELETE,
+            self::SYSTEM_ERROR, self::SECURITY_ALERT, self::LOGIN_FAILED => 'high',
+
+            self::USER_UPDATE, self::ARTICLE_UPDATE,
+            self::CATEGORY_DELETE, self::TAG_DELETE,
+            self::IMAGE_DELETE, self::AUTHORIZATION_DENIED => 'medium',
+
+            default => 'low',
+        };
     }
 
-    public static function getAllTypes(): array
+    public function getDescription(): string
     {
-        return [
-            // Security
-            self::LOGIN_SUCCESS => 'Login Successful',
-            self::LOGIN_FAILED => 'Login Failed',
-            self::LOGOUT => 'User Logout',
-            self::REGISTRATION => 'User Registration',
-            self::PASSWORD_RESET_REQUEST => 'Password Reset Requested',
-            self::PASSWORD_RESET_COMPLETE => 'Password Reset Completed',
-            self::AUTHORIZATION_DENIED => 'Authorization Denied',
-            self::SESSION_EXPIRED => 'Session Expired',
-            self::SESSION_HIJACK => 'Session Hijack Detected',
-            self::AUTHENTICATION_REQUIRED => 'Authentication Required',
-            self::INVALID_CSRF => 'Invalid CSRF Token',
-            self::RATE_LIMIT_EXCEEDED => 'Rate Limit Exceeded',
-            
-            // Articles
-            self::ARTICLE_CREATED => 'Article Created',
-            self::ARTICLE_UPDATED => 'Article Updated',
-            self::ARTICLE_DELETED => 'Article Deleted',
-            self::ARTICLE_PUBLISHED => 'Article Published',
-            self::ARTICLE_VIEWED => 'Article Viewed',
-            self::ARTICLE_SEARCHED => 'Article Searched',
-            
-            // Users
-            self::USER_CREATED => 'User Created',
-            self::USER_UPDATED => 'User Updated',
-            self::USER_DELETED => 'User Deleted',
-            self::USER_ROLE_CHANGED => 'User Role Changed',
-            self::USER_PROFILE_UPDATED => 'User Profile Updated',
-            
-            // Images
-            self::IMAGE_UPLOADED => 'Image Uploaded',
-            self::IMAGE_DELETED => 'Image Deleted',
-            self::IMAGE_ATTACHED => 'Image Attached to Article',
-            self::IMAGE_DETACHED => 'Image Detached from Article',
-            
-            // Forms
-            self::FORM_CREATED => 'Form Created',
-            self::FORM_UPDATED => 'Form Updated',
-            self::FORM_SUBMITTED => 'Form Submitted',
-            self::FORM_DELETED => 'Form Deleted',
-            
-            // Categories/Tags
-            self::CATEGORY_CREATED => 'Category Created',
-            self::CATEGORY_UPDATED => 'Category Updated',
-            self::CATEGORY_DELETED => 'Category Deleted',
-            self::TAG_CREATED => 'Tag Created',
-            self::TAG_UPDATED => 'Tag Updated',
-            self::TAG_DELETED => 'Tag Deleted',
-            
-            // System
-            self::SYSTEM_BACKUP => 'System Backup',
-            self::SYSTEM_UPDATE => 'System Update',
-            self::ERROR_OCCURRED => 'Error Occurred',
-            self::MAINTENANCE_MODE_ON => 'Maintenance Mode Enabled',
-            self::MAINTENANCE_MODE_OFF => 'Maintenance Mode Disabled',
-            
-            // API
-            self::API_REQUEST => 'API Request',
-            self::API_RESPONSE => 'API Response',
-            self::API_ERROR => 'API Error',
-        ];
-    }
+        return match ($this) {
+            self::USER_LOGIN, self::LOGIN_SUCCESS => 'User logged in',
+            self::LOGIN_FAILED => 'Login failed',
+            self::USER_LOGOUT, self::LOGOUT => 'User logged out',
+            self::USER_REGISTER, self::REGISTRATION => 'New user registered',
+            self::USER_UPDATE => 'User profile updated',
+            self::USER_DELETE => 'User account deleted',
+            self::AUTHORIZATION_DENIED => 'Authorization denied',
 
-    public static function isValid(string $value): bool
-    {
-        return isset(self::getAllTypes()[$value]);
-    }
+            self::ARTICLE_CREATE => 'Article created',
+            self::ARTICLE_UPDATE => 'Article updated',
+            self::ARTICLE_DELETE => 'Article deleted',
+            self::ARTICLE_PUBLISH => 'Article published',
 
-    public function equals(AuditEventType $other): bool
-    {
-        return $this->value === $other->value();
-    }
+            self::CATEGORY_CREATE => 'Category created',
+            self::CATEGORY_UPDATE => 'Category updated',
+            self::CATEGORY_DELETE => 'Category deleted',
 
-    public function __toString(): string
-    {
-        return $this->value;
+            self::TAG_CREATE => 'Tag created',
+            self::TAG_UPDATE => 'Tag updated',
+            self::TAG_DELETE => 'Tag deleted',
+
+            self::IMAGE_UPLOAD => 'Image uploaded',
+            self::IMAGE_DELETE => 'Image deleted',
+
+            self::FORM_SUBMIT => 'Form submitted',
+
+            self::SYSTEM_ERROR => 'System error occurred',
+            self::SECURITY_ALERT => 'Security alert triggered',
+        };
     }
 }

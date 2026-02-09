@@ -24,7 +24,7 @@ class DatabaseManager
                 return $config;
             }
         }
-        
+
         // Fallback to environment variables if config file is missing or invalid
         $basePath = \Blog\Infrastructure\Paths::basePath();
 
@@ -35,10 +35,18 @@ class DatabaseManager
 
         $dbExtension = $_ENV['DB_EXTENSION'] ?? '.db';
 
-        if (!str_ends_with($appDb, $dbExtension)) $appDb .= $dbExtension;
-        if (!str_ends_with($articlesDb, $dbExtension)) $articlesDb .= $dbExtension;
-        if (!str_ends_with($usersDb, $dbExtension)) $usersDb .= $dbExtension;
-        if (!str_ends_with($formsDb, $dbExtension)) $formsDb .= $dbExtension;
+        if (!str_ends_with($appDb, $dbExtension)) {
+            $appDb .= $dbExtension;
+        }
+        if (!str_ends_with($articlesDb, $dbExtension)) {
+            $articlesDb .= $dbExtension;
+        }
+        if (!str_ends_with($usersDb, $dbExtension)) {
+            $usersDb .= $dbExtension;
+        }
+        if (!str_ends_with($formsDb, $dbExtension)) {
+            $formsDb .= $dbExtension;
+        }
 
         $appDb = self::makeAbsolutePath($appDb, $basePath);
         $articlesDb = self::makeAbsolutePath($articlesDb, $basePath);
@@ -71,7 +79,7 @@ class DatabaseManager
                 $dir = dirname($connectionConfig['path']);
 
                 if (!is_dir($dir)) {
-                    mkdir($dir, 0755, true);
+                    mkdir($dir, 0o755, true);
                 }
             }
 

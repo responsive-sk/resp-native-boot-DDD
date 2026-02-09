@@ -1,4 +1,470 @@
-import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./vendor-lit-CeIZiaZY.js";import{s as v}from"./ui-kit-PpAp9_nQ.js";var U=Object.defineProperty,G=Object.getOwnPropertyDescriptor,N=(t,i,a,o)=>{for(var e=o>1?void 0:o?G(i,a):i,s=t.length-1,n;s>=0;s--)(n=t[s])&&(e=(o?n(i,a,e):n(e))||e);return o&&e&&U(i,a,e),e};let C=class extends h{constructor(){super(...arguments),this.type="horizontal"}render(){return r`
+import{i as d,n as l,a as h,b as a,t as m,r as c,e as X,o as W,c as K}from"./vendor-lit-CeIZiaZY.js";const U=d`
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-title), sans-serif;
+  color: var(--color-text);
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  line-height: var(--font-line-height-h1);
+  margin: var(--font-size-h1) 0 calc(var(--font-size-h1)/3) 0;
+  font-weight: 600;
+}
+
+h1 img {
+  margin-right: calc(var(--font-size-h1)/4);
+}
+
+h1 span {
+  color: var(--color-text);
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  line-height: var(--font-line-height-h2);
+  margin: var(--font-size-h2) 0 calc(var(--font-size-h2)/3) 0;
+  font-weight: 400;
+}
+
+h2 img {
+  margin-right: calc(var(--font-size-h2)/4);
+}
+
+h3 {
+  font-size: var(--font-size-h3);
+  line-height: var(--font-line-height-h3);
+  margin: var(--font-size-h3) 0 calc(var(--font-size-h3)/2) 0;
+  font-weight: 400;
+}
+
+h3 img {
+  margin-right: calc(var(--font-size-h3)/4);
+}
+
+h4 {
+  font-size: var(--font-size-h4);
+  line-height: var(--font-line-height-h4);
+  margin: var(--font-size-h4) 0 calc(var(--font-size-h4)/2) 0;
+  font-weight: 400;
+}
+
+h4 img {
+  margin-right: calc(var(--font-size-h4)/4);
+}
+
+h5 {
+  font-size: var(--font-size-h5);
+  line-height: var(--font-line-height-h5);
+  margin: var(--font-size-h5) 0 calc(var(--font-size-h5)/2) 0;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+h5 img {
+  margin-right: calc(var(--font-size-h5)/4);
+}
+
+h6 {
+  font-size: var(--font-size-h6);
+  line-height: var(--font-line-height-h6);
+  margin: var(--font-size-h5) 0 calc(var(--font-size)/2) 0;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+h6 img {
+  margin-right: calc(var(--font-size-h6)/4);
+}
+
+.heading-permalink {
+  margin-right: .2em;
+  user-select: none;
+}
+
+pre,
+code,
+kbd {
+  font-family: var(--font-mono), monospace;
+}
+
+pre[data-lang] {
+  padding: 1em 1.5em;
+  border: solid 1px var(--color-border);
+  background: var(--color-bg-layer);
+  margin: 1.5em 0;
+  overflow: auto;
+}
+
+pre[data-lang="mermaid"] {
+  border: none;
+  background: none;
+  font-weight: 200;
+  display: flex;
+  justify-content: center;
+}
+
+code,
+kbd {
+  background: rgba(255, 255, 255, .03);
+  padding: .05em .4em;
+}
+
+kbd {
+  font-weight: 100;
+  border: solid 1px var(--color-border);
+  background: none;
+}
+
+pre>code {
+  background: none;
+  padding: 0;
+}
+
+.tooltip,
+*[term],
+tooltip {
+  font-style: italic;
+  position: relative;
+  border-bottom: dashed 1px var(--color-text);
+  cursor: default;
+  white-space: nowrap;
+}
+
+.tooltip:hover,
+*[term]:hover,
+tooltip:hover {
+  color: var(--color-text-brand);
+}
+
+.tooltip::before,
+*[term]::before,
+tooltip::before {
+  display: block;
+  position: absolute;
+  user-select: none;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: .2s ease;
+  color: var(--color-text);
+  font-style: normal;
+  font-size: var(--font-size-secondary);
+  white-space: nowrap;
+}
+
+.tooltip::before,
+*[term]::before,
+tooltip::before {
+  content: attr(term);
+  background: var(--color-bg-tooltip, #1c212f);
+  border: solid 1px var(--color-border);
+  padding: .2em 1em;
+  right: 0;
+  top: 28px;
+  z-index: 99;
+}
+
+.tooltip:hover::before,
+*[term]:hover::before,
+tooltip:hover::before {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+blockquote {
+  color: var(--color-quote-text);
+  background: var(--color-quote);
+  border-left: solid 8px var(--color-quote-border);
+  margin: 1em 0;
+  padding: 1em 1.2em;
+  display: block;
+  position: relative;
+}
+
+blockquote pre[data-lang] {
+  border: solid 1px var(--color-bg);
+}
+
+blockquote.tip {
+  color: var(--color-quote-tip-text);
+  background: var(--color-quote-tip);
+  border-left: solid 8px var(--color-quote-tip-border);
+}
+
+blockquote.note {
+  color: var(--color-quote-note-text);
+  background: var(--color-quote-note);
+  border-left: solid 8px var(--color-quote-note-border);
+}
+
+blockquote.mac,
+blockquote.macos,
+blockquote.linux,
+blockquote.windows,
+blockquote.warning {
+  color: var(--color-quote-warning-text);
+  background: var(--color-quote-warning);
+  border-left: solid 8px var(--color-quote-warning-border);
+}
+
+blockquote.mac,
+blockquote.macos,
+blockquote.linux,
+blockquote.windows {
+  padding-left: 60px;
+}
+
+blockquote.mac::before,
+blockquote.macos::before,
+blockquote.linux::before,
+blockquote.windows::before {
+  content: '';
+  background: var(--color-quote-warning-border) center center no-repeat;
+  background-size: 16px 16px;
+  display: block;
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  left: 14px;
+}
+
+blockquote.mac::before,
+blockquote.macos::before {
+  background-image: url(/images/icons/apple.svg);
+}
+
+blockquote.linux::before,
+blockquote.linux::before {
+  background-image: url(/images/icons/linux.svg);
+}
+
+blockquote.windows::before,
+blockquote.windows::before {
+  background-image: url(/images/icons/windows.svg);
+}
+
+blockquote>ul,
+blockquote>p {
+  margin: 0;
+}
+
+blockquote>ul>li {
+  margin: .1em 0;
+}
+
+table {
+  width: 100%;
+  border: solid 1px var(--color-border);
+}
+
+table>thead {
+  background: var(--color-border);
+  font-family: var(--font-title), sans-serif;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+table th {
+  font-weight: 400;
+  font-size: var(--font-size-secondary);
+  color: var(--color-text-secondary);
+}
+
+table th,
+table td {
+  padding: 10px;
+}
+
+table tr:hover td {
+  background: var(--color-bg-hover);
+  transition: .2s ease;
+}
+
+a:visited,
+a {
+  color: inherit;
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+  line-height: inherit;
+}
+
+a::before {
+  content: '';
+  height: .1em;
+  width: 100%;
+  display: inline-block;
+  background: var(--color-text-brand);
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  transform: scaleX(0);
+  transition: transform .2s ease;
+  transform-origin: 100% 0;
+}
+
+a.active,
+a:not(.button):hover {
+  color: var(--color-text-brand);
+  text-decoration: none;
+}
+
+a.active::before,
+a:hover::before {
+  transform: scaleX(1);
+  transform-origin: 0 0;
+  transition: transform .3s ease;
+}
+
+a.external,
+a.external-link {
+  margin-right: 14px !important;
+}
+
+a.external::after,
+a.external-link::after {
+  content: '';
+  width: 12px;
+  height: 12px;
+  display: block;
+  background: url(https://intellij-icons.jetbrains.design/icons/AllIcons/expui/ide/externalLink_dark.svg) center center no-repeat;
+  background-size: 12px 12px;
+  text-decoration: none;
+  position: absolute;
+  top: 4px;
+  right: -14px;
+  transform: translate(0, 0) scale(1);
+  transition: transform .2s ease;
+}
+
+a.external:hover::after,
+a.external-link:hover::after {
+  transform: translate(2px, -6px) scale(1.2);
+  transition: transform .3s ease;
+}
+
+a img {
+  margin-right: 8px;
+  display: inline-block;
+}
+
+.emphasis {
+  color: var(--color-text-brand);
+}
+
+ul {
+  list-style: square;
+  padding-inline-start: 24px;
+}
+
+ul>li {
+  margin: 1.3em 0;
+}
+
+ul ul {
+  margin-top: .7em;
+}
+
+ul ul>li {
+  margin: .3em 0;
+  font-size: var(--font-size-secondary);
+}
+
+ul>li::marker {
+  color: var(--color-text-brand);
+}
+
+p {
+  margin: 1em 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@media (orientation: portrait) {
+  h1 {
+    font-size: 5rem;
+  }
+
+  h2 {
+    font-size: clamp(3rem, 1vw + 3.5rem, 5rem);
+  }
+
+  h3 {
+    font-size: max(2rem, min(2rem + 1vw, 5rem));
+  }
+
+  h4 {
+    font-size: max(1.5rem, min(2rem + 1vw, 2.25rem));
+  }
+
+  h5 {}
+
+  h6 {}
+
+  p {
+    font-size: 1.25rem;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-hover);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-text-brand);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-brand-hover);
+}
+`,v=d`
+  ${U}
+
+  /* Accessibility: default text contrast & focus */
+  :host {
+    color: var(--color-text);
+    /* Spacing variables */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    --spacing-2xl: 48px;
+    --spacing-3xl: 64px;
+  }
+
+  a, button {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible {
+    outline: 2px solid var(--color-border-focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--color-border-focus-ring, rgba(255, 87, 34, 0.1));
+  }
+
+  /* Low-contrast text helper classes */
+  .text-secondary {
+    color: var(--color-text-secondary);
+  }
+`;var G=Object.defineProperty,V=Object.getOwnPropertyDescriptor,H=(e,i,r,o)=>{for(var t=o>1?void 0:o?V(i,r):i,n=e.length-1,s;n>=0;n--)(s=e[n])&&(t=(o?s(i,r,t):s(t))||t);return o&&t&&G(i,r,t),t};let C=class extends h{constructor(){super(...arguments),this.type="horizontal"}render(){return a`
       <section class="container container-${this.type}">
         <hgroup class="segment-title">
           <div class="segment-subtitle">
@@ -21,7 +487,7 @@ import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./ven
           <slot></slot>
         </aside>
       </section>
-    `}};C.styles=[v,g`
+    `}};C.styles=[v,d`
       .container {
         display: flex;
         flex-direction: row;
@@ -117,7 +583,7 @@ import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./ven
           width: 16px;
         }
       }
-    `];N([l({type:String})],C.prototype,"type",2);C=N([m("segment-section")],C);var V=Object.getOwnPropertyDescriptor,J=(t,i,a,o)=>{for(var e=o>1?void 0:o?V(i,a):i,s=t.length-1,n;s>=0;s--)(n=t[s])&&(e=n(e)||e);return e};let F=class extends h{render(){return r`
+    `];H([l({type:String})],C.prototype,"type",2);C=H([m("segment-section")],C);var J=Object.getOwnPropertyDescriptor,Z=(e,i,r,o)=>{for(var t=o>1?void 0:o?J(i,r):i,n=e.length-1,s;n>=0;n--)(s=e[n])&&(t=s(t)||t);return t};let F=class extends h{render(){return a`
             <section class="container">
                 <div class="wrapper">
                     <div class="text">
@@ -127,7 +593,7 @@ import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./ven
                     <slot name="footer"></slot>
                 </div>
             </section>
-        `}};F.styles=[v,g`
+        `}};F.styles=[v,d`
         .container {
             padding-bottom: 8em;
             background-size: 900px 900px;
@@ -154,7 +620,7 @@ import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./ven
                 background: url("/images/hero.svg") no-repeat 40vw 27vh;
             }
         }
-    `];F=J([m("call-to-action-section")],F);var Z=Object.getOwnPropertyDescriptor,Q=(t,i,a,o)=>{for(var e=o>1?void 0:o?Z(i,a):i,s=t.length-1,n;s>=0;s--)(n=t[s])&&(e=n(e)||e);return e};let j=class extends h{render(){return r`
+    `];F=Z([m("call-to-action-section")],F);var Q=Object.getOwnPropertyDescriptor,ee=(e,i,r,o)=>{for(var t=o>1?void 0:o?Q(i,r):i,n=e.length-1,s;n>=0;n--)(s=e[n])&&(t=s(t)||t);return t};let j=class extends h{render(){return a`
             <section class="container">
                 <div class="top">
                     <div class="text">
@@ -193,7 +659,7 @@ import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./ven
                     </a>
                 </aside>
             </section>
-        `}};j.styles=[v,g`
+        `}};j.styles=[v,d`
         .container {
             display: flex;
             flex-direction: column;
@@ -336,7 +802,7 @@ import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./ven
                 justify-content: center;
             }
         }
-    `];j=Q([m("hero-section")],j);var tt=Object.getOwnPropertyDescriptor,et=(t,i,a,o)=>{for(var e=o>1?void 0:o?tt(i,a):i,s=t.length-1,n;s>=0;s--)(n=t[s])&&(e=n(e)||e);return e};let B=class extends h{get content(){return[{headline:"Saucer: The Core of Performance",text:"At the heart of Boson PHP is saucer, a fast cross-platform C++ library. It allows us to create applications with minimal size and resource consumption, significantly outperforming Electron in terms of performance."},{headline:"Direct OS API calls",text:"Instead of emulating behavior through multiple external layers like a browser, server, and sockets, we use direct access to the operating system API, just like any existing system language does."},{headline:"On the edge of PHP",text:"Boson is built on the basis of advanced architectural approaches and functionality provided by the most modern versions of PHP. No outdated approaches of large frameworks for the sake of backward compatibility."},{headline:"Kernel Optimizations",text:"The kernel is written in such a way as to provide maximum performance without limitations in functionality. Numerous PHP OPCode and JIT optimizations ensure that there are no dubious or slow solutions."},{headline:"Fiber-Based Life Cycle",text:"Using Revolt EventLoop and painless cooperative multitasking ensures high performance and ease of use. Why wait? Use the green threads today!"}]}render(){return r`
+    `];j=ee([m("hero-section")],j);var te=Object.getOwnPropertyDescriptor,ie=(e,i,r,o)=>{for(var t=o>1?void 0:o?te(i,r):i,n=e.length-1,s;n>=0;n--)(s=e[n])&&(t=s(t)||t);return t};let B=class extends h{get content(){return[{headline:"Saucer: The Core of Performance",text:"At the heart of Boson PHP is saucer, a fast cross-platform C++ library. It allows us to create applications with minimal size and resource consumption, significantly outperforming Electron in terms of performance."},{headline:"Direct OS API calls",text:"Instead of emulating behavior through multiple external layers like a browser, server, and sockets, we use direct access to the operating system API, just like any existing system language does."},{headline:"On the edge of PHP",text:"Boson is built on the basis of advanced architectural approaches and functionality provided by the most modern versions of PHP. No outdated approaches of large frameworks for the sake of backward compatibility."},{headline:"Kernel Optimizations",text:"The kernel is written in such a way as to provide maximum performance without limitations in functionality. Numerous PHP OPCode and JIT optimizations ensure that there are no dubious or slow solutions."},{headline:"Fiber-Based Life Cycle",text:"Using Revolt EventLoop and painless cooperative multitasking ensures high performance and ease of use. Why wait? Use the green threads today!"}]}render(){return a`
             <section class="container">
                 <div class="content">
                     <div class="dots">
@@ -350,7 +816,7 @@ import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./ven
                     </div>
                 </div>
             </section>
-        `}};B.styles=[v,g`
+        `}};B.styles=[v,d`
         .container {
             display: flex;
             flex-direction: column;
@@ -383,7 +849,7 @@ import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./ven
                 display: none;
             }
         }
-    `];B=et([m("how-it-works-section")],B);var it=Object.getOwnPropertyDescriptor,ot=(t,i,a,o)=>{for(var e=o>1?void 0:o?it(i,a):i,s=t.length-1,n;s>=0;s--)(n=t[s])&&(e=n(e)||e);return e};let O=class extends h{get elements(){return[{headline:"Your own protocols",text:`You can intercept any request and process it without raising
+    `];B=ie([m("how-it-works-section")],B);var oe=Object.getOwnPropertyDescriptor,re=(e,i,r,o)=>{for(var t=o>1?void 0:o?oe(i,r):i,n=e.length-1,s;n>=0;n--)(s=e[n])&&(t=s(t)||t);return t};let O=class extends h{get elements(){return[{headline:"Your own protocols",text:`You can intercept any request and process it without raising
                   the HTTP server. After all, a request is just a client event.
                   In this case, you do not necessarily need to use the "http"
                   or "https" protocol, create your own, to which your own
@@ -392,15 +858,15 @@ import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./ven
                   information about the scroll area? No problem! Want
                   information about all the DOM elements? One line of PHP code!`,icon:"clients"},{headline:"You don't need React or Vue",text:`You don't need javascript frameworks when you can
                   do all this with PHP code.`,icon:"case"},{headline:"PHP functions in HTML",text:`You don't need JavaScript when you can specify which
-                  PHP function to call directly from HTML`,icon:"convenient"}]}renderElement(t){return r`
+                  PHP function to call directly from HTML`,icon:"convenient"}]}renderElement(e){return a`
             <div class="element">
                 <div class="top">
-                    <img class="icon" src="/images/icons/${t.icon}.svg" alt="${t.headline}"/>
-                    <h5 class="name">${t.headline}</h5>
+                    <img class="icon" src="/images/icons/${e.icon}.svg" alt="${e.headline}"/>
+                    <h5 class="name">${e.headline}</h5>
                 </div>
-                <p class="text">${t.text}</p>
+                <p class="text">${e.text}</p>
             </div>
-        `}render(){return r`
+        `}render(){return a`
             <section class="container">
                 <div class="left">
                     <div class="wrapper">
@@ -408,10 +874,10 @@ import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./ven
                     </div>
                 </div>
                 <div class="right">
-                    ${this.elements.map(t=>this.renderElement(t))}
+                    ${this.elements.map(e=>this.renderElement(e))}
                 </div>
             </section>
-        `}};O.styles=[v,g`
+        `}};O.styles=[v,d`
         .container {
             display: flex;
             justify-content: center;
@@ -485,7 +951,7 @@ import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./ven
                 margin: 0;
             }
         }
-    `];O=ot([m("mobile-development-section")],O);var at=Object.defineProperty,rt=Object.getOwnPropertyDescriptor,X=(t,i,a,o)=>{for(var e=o>1?void 0:o?rt(i,a):i,s=t.length-1,n;s>=0;s--)(n=t[s])&&(e=(o?n(i,a,e):n(e))||e);return o&&e&&at(i,a,e),e};let I=class extends h{constructor(){super(...arguments),this.activeIndex=0,this._intervalId=null}connectedCallback(){super.connectedCallback(),this._startAnimation()}disconnectedCallback(){super.disconnectedCallback(),this._stopAnimation()}_startAnimation(){this._intervalId=window.setInterval(()=>{this.activeIndex=this.activeIndex===4?1:this.activeIndex+1},I.cfg.delay)}_stopAnimation(){this._intervalId&&(clearInterval(this._intervalId),this._intervalId=null)}_getBorderClass(t){const i=[];return this.activeIndex===t&&i.push("border-active"),this.activeIndex===1&&t===2&&i.push("border-top-active"),this.activeIndex===4&&t===3&&i.push("border-top-active"),i.join(" ")}_getSystemClass(t){return this.activeIndex===t?"system system-active":"system"}render(){return r`
+    `];O=re([m("mobile-development-section")],O);var ae=Object.defineProperty,ne=Object.getOwnPropertyDescriptor,N=(e,i,r,o)=>{for(var t=o>1?void 0:o?ne(i,r):i,n=e.length-1,s;n>=0;n--)(s=e[n])&&(t=(o?s(i,r,t):s(t))||t);return o&&t&&ae(i,r,t),t};let I=class extends h{constructor(){super(...arguments),this.activeIndex=0,this._intervalId=null}connectedCallback(){super.connectedCallback(),this._startAnimation()}disconnectedCallback(){super.disconnectedCallback(),this._stopAnimation()}_startAnimation(){this._intervalId=window.setInterval(()=>{this.activeIndex=this.activeIndex===4?1:this.activeIndex+1},I.cfg.delay)}_stopAnimation(){this._intervalId&&(clearInterval(this._intervalId),this._intervalId=null)}_getBorderClass(e){const i=[];return this.activeIndex===e&&i.push("border-active"),this.activeIndex===1&&e===2&&i.push("border-top-active"),this.activeIndex===4&&e===3&&i.push("border-top-active"),i.join(" ")}_getSystemClass(e){return this.activeIndex===e?"system system-active":"system"}render(){return a`
             <section class="container">
                 <div class="content">
                     <div class="icon"></div>
@@ -561,7 +1027,7 @@ import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./ven
                     </div>
                 </div>
             </section>
-        `}};I.cfg={delay:2e3};I.styles=[v,g`
+        `}};I.cfg={delay:2e3};I.styles=[v,d`
         .container {
             display: flex;
             flex-direction: column;
@@ -850,7 +1316,7 @@ import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./ven
                 width: 95vw;
             }
         }
-    `];X([l({type:Number})],I.prototype,"activeIndex",2);I=X([m("nativeness-section")],I);var st=Object.getOwnPropertyDescriptor,nt=(t,i,a,o)=>{for(var e=o>1?void 0:o?st(i,a):i,s=t.length-1,n;s>=0;s--)(n=t[s])&&(e=n(e)||e);return e};let A=class extends h{firstUpdated(){this.elements.topLeft=this.shadowRoot.querySelector(".content-top .content-left .inner"),this.elements.topRight=this.shadowRoot.querySelector(".content-top .content-right .inner"),this.elements.bottomLeft=this.shadowRoot.querySelector(".content-bottom .content-left .inner"),this.elements.bottomRight=this.shadowRoot.querySelector(".content-bottom .content-right .inner"),this.elements.progressDots=this.shadowRoot.querySelectorAll(".dots"),this.checkMobile(),this.startAnimation(),window.addEventListener("orientationchange",()=>{setTimeout(()=>{this.checkMobile()},100)}),window.addEventListener("resize",()=>this.checkMobile())}disconnectedCallback(){super.disconnectedCallback(),this.stopAnimation(),window.removeEventListener("orientationchange",this.checkMobile),window.removeEventListener("resize",this.checkMobile)}checkMobile(){const t=this.isMobile;this.isMobile=window.matchMedia("(orientation: portrait)").matches,t!==this.isMobile&&this.elements.topLeft&&this.elements.topRight&&this.elements.bottomLeft&&this.elements.bottomRight&&(this.isMobile?(this.elements.topLeft.style.transform="",this.elements.topRight.style.transform="",this.elements.bottomLeft.style.transform="",this.elements.bottomRight.style.transform=""):this.resetMobileClasses())}resetMobileClasses(){[this.shadowRoot.querySelector(".content-top .content-left"),this.shadowRoot.querySelector(".content-top .content-right"),this.shadowRoot.querySelector(".content-bottom .content-left"),this.shadowRoot.querySelector(".content-bottom .content-right")].forEach(i=>{i&&i.classList.remove("mobile-hidden","mobile-visible")})}startAnimation(){this.animationState.startTime=Date.now(),this.animate()}stopAnimation(){this.animationState.animationId&&(cancelAnimationFrame(this.animationState.animationId),this.animationState.animationId=null)}animate(){const t=A.animationConfig,a=Date.now()-this.animationState.startTime,o=t.blockDuration*4+t.transitionDuration*4,e=a%o,s=t.blockDuration,n=s+t.transitionDuration,D=n+t.blockDuration,T=D+t.transitionDuration,E=T+t.blockDuration,R=E+t.transitionDuration,M=R+t.blockDuration;M+t.transitionDuration;let w=0,_=0,k=!1;if(e<s)w=e/t.blockDuration*.5,_=0,k=!1;else if(e<n){const x=(e-s)/t.transitionDuration;w=.5,_=x,k=x>.5}else if(e<D)w=.5+(e-n)/t.blockDuration*.5,_=1,k=!0;else if(e<T){const x=(e-D)/t.transitionDuration;w=1,_=1-x,k=x<.5}else if(e<E)w=1-(e-T)/t.blockDuration*.5,_=0,k=!1;else if(e<R){const x=(e-E)/t.transitionDuration;w=.5,_=x,k=x>.5}else if(e<M)w=.5-(e-R)/t.blockDuration*.5,_=1,k=!0;else{const x=(e-M)/t.transitionDuration;w=0,_=1-x,k=x<.5}this.isMobile?this.animateMobileElements(k):this.animateDesktopElements(_),this.updateProgressBar(w),this.animationState.animationId=requestAnimationFrame(()=>this.animate())}animateDesktopElements(t){const a=A.animationConfig.animationDistance;if(!this.elements.topLeft||!this.elements.topRight||!this.elements.bottomLeft||!this.elements.bottomRight)return;const o=t*a,e=Math.min(0,-a+t*a),s=-(t*a),n=Math.max(0,a-t*a);this.elements.topLeft.style.transform=`translateX(${o}px)`,this.elements.topRight.style.transform=`translateX(${e}px)`,this.elements.bottomRight.style.transform=`translateX(${s}px)`,this.elements.bottomLeft.style.transform=`translateX(${n}px)`}animateMobileElements(t){const i=this.shadowRoot.querySelector(".content-top .content-left"),a=this.shadowRoot.querySelector(".content-top .content-right"),o=this.shadowRoot.querySelector(".content-bottom .content-left"),e=this.shadowRoot.querySelector(".content-bottom .content-right");!i||!a||!o||!e||(t?(i.classList.add("mobile-hidden"),i.classList.remove("mobile-visible"),a.classList.add("mobile-visible"),a.classList.remove("mobile-hidden")):(i.classList.add("mobile-visible"),i.classList.remove("mobile-hidden"),a.classList.add("mobile-hidden"),a.classList.remove("mobile-visible")),t?(o.classList.add("mobile-hidden"),o.classList.remove("mobile-visible"),e.classList.add("mobile-visible"),e.classList.remove("mobile-hidden")):(o.classList.add("mobile-visible"),o.classList.remove("mobile-hidden"),e.classList.add("mobile-hidden"),e.classList.remove("mobile-visible")))}updateProgressBar(t){if(!this.elements.progressDots||this.elements.progressDots.length===0)return;const i=this.elements.progressDots.length,a=Math.floor(t*i);this.elements.progressDots.forEach((o,e)=>{e<a?(o.classList.remove("grey"),o.classList.add("red")):(o.classList.remove("red"),o.classList.add("grey"))})}render(){return r`
+    `];N([l({type:Number})],I.prototype,"activeIndex",2);I=N([m("nativeness-section")],I);var se=Object.getOwnPropertyDescriptor,le=(e,i,r,o)=>{for(var t=o>1?void 0:o?se(i,r):i,n=e.length-1,s;n>=0;n--)(s=e[n])&&(t=s(t)||t);return t};let L=class extends h{firstUpdated(){this.elements.topLeft=this.shadowRoot.querySelector(".content-top .content-left .inner"),this.elements.topRight=this.shadowRoot.querySelector(".content-top .content-right .inner"),this.elements.bottomLeft=this.shadowRoot.querySelector(".content-bottom .content-left .inner"),this.elements.bottomRight=this.shadowRoot.querySelector(".content-bottom .content-right .inner"),this.elements.progressDots=this.shadowRoot.querySelectorAll(".dots"),this.checkMobile(),this.startAnimation(),window.addEventListener("orientationchange",()=>{setTimeout(()=>{this.checkMobile()},100)}),window.addEventListener("resize",()=>this.checkMobile())}disconnectedCallback(){super.disconnectedCallback(),this.stopAnimation(),window.removeEventListener("orientationchange",this.checkMobile),window.removeEventListener("resize",this.checkMobile)}checkMobile(){const e=this.isMobile;this.isMobile=window.matchMedia("(orientation: portrait)").matches,e!==this.isMobile&&this.elements.topLeft&&this.elements.topRight&&this.elements.bottomLeft&&this.elements.bottomRight&&(this.isMobile?(this.elements.topLeft.style.transform="",this.elements.topRight.style.transform="",this.elements.bottomLeft.style.transform="",this.elements.bottomRight.style.transform=""):this.resetMobileClasses())}resetMobileClasses(){[this.shadowRoot.querySelector(".content-top .content-left"),this.shadowRoot.querySelector(".content-top .content-right"),this.shadowRoot.querySelector(".content-bottom .content-left"),this.shadowRoot.querySelector(".content-bottom .content-right")].forEach(i=>{i&&i.classList.remove("mobile-hidden","mobile-visible")})}startAnimation(){this.animationState.startTime=Date.now(),this.animate()}stopAnimation(){this.animationState.animationId&&(cancelAnimationFrame(this.animationState.animationId),this.animationState.animationId=null)}animate(){const e=L.animationConfig,r=Date.now()-this.animationState.startTime,o=e.blockDuration*4+e.transitionDuration*4,t=r%o,n=e.blockDuration,s=n+e.transitionDuration,D=s+e.blockDuration,T=D+e.transitionDuration,E=T+e.blockDuration,R=E+e.transitionDuration,M=R+e.blockDuration;M+e.transitionDuration;let w=0,k=0,_=!1;if(t<n)w=t/e.blockDuration*.5,k=0,_=!1;else if(t<s){const x=(t-n)/e.transitionDuration;w=.5,k=x,_=x>.5}else if(t<D)w=.5+(t-s)/e.blockDuration*.5,k=1,_=!0;else if(t<T){const x=(t-D)/e.transitionDuration;w=1,k=1-x,_=x<.5}else if(t<E)w=1-(t-T)/e.blockDuration*.5,k=0,_=!1;else if(t<R){const x=(t-E)/e.transitionDuration;w=.5,k=x,_=x>.5}else if(t<M)w=.5-(t-R)/e.blockDuration*.5,k=1,_=!0;else{const x=(t-M)/e.transitionDuration;w=0,k=1-x,_=x<.5}this.isMobile?this.animateMobileElements(_):this.animateDesktopElements(k),this.updateProgressBar(w),this.animationState.animationId=requestAnimationFrame(()=>this.animate())}animateDesktopElements(e){const r=L.animationConfig.animationDistance;if(!this.elements.topLeft||!this.elements.topRight||!this.elements.bottomLeft||!this.elements.bottomRight)return;const o=e*r,t=Math.min(0,-r+e*r),n=-(e*r),s=Math.max(0,r-e*r);this.elements.topLeft.style.transform=`translateX(${o}px)`,this.elements.topRight.style.transform=`translateX(${t}px)`,this.elements.bottomRight.style.transform=`translateX(${n}px)`,this.elements.bottomLeft.style.transform=`translateX(${s}px)`}animateMobileElements(e){const i=this.shadowRoot.querySelector(".content-top .content-left"),r=this.shadowRoot.querySelector(".content-top .content-right"),o=this.shadowRoot.querySelector(".content-bottom .content-left"),t=this.shadowRoot.querySelector(".content-bottom .content-right");!i||!r||!o||!t||(e?(i.classList.add("mobile-hidden"),i.classList.remove("mobile-visible"),r.classList.add("mobile-visible"),r.classList.remove("mobile-hidden")):(i.classList.add("mobile-visible"),i.classList.remove("mobile-hidden"),r.classList.add("mobile-hidden"),r.classList.remove("mobile-visible")),e?(o.classList.add("mobile-hidden"),o.classList.remove("mobile-visible"),t.classList.add("mobile-visible"),t.classList.remove("mobile-hidden")):(o.classList.add("mobile-visible"),o.classList.remove("mobile-hidden"),t.classList.add("mobile-hidden"),t.classList.remove("mobile-visible")))}updateProgressBar(e){if(!this.elements.progressDots||this.elements.progressDots.length===0)return;const i=this.elements.progressDots.length,r=Math.floor(e*i);this.elements.progressDots.forEach((o,t)=>{t<r?(o.classList.remove("grey"),o.classList.add("red")):(o.classList.remove("red"),o.classList.add("grey"))})}render(){return a`
             <section class="container">
                 <div class="top">
                     <h2>
@@ -948,7 +1414,7 @@ import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./ven
                     </div>
                 </div>
             </section>
-        `}};A.styles=[v,g`
+        `}};L.styles=[v,d`
         :host {
             margin-top: calc(var(--landing-layout-gap) * -1);
         }
@@ -1122,7 +1588,7 @@ import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./ven
                 opacity: 1;
             }
         }
-    `];A.animationConfig={blockDuration:7e3,transitionDuration:500,animationDistance:800};A=nt([m("right-choice-section")],A);var lt=Object.getOwnPropertyDescriptor,ct=(t,i,a,o)=>{for(var e=o>1?void 0:o?lt(i,a):i,s=t.length-1,n;s>=0;s--)(n=t[s])&&(e=n(e)||e);return e};let Y=class extends h{render(){return r`
+    `];L.animationConfig={blockDuration:7e3,transitionDuration:500,animationDistance:800};L=le([m("right-choice-section")],L);var ce=Object.getOwnPropertyDescriptor,de=(e,i,r,o)=>{for(var t=o>1?void 0:o?ce(i,r):i,n=e.length-1,s;n>=0;n--)(s=e[n])&&(t=s(t)||t);return t};let q=class extends h{render(){return a`
             <section class="container">
                 <div class="content">
                     <div class="dots">
@@ -1153,7 +1619,7 @@ import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./ven
                     </div>
                 </div>
             </section>
-        `}};Y.styles=[v,g`
+        `}};q.styles=[v,d`
         .container {
             display: flex;
             flex-direction: column;
@@ -1224,18 +1690,18 @@ import{i as g,n as l,a as h,b as r,t as m,r as c,e as q,o as W,c as K}from"./ven
                 align-self: center;
             }
         }
-    `];Y=ct([m("solves-section")],Y);var dt=Object.getOwnPropertyDescriptor,pt=(t,i,a,o)=>{for(var e=o>1?void 0:o?dt(i,a):i,s=t.length-1,n;s>=0;s--)(n=t[s])&&(e=n(e)||e);return e};let H=class extends h{get slides(){return[{name:"Aleksei Gagarin",pfp:"/images/u/roxblnfk.png",role:"Maintainer of Spiral, Cycle, RoadRunner PHP",comment:"Finally, genuine native PHP - exactly as it should be."},{name:"Sergey Panteleev",pfp:"/images/u/saundefined.png",role:"PHP Release Manager",comment:`Every year, PHP and its ecosystem get better, partlythanks to projects that bring something new to PHP.
+    `];q=de([m("solves-section")],q);var pe=Object.getOwnPropertyDescriptor,ge=(e,i,r,o)=>{for(var t=o>1?void 0:o?pe(i,r):i,n=e.length-1,s;n>=0;n--)(s=e[n])&&(t=s(t)||t);return t};let Y=class extends h{get slides(){return[{name:"Aleksei Gagarin",pfp:"/images/u/roxblnfk.png",role:"Maintainer of Spiral, Cycle, RoadRunner PHP",comment:"Finally, genuine native PHP - exactly as it should be."},{name:"Sergey Panteleev",pfp:"/images/u/saundefined.png",role:"PHP Release Manager",comment:`Every year, PHP and its ecosystem get better, partlythanks to projects that bring something new to PHP.
 I like how fast it is, how user-friendly it is, and its huge potential for cross-platform applications.
 
 I’ll be following the development of Boson.`},{name:"Valentin Udaltsov",pfp:"/images/u/vudaltsov.png",role:"OSS contributor, Speaker, Author of PHPyh",comment:"As the author of open-source tools for PHP, I see Boson as an invaluable companion for handling input/output in PHP tooling. Instead of writing temporary HTML files or spinning up a web server, you simply pass your data to a Boson process — and boom, you’ve got a window with debug information, errors, metrics, whatever. The best part is that it’s all PHP — no need to learn anything else."},{name:"Danil Shutsky",pfp:"/images/u/lee-to.png",role:"CutCode, Moonshine",comment:"I've been following NativePHP since its announcement at Laracon, but the release ultimately disappointed me with its slow performance and bulkiness. Boson turned out to be the complete opposite: fast, lightweight, and most importantly — it actually works."},{name:"Roman Pronskiy",pfp:"/images/u/pronskiy.png",role:"PhpStorm team, The PHP Foundation founder",comment:"I built a few production apps with Electron before. It has a big ecosystem, but I always missed PHP. The PHP wrappers around Electron felt limited and slow. When I first tried Boson, I thought, wow, is this a mistake? Why is it so fast? I really like the simple API and the smart design under the hood. This feels like the PHP way. Love it."},{name:"Pavel Buchnev",pfp:"/images/u/butschster.png",role:"CTO at Intruforce, Spiral Framework Maintainer",comment:`Recently, I needed to build a desktop application. The only tools I had at hand were PHP and Spiral, and honestly, I didn’t feel like diving into something completely new — I wanted some real hardcore PHP. Then I remembered that Kirill is developing Boson and thought it was the perfect time to give it a try.
 
-It integrated with Spiral seamlessly, like it was made for it. And now—I actually have a desktop application running on PHP. I couldn’t be happier.`},{name:"Curve (Noah)",pfp:"/images/u/curve.png",role:"Developer of Saucer",comment:"I'm very glad to see projects based on Saucer bindings, and I'm especially excited for Boson as it looks very promising and professionally made, all the best!"}]}get slidesInRandomOrder(){let t=this.slides;for(let i=t.length-1;i>0;i--){const a=Math.floor(Math.random()*(i+1));[t[i],t[a]]=[t[a],t[i]]}return t}render(){return r`
+It integrated with Spiral seamlessly, like it was made for it. And now—I actually have a desktop application running on PHP. I couldn’t be happier.`},{name:"Curve (Noah)",pfp:"/images/u/curve.png",role:"Developer of Saucer",comment:"I'm very glad to see projects based on Saucer bindings, and I'm especially excited for Boson as it looks very promising and professionally made, all the best!"}]}get slidesInRandomOrder(){let e=this.slides;for(let i=e.length-1;i>0;i--){const r=Math.floor(Math.random()*(i+1));[e[i],e[r]]=[e[r],e[i]]}return e}render(){return a`
             <section class="container">
                 <div class="content">
                     <slider-component .slides=${this.slidesInRandomOrder}></slider-component>
                 </div>
             </section>
-        `}};H.styles=[v,g`
+        `}};Y.styles=[v,d`
         .container {
             position: relative;
             display: flex;
@@ -1257,60 +1723,60 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
             filter: blur(140px);
             z-index: -1;
         }
-    `];H=pt([m("testimonials-section")],H);var gt=Object.defineProperty,ht=Object.getOwnPropertyDescriptor,y=(t,i,a,o)=>{for(var e=o>1?void 0:o?ht(i,a):i,s=t.length-1,n;s>=0;s--)(n=t[s])&&(e=(o?n(i,a,e):n(e))||e);return o&&e&&gt(i,a,e),e};let b=class extends h{constructor(){super(...arguments),this.images=[],this.title="Gallery",this.description="",this.showFilters=!1,this.showTags=!0,this.showViewButton=!0,this._currentIndex=0,this._showLightbox=!1,this._filter="all",this.categories=[],this._handleKeyDown=t=>{if(this._showLightbox)switch(t.key){case"Escape":this._closeLightbox();break;case"ArrowLeft":this._prevImage();break;case"ArrowRight":this._nextImage();break}}}get allTags(){const t=new Set;return this.images.forEach(i=>{i.tags&&i.tags.forEach(a=>t.add(a)),i.category&&t.add(i.category)}),Array.from(t)}connectedCallback(){super.connectedCallback(),this._setupKeyboardNavigation()}disconnectedCallback(){this._cleanupKeyboardNavigation(),super.disconnectedCallback()}_setupKeyboardNavigation(){document.addEventListener("keydown",this._handleKeyDown)}_cleanupKeyboardNavigation(){document.removeEventListener("keydown",this._handleKeyDown)}_openLightbox(t){this._currentIndex=t,this._showLightbox=!0,document.body.style.overflow="hidden"}_closeLightbox(){this._showLightbox=!1,document.body.style.overflow=""}_prevImage(){this._currentIndex=this._currentIndex>0?this._currentIndex-1:this.images.length-1}_nextImage(){this._currentIndex=this._currentIndex<this.images.length-1?this._currentIndex+1:0}_setFilter(t){this._filter=t}get filteredImages(){return this._filter==="all"?this.images:this.images.filter(t=>t.tags?.includes(this._filter)||t.category===this._filter)}renderImage(t,i){const a=this.images.indexOf(t);return r`
+    `];Y=ge([m("testimonials-section")],Y);var he=Object.defineProperty,me=Object.getOwnPropertyDescriptor,y=(e,i,r,o)=>{for(var t=o>1?void 0:o?me(i,r):i,n=e.length-1,s;n>=0;n--)(s=e[n])&&(t=(o?s(i,r,t):s(t))||t);return o&&t&&he(i,r,t),t};let b=class extends h{constructor(){super(...arguments),this.images=[],this.title="Gallery",this.description="",this.showFilters=!1,this.showTags=!0,this.showViewButton=!0,this._currentIndex=0,this._showLightbox=!1,this._filter="all",this.categories=[],this._handleKeyDown=e=>{if(this._showLightbox)switch(e.key){case"Escape":this._closeLightbox();break;case"ArrowLeft":this._prevImage();break;case"ArrowRight":this._nextImage();break}}}get allTags(){const e=new Set;return this.images.forEach(i=>{i.tags&&i.tags.forEach(r=>e.add(r)),i.category&&e.add(i.category)}),Array.from(e)}connectedCallback(){super.connectedCallback(),this._setupKeyboardNavigation()}disconnectedCallback(){this._cleanupKeyboardNavigation(),super.disconnectedCallback()}_setupKeyboardNavigation(){document.addEventListener("keydown",this._handleKeyDown)}_cleanupKeyboardNavigation(){document.removeEventListener("keydown",this._handleKeyDown)}_openLightbox(e){this._currentIndex=e,this._showLightbox=!0,document.body.style.overflow="hidden"}_closeLightbox(){this._showLightbox=!1,document.body.style.overflow=""}_prevImage(){this._currentIndex=this._currentIndex>0?this._currentIndex-1:this.images.length-1}_nextImage(){this._currentIndex=this._currentIndex<this.images.length-1?this._currentIndex+1:0}_setFilter(e){this._filter=e}get filteredImages(){return this._filter==="all"?this.images:this.images.filter(e=>e.tags?.includes(this._filter)||e.category===this._filter)}renderImage(e,i){const r=this.images.indexOf(e);return a`
       <div class="gallery-item">
         <div class="gallery-image-container">
           <img 
-            src=${t.src}
-            alt=${t.alt}
+            src=${e.src}
+            alt=${e.alt}
             class="gallery-image"
             loading="lazy"
-            width=${t.width||400}
-            height=${t.height||300}
+            width=${e.width||400}
+            height=${e.height||300}
             @load=${()=>{const o=this.shadowRoot?.querySelector(`[data-index="${i}"]`);o&&o.classList.remove("loading")}}
-            @error=${o=>{const e=o.target;e.style.opacity="0"}}
+            @error=${o=>{const t=o.target;t.style.opacity="0"}}
           />
           <div class="gallery-overlay"></div>
         </div>
 
-        ${this.showTags&&(t.tags?.length||t.category)?r`
+        ${this.showTags&&(e.tags?.length||e.category)?a`
           <div class="gallery-tags">
-            ${t.category?r`
-              <span class="tag">${t.category}</span>
+            ${e.category?a`
+              <span class="tag">${e.category}</span>
             `:""}
-            ${t.tags?.slice(0,2).map(o=>r`
+            ${e.tags?.slice(0,2).map(o=>a`
               <span class="tag">${o}</span>
             `)}
           </div>
         `:""}
 
-        ${this.showViewButton?r`
-          <button class="view-button" @click=${o=>{o.stopPropagation(),this._openLightbox(a)}}>
+        ${this.showViewButton?a`
+          <button class="view-button" @click=${o=>{o.stopPropagation(),this._openLightbox(r)}}>
             <span class="view-icon">👁️</span>
             View
           </button>
         `:""}
 
-        ${t.caption?r`
+        ${e.caption?a`
           <div class="gallery-caption">
-            <div class="caption-title">${t.alt}</div>
-            <div class="caption-description">${t.caption}</div>
+            <div class="caption-title">${e.alt}</div>
+            <div class="caption-description">${e.caption}</div>
           </div>
         `:""}
       </div>
-    `}render(){const t=this.images[this._currentIndex],i=this.filteredImages,a=this.allTags;return r`
+    `}render(){const e=this.images[this._currentIndex],i=this.filteredImages,r=this.allTags;return a`
       <section class="gallery">
         <div class="gallery-header">
-          ${this.title?r`
+          ${this.title?a`
             <h2 class="gallery-title">${this.title}</h2>
           `:""}
           
-          ${this.description?r`
+          ${this.description?a`
             <p class="gallery-description">${this.description}</p>
           `:""}
         </div>
 
-        ${this.showFilters&&a.length>0?r`
+        ${this.showFilters&&r.length>0?a`
           <div class="gallery-filters">
             <button 
               class="filter-btn ${this._filter==="all"?"active":""}"
@@ -1318,7 +1784,7 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
             >
               All
             </button>
-            ${a.map(o=>r`
+            ${r.map(o=>a`
               <button 
                 class="filter-btn ${this._filter===o?"active":""}"
                 @click=${()=>this._setFilter(o)}
@@ -1330,7 +1796,7 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
         `:""}
 
         <div class="gallery-grid">
-          ${i.length>0?i.map((o,e)=>this.renderImage(o,e)):r`
+          ${i.length>0?i.map((o,t)=>this.renderImage(o,t)):a`
                 <div class="gallery-empty">
                   <h3>No images found</h3>
                   <p>Try selecting a different filter</p>
@@ -1341,13 +1807,13 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
         <!-- Lightbox -->
         <div class="lightbox ${this._showLightbox?"active":""}" 
              @click=${o=>{o.target===o.currentTarget&&this._closeLightbox()}}>
-          ${this._showLightbox&&t?r`
+          ${this._showLightbox&&e?a`
             <div class="lightbox-content">
               <button class="lightbox-close" @click=${this._closeLightbox}>
                 &times;
               </button>
               
-              ${this.images.length>1?r`
+              ${this.images.length>1?a`
                 <button class="filter-btn lightbox-prev" 
                         style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%)"
                         @click=${this._prevImage}>
@@ -1364,21 +1830,21 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
               `:""}
 
               <img 
-                src=${t.src}
-                alt=${t.alt}
+                src=${e.src}
+                alt=${e.alt}
                 class="lightbox-image"
               />
               
-              ${t.caption?r`
+              ${e.caption?a`
                 <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); color: white; padding: 16px; text-align: center; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
-                  ${t.caption}
+                  ${e.caption}
                 </div>
               `:""}
             </div>
           `:""}
         </div>
       </section>
-    `}};b.styles=[v,g`
+    `}};b.styles=[v,d`
       :host {
         display: block;
         width: 100%;
@@ -1758,9 +2224,9 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
         padding: var(--spacing-3xl, 64px);
         color: var(--color-text-secondary);
       }
-    `];y([l({type:Array})],b.prototype,"images",2);y([l({type:String})],b.prototype,"title",2);y([l({type:String})],b.prototype,"description",2);y([l({type:Boolean})],b.prototype,"showFilters",2);y([l({type:Boolean})],b.prototype,"showTags",2);y([l({type:Boolean})],b.prototype,"showViewButton",2);y([c()],b.prototype,"_currentIndex",2);y([c()],b.prototype,"_showLightbox",2);y([c()],b.prototype,"_filter",2);y([l({type:Array})],b.prototype,"categories",2);b=y([m("gallery-section")],b);var mt=Object.defineProperty,bt=Object.getOwnPropertyDescriptor,L=(t,i,a,o)=>{for(var e=o>1?void 0:o?bt(i,a):i,s=t.length-1,n;s>=0;s--)(n=t[s])&&(e=(o?n(i,a,e):n(e))||e);return o&&e&&mt(i,a,e),e};let P=class extends h{constructor(){super(...arguments),this.slides=[],this.autoplayInterval=5e3,this._currentSlide=0,this._isAnimating=!1,this._autoplayTimer=null,this._handleKeyDown=t=>{if(!this._isAnimating)switch(t.key){case"ArrowLeft":t.preventDefault(),this._prevSlide();break;case"ArrowRight":case" ":t.preventDefault(),this._nextSlide();break;case"Home":t.preventDefault(),this._goToSlide(0);break;case"End":t.preventDefault(),this._goToSlide(this.slides.length-1);break}}}connectedCallback(){super.connectedCallback(),this._startAutoplay(),this._setupKeyboardNavigation()}disconnectedCallback(){this._stopAutoplay(),this._cleanupKeyboardNavigation(),super.disconnectedCallback()}_startAutoplay(){this.autoplayInterval>0&&this.slides.length>1&&(this._autoplayTimer=setInterval(()=>{this._nextSlide()},this.autoplayInterval))}_stopAutoplay(){this._autoplayTimer&&(clearInterval(this._autoplayTimer),this._autoplayTimer=null)}_setupKeyboardNavigation(){document.addEventListener("keydown",this._handleKeyDown)}_cleanupKeyboardNavigation(){document.removeEventListener("keydown",this._handleKeyDown)}_goToSlide(t){this._isAnimating||t<0||t>=this.slides.length||t===this._currentSlide||(this._isAnimating=!0,this._currentSlide=t,this._stopAutoplay(),this._startAutoplay(),setTimeout(()=>{this._isAnimating=!1},1e3))}_nextSlide(){const t=(this._currentSlide+1)%this.slides.length;this._goToSlide(t)}_prevSlide(){const t=this._currentSlide===0?this.slides.length-1:this._currentSlide-1;this._goToSlide(t)}_onDotClick(t,i){i.preventDefault(),this._goToSlide(t)}_onMouseEnter(){this._stopAutoplay()}_onMouseLeave(){this._startAutoplay()}renderSlide(t,i){const o={slide:!0,active:i===this._currentSlide,loading:!1},e=window.innerWidth<992&&t.backgroundImageMobile?t.backgroundImageMobile:t.backgroundImage;return r`
-      <li class=${q(o)} 
-          data-order=${t.dataOrder||i}
+    `];y([l({type:Array})],b.prototype,"images",2);y([l({type:String})],b.prototype,"title",2);y([l({type:String})],b.prototype,"description",2);y([l({type:Boolean})],b.prototype,"showFilters",2);y([l({type:Boolean})],b.prototype,"showTags",2);y([l({type:Boolean})],b.prototype,"showViewButton",2);y([c()],b.prototype,"_currentIndex",2);y([c()],b.prototype,"_showLightbox",2);y([c()],b.prototype,"_filter",2);y([l({type:Array})],b.prototype,"categories",2);b=y([m("gallery-section")],b);var be=Object.defineProperty,ve=Object.getOwnPropertyDescriptor,A=(e,i,r,o)=>{for(var t=o>1?void 0:o?ve(i,r):i,n=e.length-1,s;n>=0;n--)(s=e[n])&&(t=(o?s(i,r,t):s(t))||t);return o&&t&&be(i,r,t),t};let P=class extends h{constructor(){super(...arguments),this.slides=[],this.autoplayInterval=5e3,this._currentSlide=0,this._isAnimating=!1,this._autoplayTimer=null,this._handleKeyDown=e=>{if(!this._isAnimating)switch(e.key){case"ArrowLeft":e.preventDefault(),this._prevSlide();break;case"ArrowRight":case" ":e.preventDefault(),this._nextSlide();break;case"Home":e.preventDefault(),this._goToSlide(0);break;case"End":e.preventDefault(),this._goToSlide(this.slides.length-1);break}}}connectedCallback(){super.connectedCallback(),this._startAutoplay(),this._setupKeyboardNavigation()}disconnectedCallback(){this._stopAutoplay(),this._cleanupKeyboardNavigation(),super.disconnectedCallback()}_startAutoplay(){this.autoplayInterval>0&&this.slides.length>1&&(this._autoplayTimer=setInterval(()=>{this._nextSlide()},this.autoplayInterval))}_stopAutoplay(){this._autoplayTimer&&(clearInterval(this._autoplayTimer),this._autoplayTimer=null)}_setupKeyboardNavigation(){document.addEventListener("keydown",this._handleKeyDown)}_cleanupKeyboardNavigation(){document.removeEventListener("keydown",this._handleKeyDown)}_goToSlide(e){this._isAnimating||e<0||e>=this.slides.length||e===this._currentSlide||(this._isAnimating=!0,this._currentSlide=e,this._stopAutoplay(),this._startAutoplay(),setTimeout(()=>{this._isAnimating=!1},1e3))}_nextSlide(){const e=(this._currentSlide+1)%this.slides.length;this._goToSlide(e)}_prevSlide(){const e=this._currentSlide===0?this.slides.length-1:this._currentSlide-1;this._goToSlide(e)}_onDotClick(e,i){i.preventDefault(),this._goToSlide(e)}_onMouseEnter(){this._stopAutoplay()}_onMouseLeave(){this._startAutoplay()}renderSlide(e,i){const o={slide:!0,active:i===this._currentSlide,loading:!1},t=window.innerWidth<992&&e.backgroundImageMobile?e.backgroundImageMobile:e.backgroundImage;return a`
+      <li class=${X(o)} 
+          data-order=${e.dataOrder||i}
           @click=${()=>this._goToSlide(i)}>
         
         <div class="slide_bg_overlay"></div>
@@ -1771,13 +2237,13 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
             <!-- Text Content -->
             <div class="slider--home_text">
               <div class="slider--home_text_inner">
-                <a href=${t.link} class="link--none">
-                  ${t.tag?r`
+                <a href=${e.link} class="link--none">
+                  ${e.tag?a`
                     <h5 class="h3-slider anim-block_outer">
                       <span class="anim-block">
                         <span class="anim-block_line"></span>
                         <span class="anim-block_inner">
-                          <span>${t.tag}</span>
+                          <span>${e.tag}</span>
                         </span>
                       </span>
                     </h5>
@@ -1787,23 +2253,23 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
                     <span class="anim-block">
                       <span class="anim-block_line anim-delay-1"></span>
                       <span class="anim-block_inner">
-                        <span>${t.titleLine1}</span>
+                        <span>${e.titleLine1}</span>
                       </span>
                     </span>
-                    ${t.titleLine2?r`
+                    ${e.titleLine2?a`
                       <span class="anim-block">
                         <span class="anim-block_line anim-delay-2"></span>
                         <span class="anim-block_inner">
-                          <span>${t.titleLine2}</span>
+                          <span>${e.titleLine2}</span>
                         </span>
                       </span>
                     `:""}
                   </h1>
                   
-                  ${t.subtitle?r`
+                  ${e.subtitle?a`
                     <h2 class="h2-slider anim-desc_outer">
                       <span class="anim-desc anim-delay-3">
-                        ${t.subtitle}
+                        ${e.subtitle}
                       </span>
                     </h2>
                   `:""}
@@ -1811,7 +2277,7 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
                 
                 <!-- Spinner Button -->
                 <div class="loader--js">
-                  <a href=${t.link} class="spinner">
+                  <a href=${e.link} class="spinner">
                     <svg viewBox="0 0 250 250" preserveAspectRatio="xMinYMin meet">
                       <circle cx="120" cy="120" r="100" stroke-dasharray="628" stroke-dashoffset="628" pathLength="628"/>
                     </svg>
@@ -1828,14 +2294,14 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
             <!-- Background Image -->
             <div class="slider--home_img">
               <div class="slider--home_img--inner"
-                   style="background-image: url('${e}')">
+                   style="background-image: url('${t}')">
               </div>
             </div>
             
           </div>
         </div>
       </li>
-    `}render(){return r`
+    `}render(){return a`
       <section class="slider slider--home"
                @mouseenter=${this._onMouseEnter}
                @mouseleave=${this._onMouseLeave}>
@@ -1843,31 +2309,31 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
         <!-- Slides -->
         <div class="slides">
           <ul class="slides_inner">
-            ${this.slides.map((t,i)=>this.renderSlide(t,i))}
+            ${this.slides.map((e,i)=>this.renderSlide(e,i))}
           </ul>
         </div>
         
         <!-- Navigation Arrows -->
-        ${this.slides.length>1?r`
+        ${this.slides.length>1?a`
           <button class="slider_nav slider_prev" 
-                  @click=${t=>{t.preventDefault(),t.stopPropagation(),this._prevSlide()}}
+                  @click=${e=>{e.preventDefault(),e.stopPropagation(),this._prevSlide()}}
                   aria-label="Previous slide">
             ←
           </button>
           <button class="slider_nav slider_next" 
-                  @click=${t=>{t.preventDefault(),t.stopPropagation(),this._nextSlide()}}
+                  @click=${e=>{e.preventDefault(),e.stopPropagation(),this._nextSlide()}}
                   aria-label="Next slide">
             →
           </button>
         `:""}
         
         <!-- Pagination Dots -->
-        ${this.slides.length>1?r`
+        ${this.slides.length>1?a`
           <div class="slider_pagination_container">
             <nav class="slider_pagination">
-              ${this.slides.map((t,i)=>r`
+              ${this.slides.map((e,i)=>a`
                 <button class="pagination-dot ${i===this._currentSlide?"active":""}"
-                        @click=${a=>this._onDotClick(i,a)}
+                        @click=${r=>this._onDotClick(i,r)}
                         aria-label=${`Go to slide ${i+1}`}
                         aria-current=${i===this._currentSlide?"true":"false"}>
                 </button>
@@ -1877,7 +2343,7 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
         `:""}
         
       </section>
-    `}};P.styles=[v,g`
+    `}};P.styles=[v,d`
       :host {
         display: block;
         position: relative;
@@ -2284,45 +2750,45 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
         0% { background-position: 200% 0; }
         100% { background-position: -200% 0; }
       }
-    `];L([l({type:Array})],P.prototype,"slides",2);L([l({type:Number})],P.prototype,"autoplayInterval",2);L([c()],P.prototype,"_currentSlide",2);L([c()],P.prototype,"_isAnimating",2);L([c()],P.prototype,"_autoplayTimer",2);P=L([m("hero-slider-section")],P);var vt=Object.defineProperty,ut=Object.getOwnPropertyDescriptor,u=(t,i,a,o)=>{for(var e=o>1?void 0:o?ut(i,a):i,s=t.length-1,n;s>=0;s--)(n=t[s])&&(e=(o?n(i,a,e):n(e))||e);return o&&e&&vt(i,a,e),e};let d=class extends h{constructor(){super(...arguments),this.slides=[],this.autoplayInterval=4e3,this.showNavigation=!0,this.showScrollHint=!0,this._currentSlide=0,this._isAnimating=!1,this._autoplayTimer=null,this._wheelTimeout=null,this._scrollProgress=0,this._touchStartX=0,this._touchStartY=0,this._wheelBlocked=!1,this._handleResize=()=>{this._updateSlidePosition()},this._handleTouchStart=t=>{this._touchStartX=t.touches[0].clientX,this._touchStartY=t.touches[0].clientY},this._handleTouchEnd=t=>{const i=t.changedTouches[0].clientX,a=t.changedTouches[0].clientY,o=i-this._touchStartX,e=a-this._touchStartY;Math.abs(o)>Math.abs(e)&&Math.abs(o)>50&&(t.preventDefault(),o>0?this._prevSlide():this._nextSlide())},this._handleWheel=t=>{this._isAnimating||this._wheelBlocked||Math.abs(t.deltaY)>Math.abs(t.deltaX)&&(t.preventDefault(),this._wheelBlocked=!0,clearTimeout(this._wheelTimeout),this._wheelTimeout=setTimeout(()=>{this._wheelBlocked=!1},800),t.deltaY>0?this._nextSlide():this._prevSlide())},this._handleKeyDown=t=>{if(!this._isAnimating)switch(t.key){case"ArrowLeft":case"ArrowUp":t.preventDefault(),this._prevSlide();break;case"ArrowRight":case"ArrowDown":case" ":t.preventDefault(),this._nextSlide();break;case"Home":t.preventDefault(),this._goToSlide(0);break;case"End":t.preventDefault(),this._goToSlide(this.slides.length-1);break}}}firstUpdated(){this._container=this.shadowRoot?.querySelector(".slides-wrapper"),this._setupEventListeners(),this._startAutoplay(),this._updateSlidePosition()}connectedCallback(){super.connectedCallback(),document.body.style.overflow="hidden"}disconnectedCallback(){this._stopAutoplay(),this._cleanupEventListeners(),document.body.style.overflow="",super.disconnectedCallback()}_setupEventListeners(){this.addEventListener("wheel",this._handleWheel,{passive:!1}),document.addEventListener("keydown",this._handleKeyDown),this.addEventListener("touchstart",this._handleTouchStart,{passive:!0}),this.addEventListener("touchend",this._handleTouchEnd,{passive:!0}),window.addEventListener("resize",this._handleResize)}_cleanupEventListeners(){this.removeEventListener("wheel",this._handleWheel),document.removeEventListener("keydown",this._handleKeyDown),this.removeEventListener("touchstart",this._handleTouchStart),this.removeEventListener("touchend",this._handleTouchEnd),window.removeEventListener("resize",this._handleResize)}_startAutoplay(){this.autoplayInterval>0&&this.slides.length>1&&(this._autoplayTimer=setInterval(()=>{this._nextSlide()},this.autoplayInterval))}_stopAutoplay(){this._autoplayTimer&&(clearInterval(this._autoplayTimer),this._autoplayTimer=null)}_goToSlide(t){this._isAnimating||t<0||t>=this.slides.length||t===this._currentSlide||(this._isAnimating=!0,this._currentSlide=t,this._scrollProgress=t/(this.slides.length-1)*100,this._stopAutoplay(),this._startAutoplay(),this._updateSlidePosition(),setTimeout(()=>{this._isAnimating=!1},1200))}_nextSlide(){const t=(this._currentSlide+1)%this.slides.length;this._goToSlide(t)}_prevSlide(){const t=this._currentSlide===0?this.slides.length-1:this._currentSlide-1;this._goToSlide(t)}_updateSlidePosition(){if(this._container){const t=-this._currentSlide*100;this._container.style.transform=`translateX(${t}vw)`}}_onMouseEnter(){this._stopAutoplay()}_onMouseLeave(){this._startAutoplay()}renderSlide(t,i){const a=i===this._currentSlide,o=window.innerWidth<768&&t.backgroundImageMobile?t.backgroundImageMobile:t.backgroundImage;return r`
-      <div class="slide ${a?"active":""}" data-id="${t.id}">
+    `];A([l({type:Array})],P.prototype,"slides",2);A([l({type:Number})],P.prototype,"autoplayInterval",2);A([c()],P.prototype,"_currentSlide",2);A([c()],P.prototype,"_isAnimating",2);A([c()],P.prototype,"_autoplayTimer",2);P=A([m("hero-slider-section")],P);var ue=Object.defineProperty,fe=Object.getOwnPropertyDescriptor,u=(e,i,r,o)=>{for(var t=o>1?void 0:o?fe(i,r):i,n=e.length-1,s;n>=0;n--)(s=e[n])&&(t=(o?s(i,r,t):s(t))||t);return o&&t&&ue(i,r,t),t};let p=class extends h{constructor(){super(...arguments),this.slides=[],this.autoplayInterval=4e3,this.showNavigation=!0,this.showScrollHint=!0,this._currentSlide=0,this._isAnimating=!1,this._autoplayTimer=null,this._wheelTimeout=null,this._scrollProgress=0,this._touchStartX=0,this._touchStartY=0,this._wheelBlocked=!1,this._handleResize=()=>{this._updateSlidePosition()},this._handleTouchStart=e=>{this._touchStartX=e.touches[0].clientX,this._touchStartY=e.touches[0].clientY},this._handleTouchEnd=e=>{const i=e.changedTouches[0].clientX,r=e.changedTouches[0].clientY,o=i-this._touchStartX,t=r-this._touchStartY;Math.abs(o)>Math.abs(t)&&Math.abs(o)>50&&(e.preventDefault(),o>0?this._prevSlide():this._nextSlide())},this._handleWheel=e=>{this._isAnimating||this._wheelBlocked||Math.abs(e.deltaY)>Math.abs(e.deltaX)&&(e.preventDefault(),this._wheelBlocked=!0,clearTimeout(this._wheelTimeout),this._wheelTimeout=setTimeout(()=>{this._wheelBlocked=!1},800),e.deltaY>0?this._nextSlide():this._prevSlide())},this._handleKeyDown=e=>{if(!this._isAnimating)switch(e.key){case"ArrowLeft":case"ArrowUp":e.preventDefault(),this._prevSlide();break;case"ArrowRight":case"ArrowDown":case" ":e.preventDefault(),this._nextSlide();break;case"Home":e.preventDefault(),this._goToSlide(0);break;case"End":e.preventDefault(),this._goToSlide(this.slides.length-1);break}}}firstUpdated(){this._container=this.shadowRoot?.querySelector(".slides-wrapper"),this._setupEventListeners(),this._startAutoplay(),this._updateSlidePosition()}connectedCallback(){super.connectedCallback(),this._container&&(this._container.style.overflow="hidden")}disconnectedCallback(){this._stopAutoplay(),this._cleanupEventListeners(),this._container&&(this._container.style.overflow=""),super.disconnectedCallback()}_setupEventListeners(){this.addEventListener("wheel",this._handleWheel,{passive:!1}),document.addEventListener("keydown",this._handleKeyDown),this.addEventListener("touchstart",this._handleTouchStart,{passive:!0}),this.addEventListener("touchend",this._handleTouchEnd,{passive:!0}),window.addEventListener("resize",this._handleResize)}_cleanupEventListeners(){this.removeEventListener("wheel",this._handleWheel),document.removeEventListener("keydown",this._handleKeyDown),this.removeEventListener("touchstart",this._handleTouchStart),this.removeEventListener("touchend",this._handleTouchEnd),window.removeEventListener("resize",this._handleResize)}_startAutoplay(){this.autoplayInterval>0&&this.slides.length>1&&(this._autoplayTimer=setInterval(()=>{this._nextSlide()},this.autoplayInterval))}_stopAutoplay(){this._autoplayTimer&&(clearInterval(this._autoplayTimer),this._autoplayTimer=null)}_goToSlide(e){this._isAnimating||e<0||e>=this.slides.length||e===this._currentSlide||(this._isAnimating=!0,this._currentSlide=e,this._scrollProgress=e/(this.slides.length-1)*100,this._stopAutoplay(),this._startAutoplay(),this._updateSlidePosition(),setTimeout(()=>{this._isAnimating=!1},1200))}_nextSlide(){const e=(this._currentSlide+1)%this.slides.length;this._goToSlide(e)}_prevSlide(){const e=this._currentSlide===0?this.slides.length-1:this._currentSlide-1;this._goToSlide(e)}_updateSlidePosition(){if(this._container){const e=-this._currentSlide*100;this._container.style.transform=`translateX(${e}vw)`}}_onMouseEnter(){this._stopAutoplay()}_onMouseLeave(){this._startAutoplay()}renderSlide(e,i){const r=i===this._currentSlide,o=window.innerWidth<768&&e.backgroundImageMobile?e.backgroundImageMobile:e.backgroundImage;return a`
+      <div class="slide ${r?"active":""}" data-id="${e.id}">
         <div 
           class="slide-bg"
-          style=${W({backgroundImage:`url('${o}')`,transform:a?"scale(1.05)":"scale(1)"})}
+          style=${W({backgroundImage:`url('${o}')`,transform:r?"scale(1.05)":"scale(1)"})}
         ></div>
         
         <div class="slide-content">
           <div class="text-content">
-            ${t.tag?r`
-              <div class="slide-tag">${t.tag}</div>
+            ${e.tag?a`
+              <div class="slide-tag">${e.tag}</div>
             `:""}
             
             <div class="title-line">
-              <span class="title-text">${t.titleLine1}</span>
+              <span class="title-text">${e.titleLine1}</span>
             </div>
             
-            ${t.titleLine2?r`
+            ${e.titleLine2?a`
               <div class="title-line">
-                <span class="title-text">${t.titleLine2}</span>
+                <span class="title-text">${e.titleLine2}</span>
               </div>
             `:""}
             
-            ${t.subtitle?r`
-              <div class="subtitle">${t.subtitle}</div>
+            ${e.subtitle?a`
+              <div class="subtitle">${e.subtitle}</div>
             `:""}
             
             <a 
-              href="${t.link}" 
+              href="${e.link}" 
               class="action-button"
-              @click=${e=>{t.link.startsWith("#")&&(e.preventDefault(),window.dispatchEvent(new CustomEvent("pjax:navigate",{detail:{url:t.link}})))}}
+              @click=${t=>{e.link.startsWith("#")&&(t.preventDefault(),window.dispatchEvent(new CustomEvent("pjax:navigate",{detail:{url:e.link}})))}}
             >
-              ${t.buttonText||"Read More"}
+              ${e.buttonText||"Read More"}
               <span class="button-icon">→</span>
             </a>
           </div>
         </div>
       </div>
-    `}render(){return this.slides.length?r`
+    `}render(){return this.slides.length?a`
       <div 
         class="horizontal-scroll-container"
         @mouseenter=${this._onMouseEnter}
@@ -2335,29 +2801,11 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
         
         <!-- Slides -->
         <div class="slides-wrapper">
-          ${this.slides.map((t,i)=>this.renderSlide(t,i))}
+          ${this.slides.map((e,i)=>this.renderSlide(e,i))}
         </div>
         
-        <!-- Navigation arrows -->
-        ${this.showNavigation&&this.slides.length>1?r`
-          <button 
-            class="nav-arrow nav-prev ${this._currentSlide>0?"visible":""}"
-            @click=${this._prevSlide}
-            aria-label="Previous slide"
-          >
-            ←
-          </button>
-          <button 
-            class="nav-arrow nav-next ${this._currentSlide<this.slides.length-1?"visible":""}"
-            @click=${this._nextSlide}
-            aria-label="Next slide"
-          >
-            →
-          </button>
-        `:""}
-        
         <!-- Scroll hint -->
-        ${this.showScrollHint&&this.slides.length>1?r`
+        ${this.showScrollHint&&this.slides.length>1?a`
           <div class="scroll-hint">
             <div class="mouse-wheel"></div>
             <span>Scroll to navigate</span>
@@ -2365,14 +2813,14 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
         `:""}
         
         <!-- Slide counter -->
-        ${this.slides.length>1?r`
+        ${this.slides.length>1?a`
           <div class="slide-counter">
             <span class="counter-current">${this._currentSlide+1}</span>
             <span class="counter-total">/${this.slides.length}</span>
           </div>
         `:""}
       </div>
-    `:r``}};d.styles=g`
+    `:a``}};p.styles=d`
     :host {
       display: block;
       width: 100vw;
@@ -2649,49 +3097,6 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
       transition: width 0.3s ease;
     }
 
-    /* Navigation arrows */
-    .nav-arrow {
-      position: fixed;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 60px;
-      height: 60px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 50%;
-      color: white;
-      font-size: 24px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 100;
-      backdrop-filter: blur(10px);
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .nav-arrow.visible {
-      opacity: 0.8;
-      pointer-events: all;
-    }
-
-    .nav-arrow:hover {
-      background: rgba(255, 87, 34, 0.2);
-      border-color: rgba(255, 87, 34, 0.4);
-      transform: translateY(-50%) scale(1.1);
-      opacity: 1;
-    }
-
-    .nav-prev {
-      left: 40px;
-    }
-
-    .nav-next {
-      right: 40px;
-    }
-
     /* Slide counter */
     .slide-counter {
       position: fixed;
@@ -2719,20 +3124,6 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
         padding: 0 5%;
       }
 
-      .nav-arrow {
-        width: 50px;
-        height: 50px;
-        font-size: 20px;
-      }
-
-      .nav-prev {
-        left: 20px;
-      }
-
-      .nav-next {
-        right: 20px;
-      }
-
       .slide-counter {
         bottom: 20px;
         right: 20px;
@@ -2742,7 +3133,7 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
         padding: 14px 28px;
       }
     }
-  `;u([l({type:Array})],d.prototype,"slides",2);u([l({type:Number})],d.prototype,"autoplayInterval",2);u([l({type:Boolean})],d.prototype,"showNavigation",2);u([l({type:Boolean})],d.prototype,"showScrollHint",2);u([c()],d.prototype,"_currentSlide",2);u([c()],d.prototype,"_isAnimating",2);u([c()],d.prototype,"_autoplayTimer",2);u([c()],d.prototype,"_wheelTimeout",2);u([c()],d.prototype,"_scrollProgress",2);u([c()],d.prototype,"_touchStartX",2);u([c()],d.prototype,"_touchStartY",2);d=u([m("horizontal-scroll-hero")],d);var ft=Object.defineProperty,xt=Object.getOwnPropertyDescriptor,f=(t,i,a,o)=>{for(var e=o>1?void 0:o?xt(i,a):i,s=t.length-1,n;s>=0;s--)(n=t[s])&&(e=(o?n(i,a,e):n(e))||e);return o&&e&&ft(i,a,e),e};let p=class extends h{constructor(){super(...arguments),this.posts=[],this.title="Latest Articles",this.subtitle="Discover insights, tutorials, and updates from our team",this.showFilters=!0,this.showLoadMore=!1,this.showPagination=!1,this.postsPerPage=6,this._filter="all",this._currentPage=1,this._isLoading=!1,this._allCategories=[]}connectedCallback(){super.connectedCallback(),this._extractCategories()}updated(t){t.has("posts")&&this._extractCategories()}_extractCategories(){const t=new Set;this.posts.forEach(i=>{t.add(i.category),i.tags?.forEach(a=>t.add(a))}),this._allCategories=Array.from(t)}_setFilter(t){this._filter=t,this._currentPage=1}get filteredPosts(){return this._filter==="all"?this.posts:this.posts.filter(t=>t.category===this._filter||t.tags?.includes(this._filter))}get paginatedPosts(){const t=(this._currentPage-1)*this.postsPerPage,i=t+this.postsPerPage;return this.filteredPosts.slice(t,i)}get totalPages(){return Math.ceil(this.filteredPosts.length/this.postsPerPage)}_loadMore(){this._isLoading||(this._isLoading=!0,setTimeout(()=>{this._currentPage++,this._isLoading=!1},1e3))}_goToPage(t){t<1||t>this.totalPages||t===this._currentPage||(this._currentPage=t,this.scrollIntoView({behavior:"smooth"}))}renderSkeleton(t=3){return Array(t).fill(0).map((i,a)=>r`
+  `;u([l({type:Array})],p.prototype,"slides",2);u([l({type:Number})],p.prototype,"autoplayInterval",2);u([l({type:Boolean})],p.prototype,"showNavigation",2);u([l({type:Boolean})],p.prototype,"showScrollHint",2);u([c()],p.prototype,"_currentSlide",2);u([c()],p.prototype,"_isAnimating",2);u([c()],p.prototype,"_autoplayTimer",2);u([c()],p.prototype,"_wheelTimeout",2);u([c()],p.prototype,"_scrollProgress",2);u([c()],p.prototype,"_touchStartX",2);u([c()],p.prototype,"_touchStartY",2);p=u([m("horizontal-scroll-hero")],p);var xe=Object.defineProperty,ye=Object.getOwnPropertyDescriptor,f=(e,i,r,o)=>{for(var t=o>1?void 0:o?ye(i,r):i,n=e.length-1,s;n>=0;n--)(s=e[n])&&(t=(o?s(i,r,t):s(t))||t);return o&&t&&xe(i,r,t),t};let g=class extends h{constructor(){super(...arguments),this.posts=[],this.title="Latest Articles",this.subtitle="Discover insights, tutorials, and updates from our team",this.showFilters=!0,this.showLoadMore=!1,this.showPagination=!1,this.postsPerPage=6,this._filter="all",this._currentPage=1,this._isLoading=!1,this._allCategories=[]}connectedCallback(){super.connectedCallback(),console.log("BlogListSection: connected, posts:",this.posts),this._extractCategories()}updated(e){e.has("posts")&&this._extractCategories()}_extractCategories(){const e=new Set;this.posts.forEach(i=>{e.add(i.category),i.tags?.forEach(r=>e.add(r))}),this._allCategories=Array.from(e)}_setFilter(e){this._filter=e,this._currentPage=1}get filteredPosts(){return this._filter==="all"?this.posts:this.posts.filter(e=>e.category===this._filter||e.tags?.includes(this._filter))}get paginatedPosts(){const e=(this._currentPage-1)*this.postsPerPage,i=e+this.postsPerPage;return this.filteredPosts.slice(e,i)}get totalPages(){return Math.ceil(this.filteredPosts.length/this.postsPerPage)}_loadMore(){this._isLoading||(this._isLoading=!0,setTimeout(()=>{this._currentPage++,this._isLoading=!1},1e3))}_goToPage(e){e<1||e>this.totalPages||e===this._currentPage||(this._currentPage=e,this.scrollIntoView({behavior:"smooth"}))}renderSkeleton(e=3){return Array(e).fill(0).map((i,r)=>a`
       <div class="blog-card">
         <div class="card-image skeleton skeleton-image"></div>
         <div class="card-content">
@@ -2755,47 +3146,47 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
           <div class="skeleton skeleton-text short"></div>
         </div>
       </div>
-    `)}renderPost(t,i){const a=t.featured||i===0;return r`
-      <article class="blog-card ${a?"featured":""}">
-        ${a?r`
+    `)}renderPost(e,i){const r=e.featured||i===0;return a`
+      <article class="blog-card ${r?"featured":""}">
+        ${r?a`
           <div class="featured-badge">Featured</div>
         `:""}
         
         <div class="card-image">
-          <div class="category-badge">${t.category}</div>
+          <div class="category-badge">${e.category}</div>
           <img 
-            src="${t.image}" 
-            alt="${t.imageAlt}" 
+            src="${e.image}" 
+            alt="${e.imageAlt}" 
             loading="lazy"
-            @load=${o=>{const e=o.target;e.style.animation="none"}}
-            @error=${o=>{const e=o.target;e.style.display="none"}}
+            @load=${o=>{const t=o.target;t.style.animation="none"}}
+            @error=${o=>{const t=o.target;t.style.display="none"}}
           />
           <div class="image-overlay"></div>
         </div>
         
         <div class="card-content">
           <div class="card-meta">
-            ${t.authorAvatar?r`
-              <img src="${t.authorAvatar}" alt="${t.author}" class="author-avatar">
+            ${e.authorAvatar?a`
+              <img src="${e.authorAvatar}" alt="${e.author}" class="author-avatar">
             `:""}
-            <span class="author-name">${t.author}</span>
+            <span class="author-name">${e.author}</span>
             <span class="meta-divider">•</span>
-            <span class="post-date">${t.date}</span>
+            <span class="post-date">${e.date}</span>
             <span class="meta-divider">•</span>
-            <span class="read-time">⏱️ ${t.readTime}</span>
+            <span class="read-time">⏱️ ${e.readTime}</span>
           </div>
           
           <h3 class="card-title">
-            <a href="/blog/${t.slug}" class="link--none" data-pjax>
-              ${t.title}
+            <a href="/blog/${e.slug}" class="link--none">
+              ${e.title}
             </a>
           </h3>
           
-          <p class="card-excerpt">${t.excerpt}</p>
+          <p class="card-excerpt">${e.excerpt}</p>
           
-          ${t.tags?.length?r`
+          ${e.tags?.length?a`
             <div class="card-tags">
-              ${t.tags.slice(0,3).map(o=>r`
+              ${e.tags.slice(0,3).map(o=>a`
                 <span class="tag">#${o}</span>
               `)}
             </div>
@@ -2803,33 +3194,33 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
           
           <div class="card-footer">
             <div class="stats">
-              ${t.views?r`
-                <span class="stat">👁️ ${t.views}</span>
+              ${e.views?a`
+                <span class="stat">👁️ ${e.views}</span>
               `:""}
-              ${t.comments?r`
-                <span class="stat">💬 ${t.comments}</span>
+              ${e.comments?a`
+                <span class="stat">💬 ${e.comments}</span>
               `:""}
             </div>
             
-            <a href="/blog/${t.slug}" class="read-more" data-pjax>
+            <a href="/blog/${e.slug}" class="read-more">
               Read More
               <span class="read-more-icon">→</span>
             </a>
           </div>
         </div>
       </article>
-    `}render(){const t=this.showPagination?this.paginatedPosts:this.filteredPosts,i=this._isLoading;return r`
-      <section class="blog-section">
+    `}render(){const e=this.showPagination?this.paginatedPosts:this.filteredPosts,i=this._isLoading;return console.log("BlogListSection: render, displayPosts:",e.length,"isLoading:",i),a`
+      <section class="blog-section" hx-boost="true">
         <!-- Section Header -->
         <header class="section-header">
           <h2 class="section-title">${this.title}</h2>
-          ${this.subtitle?r`
+          ${this.subtitle?a`
             <p class="section-subtitle">${this.subtitle}</p>
           `:""}
         </header>
         
         <!-- Filters -->
-        ${this.showFilters&&this._allCategories.length>0?r`
+        ${this.showFilters&&this._allCategories.length>0?a`
           <div class="blog-filters">
             <button 
               class="filter-btn ${this._filter==="all"?"active":""}"
@@ -2837,12 +3228,12 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
             >
               All
             </button>
-            ${this._allCategories.map(a=>r`
+            ${this._allCategories.map(r=>a`
               <button 
-                class="filter-btn ${this._filter===a?"active":""}"
-                @click=${()=>this._setFilter(a)}
+                class="filter-btn ${this._filter===r?"active":""}"
+                @click=${()=>this._setFilter(r)}
               >
-                ${a}
+                ${r}
               </button>
             `)}
           </div>
@@ -2852,7 +3243,7 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
         <div class="blog-grid">
           ${i?this.renderSkeleton(this.postsPerPage):""}
           
-          ${!i&&t.length>0?t.map((a,o)=>this.renderPost(a,o)):r`
+          ${!i&&e.length>0?e.map((r,o)=>this.renderPost(r,o)):a`
                 <div class="empty-state">
                   <div class="empty-icon">📝</div>
                   <h3>No articles found</h3>
@@ -2862,7 +3253,7 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
         </div>
         
         <!-- Load More Button -->
-        ${this.showLoadMore&&this._currentPage<this.totalPages?r`
+        ${this.showLoadMore&&this._currentPage<this.totalPages?a`
           <div class="load-more">
             <button 
               class="load-more-btn"
@@ -2875,7 +3266,7 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
         `:""}
         
         <!-- Pagination -->
-        ${this.showPagination&&this.totalPages>1?r`
+        ${this.showPagination&&this.totalPages>1?a`
           <nav class="blog-pagination" aria-label="Blog pagination">
             <button 
               class="pagination-btn ${this._currentPage===1?"disabled":""}"
@@ -2886,14 +3277,14 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
               ←
             </button>
             
-            ${Array.from({length:Math.min(5,this.totalPages)},(a,o)=>{let e=o+1;return this.totalPages>5&&(this._currentPage<=3?e=o+1:this._currentPage>=this.totalPages-2?e=this.totalPages-4+o:e=this._currentPage-2+o),e<1||e>this.totalPages?"":r`
+            ${Array.from({length:Math.min(5,this.totalPages)},(r,o)=>{let t=o+1;return this.totalPages>5&&(this._currentPage<=3?t=o+1:this._currentPage>=this.totalPages-2?t=this.totalPages-4+o:t=this._currentPage-2+o),t<1||t>this.totalPages?"":a`
                 <button 
-                  class="pagination-btn ${this._currentPage===e?"active":""}"
-                  @click=${()=>this._goToPage(e)}
-                  aria-label=${`Page ${e}`}
-                  aria-current=${this._currentPage===e?"page":"false"}
+                  class="pagination-btn ${this._currentPage===t?"active":""}"
+                  @click=${()=>this._goToPage(t)}
+                  aria-label=${`Page ${t}`}
+                  aria-current=${this._currentPage===t?"page":"false"}
                 >
-                  ${e}
+                  ${t}
                 </button>
               `})}
             
@@ -2908,7 +3299,7 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
           </nav>
         `:""}
       </section>
-    `}};p.styles=[v,g`
+    `}};g.styles=[v,d`
       :host {
         display: block;
         width: 100%;
@@ -3369,7 +3760,7 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
         border-color: rgba(255, 255, 255, 0.1);
         color: var(--color-text-secondary);
       }
-    `];f([l({type:Array})],p.prototype,"posts",2);f([l({type:String})],p.prototype,"title",2);f([l({type:String})],p.prototype,"subtitle",2);f([l({type:Boolean,attribute:"show-filters"})],p.prototype,"showFilters",2);f([l({type:Boolean,attribute:"show-load-more"})],p.prototype,"showLoadMore",2);f([l({type:Boolean,attribute:"show-pagination"})],p.prototype,"showPagination",2);f([l({type:Number,attribute:"posts-per-page"})],p.prototype,"postsPerPage",2);f([c()],p.prototype,"_filter",2);f([c()],p.prototype,"_currentPage",2);f([c()],p.prototype,"_isLoading",2);f([c()],p.prototype,"_allCategories",2);p=f([m("blog-list-section")],p);var yt=Object.defineProperty,wt=Object.getOwnPropertyDescriptor,z=(t,i,a,o)=>{for(var e=o>1?void 0:o?wt(i,a):i,s=t.length-1,n;s>=0;s--)(n=t[s])&&(e=(o?n(i,a,e):n(e))||e);return o&&e&&yt(i,a,e),e};let $=class extends h{constructor(){super(...arguments),this.showAuthor=!0,this.showRelated=!0,this.showActions=!0,this._liked=!1,this._currentUrl=""}connectedCallback(){if(super.connectedCallback(),this._currentUrl=window.location.href,this.article?.id){const t=localStorage.getItem(`article_${this.article.id}_liked`);t&&(this._liked=JSON.parse(t))}}_toggleLike(){this._liked=!this._liked,this.article?.id&&(localStorage.setItem(`article_${this.article.id}_liked`,JSON.stringify(this._liked)),this.article.meta&&(this.article.meta.likes=(this.article.meta.likes||0)+(this._liked?1:-1)),this.requestUpdate())}_shareToTwitter(){const t=encodeURIComponent(this._currentUrl),i=encodeURIComponent(this.article?.title||"Check out this article!");window.open(`https://twitter.com/intent/tweet?url=${t}&text=${i}`,"_blank")}_formatDate(t){return new Date(t).toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})}renderArticleMeta(){return this.article?r`
+    `];f([l({type:Array})],g.prototype,"posts",2);f([l({type:String})],g.prototype,"title",2);f([l({type:String})],g.prototype,"subtitle",2);f([l({type:Boolean,attribute:"show-filters"})],g.prototype,"showFilters",2);f([l({type:Boolean,attribute:"show-load-more"})],g.prototype,"showLoadMore",2);f([l({type:Boolean,attribute:"show-pagination"})],g.prototype,"showPagination",2);f([l({type:Number,attribute:"posts-per-page"})],g.prototype,"postsPerPage",2);f([c()],g.prototype,"_filter",2);f([c()],g.prototype,"_currentPage",2);f([c()],g.prototype,"_isLoading",2);f([c()],g.prototype,"_allCategories",2);g=f([m("blog-list-section")],g);var we=Object.defineProperty,ke=Object.getOwnPropertyDescriptor,S=(e,i,r,o)=>{for(var t=o>1?void 0:o?ke(i,r):i,n=e.length-1,s;n>=0;n--)(s=e[n])&&(t=(o?s(i,r,t):s(t))||t);return o&&t&&we(i,r,t),t};let $=class extends h{constructor(){super(...arguments),this.showAuthor=!0,this.showRelated=!0,this.showActions=!0,this._liked=!1,this._currentUrl=""}connectedCallback(){if(super.connectedCallback(),this._currentUrl=window.location.href,this.article?.id){const e=localStorage.getItem(`article_${this.article.id}_liked`);e&&(this._liked=JSON.parse(e))}}_toggleLike(){this._liked=!this._liked,this.article?.id&&(localStorage.setItem(`article_${this.article.id}_liked`,JSON.stringify(this._liked)),this.article.meta&&(this.article.meta.likes=(this.article.meta.likes||0)+(this._liked?1:-1)),this.requestUpdate())}_shareToTwitter(){const e=encodeURIComponent(this._currentUrl),i=encodeURIComponent(this.article?.title||"Check out this article!");window.open(`https://twitter.com/intent/tweet?url=${e}&text=${i}`,"_blank")}_formatDate(e){return new Date(e).toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})}renderArticleMeta(){return this.article?a`
       <div class="article-meta">
         <div class="publish-date">
           <span>📅</span>
@@ -3378,7 +3769,7 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
           </time>
         </div>
 
-        ${this.article.updatedAt&&this.article.updatedAt!==this.article.createdAt?r`
+        ${this.article.updatedAt&&this.article.updatedAt!==this.article.createdAt?a`
           <div class="update-date">
             <span>🔄</span>
             <time datetime=${this.article.updatedAt}>
@@ -3391,7 +3782,7 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
           ${this.article.status}
         </div>
       </div>
-    `:""}renderFeaturedImage(){return this.article?.featuredImage?r`
+    `:""}renderFeaturedImage(){return this.article?.featuredImage?a`
       <div class="featured-image">
         <img 
           src="${this.article.featuredImage}" 
@@ -3399,9 +3790,9 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
           loading="eager"
         />
       </div>
-    `:""}renderAuthorInfo(){return!this.showAuthor||!this.article?.author?"":r`
+    `:""}renderAuthorInfo(){return!this.showAuthor||!this.article?.author?"":a`
       <div class="author-info">
-        ${this.article.author.avatar?r`
+        ${this.article.author.avatar?a`
           <img 
             src="${this.article.author.avatar}" 
             alt="${this.article.author.name}" 
@@ -3410,12 +3801,12 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
         `:""}
         <div class="author-details">
           <h4>${this.article.author.name}</h4>
-          ${this.article.author.role?r`
+          ${this.article.author.role?a`
             <p class="author-role">${this.article.author.role}</p>
           `:""}
         </div>
       </div>
-    `}renderArticleActions(){return!this.showActions||!this.article?"":r`
+    `}renderArticleActions(){return!this.showActions||!this.article?"":a`
       <div class="article-actions">
         <button 
           class="action-btn"
@@ -3438,33 +3829,35 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
         <a 
           href="/blog" 
           class="action-btn"
-          data-pjax
+          hx-get="/blog"
+          hx-target="#pjax-container"
+          hx-push-url="true"
         >
           ← Back to Blog
         </a>
       </div>
-    `}renderRelatedArticles(){return!this.showRelated||!this.article?.relatedArticles?.length?"":r`
+    `}renderRelatedArticles(){return!this.showRelated||!this.article?.relatedArticles?.length?"":a`
       <div class="related-articles">
         <h3 class="related-title">Related Articles</h3>
         <div class="related-grid">
-          ${this.article.relatedArticles.map(t=>r`
+          ${this.article.relatedArticles.map(e=>a`
             <a 
-              href="/blog/${t.slug}" 
+              href="/blog/${e.slug}" 
               class="related-article"
               data-pjax
             >
               <div class="related-content">
-                <h4 class="related-article-title">${t.title}</h4>
-                <p class="related-excerpt">${t.excerpt}</p>
+                <h4 class="related-article-title">${e.title}</h4>
+                <p class="related-excerpt">${e.excerpt}</p>
                 <div class="related-date">
-                  ${this._formatDate(t.createdAt)}
+                  ${this._formatDate(e.createdAt)}
                 </div>
               </div>
             </a>
           `)}
         </div>
       </div>
-    `}render(){return this.article?r`
+    `}render(){return this.article?a`
       <article class="article-container">
         <!-- Article Header -->
         <header class="article-header">
@@ -3489,7 +3882,7 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
         <!-- Related Articles -->
         ${this.renderRelatedArticles()}
       </article>
-    `:r`
+    `:a`
         <div class="article-container">
           <div style="text-align: center; padding: 4rem 0;">
             <h2>Article not found</h2>
@@ -3499,7 +3892,7 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
             </a>
           </div>
         </div>
-      `}};$.styles=[v,g`
+      `}};$.styles=[v,d`
       :host {
         display: block;
         width: 100%;
@@ -3845,4 +4238,4 @@ It integrated with Spiral seamlessly, like it was made for it. And now—I actua
           grid-template-columns: 1fr;
         }
       }
-    `];z([l({type:Object})],$.prototype,"article",2);z([l({type:Boolean})],$.prototype,"showAuthor",2);z([l({type:Boolean})],$.prototype,"showRelated",2);z([l({type:Boolean})],$.prototype,"showActions",2);z([c()],$.prototype,"_liked",2);z([c()],$.prototype,"_currentUrl",2);$=z([m("article-detail-section")],$);
+    `];S([l({type:Object})],$.prototype,"article",2);S([l({type:Boolean})],$.prototype,"showAuthor",2);S([l({type:Boolean})],$.prototype,"showRelated",2);S([l({type:Boolean})],$.prototype,"showActions",2);S([c()],$.prototype,"_liked",2);S([c()],$.prototype,"_currentUrl",2);$=S([m("article-detail-section")],$);export{v as s};

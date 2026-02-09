@@ -20,8 +20,7 @@ class CsrfMiddleware implements MiddlewareInterface
     public function __construct(
         private readonly \Blog\Security\CsrfProtection $csrfProtection,
         private readonly \Blog\Security\SecurityLogger $logger
-    ) {
-    }
+    ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

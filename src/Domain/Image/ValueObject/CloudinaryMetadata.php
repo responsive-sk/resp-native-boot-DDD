@@ -15,8 +15,7 @@ class CloudinaryMetadata
         private array $tags = [],
         private array $context = [],     // alt, caption, etc.
         private array $exif = []
-    ) {
-    }
+    ) {}
 
     public function getPublicId(): string
     {

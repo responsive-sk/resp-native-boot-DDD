@@ -25,15 +25,15 @@ final readonly class RouterMiddleware implements MiddlewareInterface
         $routeMatch = $this->router->match($request);
 
         // Pridaj route parametre do request atribútov
-        foreach ($routeMatch->getParams() as $name => $value) {
+        foreach ($routeMatch->params as $name => $value) { // getParams() -> params
             $request = $request->withAttribute($name, $value);
         }
 
         // Pridaj route name do request atribútov (pre templating)
-        $request = $request->withAttribute('_route', $routeMatch->getName());
+        $request = $request->withAttribute('_route', $routeMatch->name); // getName() -> name
 
         // Zavolaj route handler
-        $routeHandler = $routeMatch->getHandler();
+        $routeHandler = $routeMatch->handler; // getHandler() -> handler
 
         return $routeHandler($request);
     }

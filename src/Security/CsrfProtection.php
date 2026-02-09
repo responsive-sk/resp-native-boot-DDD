@@ -15,8 +15,7 @@ class CsrfProtection
     public function __construct(
         private readonly SessionInterface $session,
         private readonly bool $enabled = true
-    ) {
-    }
+    ) {}
 
     public function generateToken(): string
     {

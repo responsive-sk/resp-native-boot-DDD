@@ -260,7 +260,7 @@ final class PlatesRenderer
                     $categoryRepository = \Blog\Infrastructure\Persistence\Doctrine\DoctrineCategoryRepository::class;
                     $repo = new $categoryRepository(\Blog\Database\DatabaseManager::getConnection('articles'));
                     $cats = $repo->getAll();
-                    $categories = array_map(fn ($cat) => $cat->slug()->toString(), $cats);
+                    $categories = array_map(fn($cat) => $cat->slug()->toString(), $cats);
                 } catch (\Exception $e) {
                     $categories = [];
                 }
@@ -281,7 +281,7 @@ final class PlatesRenderer
                         )
                     );
                     $tagEntities = $getAllTags();
-                    $tags = array_map(fn ($tag) => $tag->name()->toString(), $tagEntities);
+                    $tags = array_map(fn($tag) => $tag->name()->toString(), $tagEntities);
                 } catch (\Exception $e) {
                     $tags = [];
                 }

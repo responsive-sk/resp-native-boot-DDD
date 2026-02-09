@@ -19,8 +19,7 @@ final readonly class DoctrineUserRepository implements UserRepositoryInterface
     public function __construct(
         private Connection $connection,
         private array $passwordStrengthConfig
-    ) {
-    }
+    ) {}
 
     public function findById(UserId $id): ?User
     {
@@ -97,30 +96,30 @@ final readonly class DoctrineUserRepository implements UserRepositoryInterface
         $where = [];
         $params = [];
         $types = [];
-        
+
         if (!empty($filters['role'])) {
             $where[] = 'role = ?';
             $params[] = $filters['role'];
             $types[] = ParameterType::STRING;
         }
-        
+
         if (!empty($filters['start_date'])) {
             $where[] = 'created_at >= ?';
             $params[] = $filters['start_date'];
             $types[] = ParameterType::STRING;
         }
-        
+
         if (!empty($filters['end_date'])) {
             $where[] = 'created_at <= ?';
             $params[] = $filters['end_date'];
             $types[] = ParameterType::STRING;
         }
-        
+
         $whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
-        
+
         $sql = "SELECT COUNT(*) FROM users {$whereClause}";
-        
-        return (int)$this->connection->fetchOne($sql, $params, $types);
+
+        return (int) $this->connection->fetchOne($sql, $params, $types);
     }
 
     public function remove(UserId $id): void

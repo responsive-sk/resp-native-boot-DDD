@@ -8,18 +8,17 @@ use Blog\Core\BaseUseCase;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Domain\Blog\ValueObject\Slug;
 
-final class GetArticleBySlug extends BaseUseCase
+final readonly class GetArticleBySlug extends BaseUseCase
 {
     public function __construct(
         private ArticleRepository $articles
-    ) {
-    }
+    ) {}
 
-    public function execute(array $input): array
+    protected function handle(array $input): array
     {
         $this->validate($input);
 
-        $slug = new Slug($input['slug']);
+        $slug = Slug::fromString($input['slug']);
         $article = $this->articles->getBySlug($slug);
 
         if ($article === null) {
@@ -28,14 +27,14 @@ final class GetArticleBySlug extends BaseUseCase
 
         return $this->success([
             'article' => [
-                'id' => $article->id()?->toString(),
-                'title' => $article->title()->toString(),
-                'slug' => $article->slug()?->toString(),
-                'content' => $article->content()->getRaw(),
-                'status' => $article->status()->toString(),
-                'author_id' => $article->authorId()->toString(),
-                'created_at' => $article->createdAt()->format('Y-m-d H:i:s'),
-                'updated_at' => $article->updatedAt()->format('Y-m-d H:i:s'),
+                'id' => $article->getId()->toString(),
+                'title' => $article->getTitle()->toString(),
+                'slug' => $article->getSlug()->toString(),
+                'content' => $article->getContent()->toString(),
+                'status' => $article->getStatus()->value,
+                'author_id' => $article->getAuthorId()->toString(),
+                'created_at' => $article->getCreatedAt()->format('Y-m-d H:i:s'),
+                'updated_at' => $article->getUpdatedAt()->format('Y-m-d H:i:s'),
             ],
         ]);
     }

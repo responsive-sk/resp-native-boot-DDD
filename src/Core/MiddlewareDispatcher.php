@@ -18,24 +18,20 @@ use RuntimeException;
  */
 final class MiddlewareDispatcher implements RequestHandlerInterface
 {
-    /**
-     * @var array<MiddlewareInterface>
-     */
-    private array $middlewares;
-
     private int $index = 0;
 
     /**
      * @param array<MiddlewareInterface> $middlewares
      */
-    public function __construct(array $middlewares)
-    {
-        $this->middlewares = $middlewares;
+    public function __construct(
+        private array $middlewares
+    ) {
     }
 
     /**
      * Spracuje request cez ďalší middleware v stacku
      */
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         if (!isset($this->middlewares[$this->index])) {

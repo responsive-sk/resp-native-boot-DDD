@@ -9,9 +9,7 @@ use Blog\Domain\Blog\Repository\TagRepository;
 
 final readonly class GetOrCreateTag
 {
-    public function __construct(private TagRepository $tagRepository)
-    {
-    }
+    public function __construct(private TagRepository $tagRepository) {}
 
     public function __invoke(string $name): Tag
     {

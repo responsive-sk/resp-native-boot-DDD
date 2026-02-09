@@ -7,14 +7,13 @@ namespace Blog\Application\Blog;
 use Blog\Core\BaseUseCase;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 
-final class SearchArticles extends BaseUseCase
+final readonly class SearchArticles extends BaseUseCase
 {
     public function __construct(
         private ArticleRepository $articles
-    ) {
-    }
+    ) {}
 
-    public function execute(array $input): array
+    protected function handle(array $input): array
     {
         $this->validate($input);
 
@@ -23,13 +22,13 @@ final class SearchArticles extends BaseUseCase
 
         $articlesData = array_map(function ($article) {
             return [
-                'id' => $article->id()?->toString(),
-                'title' => $article->title()->toString(),
-                'slug' => $article->slug()?->toString(),
-                'content' => substr($article->content()->getRaw(), 0, 200) . '...',
-                'status' => $article->status()->toString(),
-                'author_id' => $article->authorId()->toString(),
-                'created_at' => $article->createdAt()->format('Y-m-d H:i:s'),
+                'id' => $article->getId()->toString(),
+                'title' => $article->getTitle()->toString(),
+                'slug' => $article->getSlug()->toString(),
+                'content' => substr($article->getContent()->toString(), 0, 200) . '...',
+                'status' => $article->getStatus()->value,
+                'author_id' => $article->getAuthorId()->toString(),
+                'created_at' => $article->getCreatedAt()->format('Y-m-d H:i:s'),
             ];
         }, $articles);
 

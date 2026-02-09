@@ -11,8 +11,7 @@ final readonly class GetForm
 {
     public function __construct(
         private FormRepositoryInterface $formRepository
-    ) {
-    }
+    ) {}
 
     public function bySlug(string $slug): ?Form
     {

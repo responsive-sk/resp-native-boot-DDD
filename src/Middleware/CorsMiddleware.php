@@ -21,8 +21,7 @@ final readonly class CorsMiddleware implements MiddlewareInterface
         ],
         private array $allowedMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
         private array $allowedHeaders = ['Content-Type', 'Authorization', 'X-Requested-With']
-    ) {
-    }
+    ) {}
 
     public function process(
         ServerRequestInterface $request,

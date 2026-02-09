@@ -7,7 +7,7 @@ echo "=== Audit Code Quality Check ===\n\n";
 // Check for hardcoded event type strings
 $patterns = [
     'login_success',
-    'login_failed', 
+    'login_failed',
     'authorization_denied',
     'registration',
     'logout',
@@ -15,7 +15,7 @@ $patterns = [
     'article_updated',
     'article_deleted',
     'user_created',
-    'image_uploaded'
+    'image_uploaded',
 ];
 
 $excludePatterns = [
@@ -29,7 +29,7 @@ $excludePatterns = [
     '"registration logic"',
     'public function logout',
     'class.*Controller',
-    'class.*Middleware'
+    'class.*Middleware',
 ];
 
 $issues = [];
@@ -37,7 +37,7 @@ $issues = [];
 foreach ($patterns as $pattern) {
     $command = "grep -r \"$pattern\" /home/evan/Desktop/02/ag/resp-blog/src/ --include=\"*.php\"";
     $output = shell_exec($command);
-    
+
     if ($output) {
         $lines = explode("\n", trim($output));
         foreach ($lines as $line) {
@@ -48,7 +48,7 @@ foreach ($patterns as $pattern) {
                     break;
                 }
             }
-            
+
             if (!$shouldExclude && !empty(trim($line))) {
                 $issues[] = $line;
             }

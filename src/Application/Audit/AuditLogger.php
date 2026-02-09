@@ -14,8 +14,7 @@ class AuditLogger
 {
     public function __construct(
         private AuditLogRepository $repository
-    ) {
-    }
+    ) {}
 
     public function log(
         AuditEventType $eventType,
@@ -31,7 +30,7 @@ class AuditLogger
             $userAgent,
             $metadata
         );
-        
+
         $this->repository->save($auditLog);
     }
 
@@ -44,7 +43,7 @@ class AuditLogger
     ): void {
         $ipAddress = $this->getClientIp($request);
         $userAgent = $request->getHeaderLine('User-Agent');
-        
+
         $log = AuditLog::createAuthenticationEvent(
             $email,
             new AuditEventType($eventType),
@@ -74,7 +73,7 @@ class AuditLogger
     ): void {
         $ipAddress = $this->getClientIp($request);
         $userAgent = $request->getHeaderLine('User-Agent');
-        
+
         $log = AuditLog::createAuthorizationEvent(
             $userId,
             new AuditEventType($eventType),
@@ -100,7 +99,7 @@ class AuditLogger
         $auditLog = AuditLogFactory::createLoginSuccess($email, $ipAddress, $userAgent);
         $this->repository->save($auditLog);
     }
-    
+
     public function logLoginFailed(
         string $email,
         ?string $ipAddress = null,
@@ -109,7 +108,7 @@ class AuditLogger
         $auditLog = AuditLogFactory::createLoginFailed($email, $ipAddress, $userAgent);
         $this->repository->save($auditLog);
     }
-    
+
     public function logAuthorizationDenied(
         ?string $userId,
         string $resource,
@@ -124,7 +123,7 @@ class AuditLogger
         );
         $this->repository->save($auditLog);
     }
-    
+
     public function logArticleCreated(
         string $articleId,
         ?string $userId,
@@ -139,7 +138,7 @@ class AuditLogger
         );
         $this->repository->save($auditLog);
     }
-    
+
     public function logImageUploaded(
         string $imageId,
         ?string $userId,

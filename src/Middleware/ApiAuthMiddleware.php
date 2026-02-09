@@ -16,8 +16,7 @@ final class ApiAuthMiddleware implements MiddlewareInterface
     public function __construct(
         private readonly \Blog\Security\AuthorizationService $authorization,
         private readonly \Blog\Application\Audit\AuditLogger $auditLogger
-    ) {
-    }
+    ) {}
 
     public function process(
         ServerRequestInterface $request,

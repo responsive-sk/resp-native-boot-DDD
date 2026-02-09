@@ -13,6 +13,6 @@ DatabaseManager::getConnection('users');
 DatabaseManager::getConnection('articles');
 
 // Optionally set writable paths for tests
-@mkdir(\Blog\Infrastructure\Paths::basePath() . '/var', 0777, true);
+@mkdir(\Blog\Infrastructure\Paths::basePath() . '/var', 0o777, true);
 
 echo "PHPUnit bootstrap: per-model DBs initialized\n";

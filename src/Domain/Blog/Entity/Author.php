@@ -15,8 +15,7 @@ final class Author
         private readonly Username $username,
         private readonly Email $email,
         private readonly string $role
-    ) {
-    }
+    ) {}
 
     public static function create(
         AuthorId $id,

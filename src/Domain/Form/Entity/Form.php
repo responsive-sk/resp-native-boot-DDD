@@ -19,8 +19,7 @@ final class Form
         private array $fields,
         private DateTimeImmutable $createdAt,
         private DateTimeImmutable $updatedAt
-    ) {
-    }
+    ) {}
 
     /**
      * @param array<int, mixed> $fields

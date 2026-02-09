@@ -11,9 +11,7 @@ use Blog\Domain\User\ValueObject\UserId;
 
 class DoctrineImageRepository implements ImageRepositoryInterface
 {
-    public function __construct(private \Blog\Database\Database $database)
-    {
-    }
+    public function __construct(private \Blog\Database\Database $database) {}
 
     public function findById(ImageId $id): ?Image
     {

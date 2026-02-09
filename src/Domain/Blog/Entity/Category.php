@@ -18,8 +18,7 @@ final class Category
         private ?string            $description,
         private readonly DateTimeImmutable $createdAt,
         private DateTimeImmutable $updatedAt
-    ) {
-    }
+    ) {}
 
     public static function create(
         CategoryName $name,
@@ -94,6 +93,11 @@ final class Category
             throw new \LogicException('Category ID už bolo nastavené');
         }
         $this->id = $id;
+    }
+
+    public function getId(): ?CategoryId
+    {
+        return $this->id;
     }
 
     // Compatibility getters used by templates

@@ -22,8 +22,7 @@ final class SessionManager
         private readonly int $timeout = 1800,
         private readonly string $binding = 'user_agent',
         private readonly ?SecurityLogger $logger = null
-    ) {
-    }
+    ) {}
 
     public function startSession(string $userId, string $userRole): void
     {

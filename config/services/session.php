@@ -11,7 +11,7 @@ use ResponsiveSk\Slim4Session\SessionInterface;
 return [
     SessionInterface::class => function (ContainerInterface $c) {
         $config = require __DIR__ . '/../session.php';
-        
+
         // Add database connection for database storage
         if ($config['storage'] === 'database') {
             $config['database'] = array_merge($config['database'] ?? [], [
@@ -27,7 +27,7 @@ return [
         return SessionFactory::create($config);
     },
 
-    SessionMiddleware::class => fn (ContainerInterface $c) => new SessionMiddleware(
+    SessionMiddleware::class => fn(ContainerInterface $c) => new SessionMiddleware(
         $c->get(SessionInterface::class)
     ),
 ];

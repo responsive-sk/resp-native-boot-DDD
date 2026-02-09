@@ -12,8 +12,7 @@ class DeleteImage
     public function __construct(
         private ImageRepositoryInterface $imageRepository,
         private ImageStorageInterface $imageStorage
-    ) {
-    }
+    ) {}
 
     public function __invoke(array $input): array
     {

@@ -8,8 +8,7 @@ final class CsrfTokenHelper
 {
     public function __construct(
         private readonly CsrfProtection $csrfProtection
-    ) {
-    }
+    ) {}
 
     /**
      * Generate HTML hidden input field with CSRF token
