@@ -3,29 +3,43 @@
 declare(strict_types=1);
 
 use Blog\Database\Database;
+use Blog\Domain\Image\Factory\ImageFactory;
+use Blog\Infrastructure\Image\CloudinaryImageProcessor;
+use Blog\Infrastructure\Image\CloudinaryImageUploader;
+use Blog\Infrastructure\Persistence\Doctrine\DoctrineImageRepository;
+use Blog\Infrastructure\Storage\CloudinaryStorage;
+use Cloudinary\Cloudinary;
 use Psr\Container\ContainerInterface;
 
 return [
-    'cloudinary' => fn(ContainerInterface $c) => new \Cloudinary\Cloudinary($c->get('config')['cloudinary'] ?? []),
+    // Core Cloudinary client
+    Cloudinary::class => fn(ContainerInterface $c) => new Cloudinary(
+        $c->get('config')['cloudinary'] ?? []
+    ),
 
-    'image_storage' => fn(ContainerInterface $c) => new \Blog\Infrastructure\Storage\CloudinaryStorage(
-        $c->get('cloudinary'),
+    // Storage for original images
+    CloudinaryStorage::class => fn(ContainerInterface $c) => new CloudinaryStorage(
+        $c->get(Cloudinary::class),
         $c->get('config')['image'] ?? []
     ),
 
-    'image_processor' => fn(ContainerInterface $c) => new \Blog\Infrastructure\Image\CloudinaryImageProcessor(
-        $c->get('cloudinary'),
+    // Image transformations
+    CloudinaryImageProcessor::class => fn(ContainerInterface $c) => new CloudinaryImageProcessor(
+        $c->get(Cloudinary::class),
         $c->get('config')['image']['transformations'] ?? []
     ),
 
-    'image_uploader' => fn(ContainerInterface $c) => new \Blog\Infrastructure\Image\CloudinaryImageUploader(
-        $c->get('image_storage'),
+    // High-level upload service
+    CloudinaryImageUploader::class => fn(ContainerInterface $c) => new CloudinaryImageUploader(
+        $c->get(CloudinaryStorage::class),
         $c->get('config')['image'] ?? []
     ),
 
-    'image_factory' => fn() => new \Blog\Domain\Image\Factory\ImageFactory(),
+    // Domain image factory
+    ImageFactory::class => fn() => new ImageFactory(),
 
-    'image_repository' => fn(ContainerInterface $c) => new \Blog\Infrastructure\Persistence\Doctrine\DoctrineImageRepository(
+    // Image repository
+    DoctrineImageRepository::class => fn(ContainerInterface $c) => new DoctrineImageRepository(
         $c->get(Database::class)
     ),
 ];

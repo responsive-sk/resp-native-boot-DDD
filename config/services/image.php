@@ -3,51 +3,33 @@
 declare(strict_types=1);
 
 use Blog\Application\Image\UploadImage;
+use Blog\Domain\Image\Factory\ImageFactory;
 use Blog\Infrastructure\Image\CloudinaryImageProcessor;
 use Blog\Infrastructure\Image\CloudinaryImageUploader;
+use Blog\Infrastructure\Persistence\Doctrine\DoctrineImageRepository;
 use Blog\Infrastructure\Storage\CloudinaryStorage;
 use Cloudinary\Cloudinary;
+use Psr\Container\ContainerInterface;
 
 return [
-    'cloudinary' => [
-        'factory' => function ($container) {
-            $config = $container->get('config')['cloudinary'] ?? [];
+    // Backwards-compatible aliases for image services
+    'cloudinary' => fn(ContainerInterface $c) => $c->get(Cloudinary::class),
 
-            return new Cloudinary($config);
-        },
-    ],
+    'image_storage' => fn(ContainerInterface $c) => $c->get(CloudinaryStorage::class),
 
-    'image_storage' => [
-        'class' => CloudinaryStorage::class,
-        'arguments' => ['@cloudinary', '%config.image%'],
-    ],
+    'image_processor' => fn(ContainerInterface $c) => $c->get(CloudinaryImageProcessor::class),
 
-    'image_processor' => [
-        'class' => CloudinaryImageProcessor::class,
-        'arguments' => ['@cloudinary', '%config.image.transformations%'],
-    ],
+    'image_uploader' => fn(ContainerInterface $c) => $c->get(CloudinaryImageUploader::class),
 
-    'image_uploader' => [
-        'class' => CloudinaryImageUploader::class,
-        'arguments' => ['@image_storage', '%config.image%'],
-    ],
+    'image_factory' => fn(ContainerInterface $c) => $c->get(ImageFactory::class),
 
-    'image_factory' => [
-        'class' => Blog\Domain\Image\Factory\ImageFactory::class,
-    ],
+    'image_repository' => fn(ContainerInterface $c) => $c->get(DoctrineImageRepository::class),
 
-    // Image repository implementation would go here
-    'image_repository' => [
-        'class' => Blog\Infrastructure\Persistence\ImageRepository::class,
-        'arguments' => ['@database'],
-    ],
-
-    UploadImage::class => [
-        'arguments' => [
-            '@image_uploader',
-            '@user_repository',
-            '@image_factory',
-            '@image_repository',
-        ],
-    ],
+    // Application use case wiring can still use string-based aliases if needed
+    UploadImage::class => fn(ContainerInterface $c) => new UploadImage(
+        $c->get(CloudinaryImageUploader::class),
+        $c->get('user_repository'),
+        $c->get(ImageFactory::class),
+        $c->get(DoctrineImageRepository::class)
+    ),
 ];

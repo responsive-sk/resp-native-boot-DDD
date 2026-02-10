@@ -8,6 +8,10 @@ use Blog\Application\Image\AttachImageToArticle;
 use Blog\Application\Image\DeleteImage;
 use Blog\Application\Image\UploadImage;
 use Blog\Infrastructure\Http\Controller\BaseController;
+use Blog\Infrastructure\Image\CloudinaryImageUploader;
+use Blog\Infrastructure\Persistence\Doctrine\DoctrineImageRepository;
+use Blog\Infrastructure\Storage\CloudinaryStorage;
+use Cloudinary\Cloudinary;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -26,10 +30,10 @@ class ImageController extends BaseController
         }
 
         $useCase = new UploadImage(
-            $this->useCaseHandler->get('image_uploader'),
+            $this->container->get(CloudinaryImageUploader::class),
             $this->useCaseHandler->get('user_repository'),
-            $this->useCaseHandler->get('image_factory'),
-            $this->useCaseHandler->get('image_repository')
+            $this->container->get(\Blog\Domain\Image\Factory\ImageFactory::class),
+            $this->container->get(DoctrineImageRepository::class)
         );
 
         try {
@@ -54,8 +58,8 @@ class ImageController extends BaseController
     public function delete(ServerRequestInterface $request, string $id): ResponseInterface
     {
         $useCase = new DeleteImage(
-            $this->useCaseHandler->get('image_repository'),
-            $this->useCaseHandler->get('image_storage')
+            $this->container->get(DoctrineImageRepository::class),
+            $this->container->get(CloudinaryStorage::class)
         );
 
         try {
@@ -102,7 +106,7 @@ class ImageController extends BaseController
 
         try {
             // Cloudinary Admin API for listing
-            $cloudinary = $this->useCaseHandler->get('cloudinary');
+            $cloudinary = $this->container->get(Cloudinary::class);
             $result = $cloudinary->adminApi()->assets([
                 'max_results' => $query['limit'] ?? 50,
                 'next_cursor' => $query['cursor'] ?? null,
