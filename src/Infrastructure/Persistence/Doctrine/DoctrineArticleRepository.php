@@ -205,7 +205,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
 
         $rows = $this->connection->fetchAllAssociative($sql, [$ftsQuery]);
 
-        return array_map([$this, 'hydrate'], $rows);
+        return $this->hydrateBatch($rows);
     }
 
     public function getByCategory(CategoryId $categoryId): array
@@ -215,7 +215,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
             [$categoryId->toString()]
         );
 
-        return array_map([$this, 'hydrate'], $rows);
+        return $this->hydrateBatch($rows);
     }
 
     public function getRecentArticles(int $limit = 10): array
@@ -226,7 +226,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
             [ParameterType::INTEGER]
         );
 
-        return array_map([$this, 'hydrate'], $rows);
+        return $this->hydrateBatch($rows);
     }
 
     public function count(array $filters = []): int
@@ -297,18 +297,80 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
 
     private function hydrate(array $row): Article
     {
+        // Single article hydration - still requires individual queries for category/tags
+        // This is acceptable for single-article lookups (getById, getBySlug)
+        // For bulk operations, use hydrateBatch instead
         $category = null;
+        $tags = [];
+
         if (!empty($row['category_id'])) {
-            // Load category - for simplicity, we'll create a minimal category
-            // In production, you might want to inject CategoryRepository
             $categoryData = $this->connection->fetchAssociative(
                 'SELECT * FROM categories WHERE id = ?',
                 [$row['category_id']]
             );
-
-            return $this->hydrateWithPreloadedData($row, $categoryData ?: null, $this->loadTagsForArticle((string) $row['id']));
+            $category = $categoryData ?: null;
         }
 
-        return $this->hydrateWithPreloadedData($row, null, $this->loadTagsForArticle((string) $row['id']));
+        $tags = $this->loadTagsForArticle((string) $row['id']);
+
+        return $this->hydrateWithPreloadedData($row, $category, $tags);
+    }
+
+    /**
+     * Batch hydration with preloaded categories and tags to avoid N+1 queries.
+     *
+     * @param array<int, array<string, mixed>> $rows
+     *
+     * @return Article[]
+     */
+    private function hydrateBatch(array $rows): array
+    {
+        if (empty($rows)) {
+            return [];
+        }
+
+        $articleIds = array_column($rows, 'id');
+        $categoryIds = array_filter(array_unique(array_column($rows, 'category_id')));
+
+        // Load all categories at once
+        $categories = [];
+        if (!empty($categoryIds)) {
+            $categoriesData = $this->connection->fetchAllAssociative(
+                'SELECT * FROM categories WHERE id IN (?)',
+                [$categoryIds],
+                [\Doctrine\DBAL\ArrayParameterType::STRING]
+            );
+            foreach ($categoriesData as $cat) {
+                $categories[$cat['id']] = $cat;
+            }
+        }
+
+        // Load all tags for these articles at once
+        $tagsData = [];
+        if (!empty($articleIds)) {
+            $tagsData = $this->connection->fetchAllAssociative(
+                'SELECT t.*, at.article_id
+                 FROM tags t
+                 INNER JOIN article_tags at ON t.id = at.tag_id
+                 WHERE at.article_id IN (?)
+                 ORDER BY t.name ASC',
+                [$articleIds],
+                [\Doctrine\DBAL\ArrayParameterType::INTEGER]
+            );
+        }
+
+        $tagsByArticle = [];
+        foreach ($tagsData as $tag) {
+            $tagsByArticle[$tag['article_id']][] = $tag;
+        }
+
+        // Hydrate with preloaded data
+        return array_map(function ($row) use ($categories, $tagsByArticle) {
+            return $this->hydrateWithPreloadedData(
+                $row,
+                $categories[$row['category_id'] ?? ''] ?? null,
+                $tagsByArticle[$row['id']] ?? []
+            );
+        }, $rows);
     }
 }
