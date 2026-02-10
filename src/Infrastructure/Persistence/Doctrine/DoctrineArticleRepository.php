@@ -102,12 +102,44 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
 
     public function findPublished(): array
     {
-        // Specific query for published articles - filtering done in SQL
-        $rows = $this->connection->fetchAllAssociative(
-            "SELECT * FROM articles WHERE status = 'published' ORDER BY created_at DESC"
-        );
+        // Optimized query with LEFT JOINs to fetch articles with categories in single query
+        $sql = "
+            SELECT 
+                a.*,
+                c.id as category_id,
+                c.name as category_name,
+                c.slug as category_slug,
+                c.description as category_description,
+                c.created_at as category_created_at,
+                c.updated_at as category_updated_at
+            FROM articles a
+            LEFT JOIN categories c ON a.category_id = c.id
+            WHERE a.status = 'published'
+            ORDER BY a.created_at DESC
+        ";
 
-        return $this->hydrateBatch($rows);
+        $rows = $this->connection->fetchAllAssociative($sql);
+
+        // Tags still loaded separately (many-to-many doesn't work well with single JOIN)
+        $articleIds = array_column($rows, 'id');
+        $tagsByArticle = $this->loadTagsForArticles($articleIds);
+
+        return array_map(function ($row) use ($tagsByArticle) {
+            $categoryData = $row['category_id'] ? [
+                'id' => $row['category_id'],
+                'name' => $row['category_name'],
+                'slug' => $row['category_slug'],
+                'description' => $row['category_description'],
+                'created_at' => $row['category_created_at'],
+                'updated_at' => $row['category_updated_at'],
+            ] : null;
+
+            return $this->hydrateWithPreloadedData(
+                $row,
+                $categoryData,
+                $tagsByArticle[$row['id']] ?? []
+            );
+        }, $rows);
     }
 
     public function findByStatus(string $status): array
@@ -250,7 +282,39 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
     }
 
     /**
+     * Load tags for multiple articles in a single query.
+     *
+     * @param array<int|string> $articleIds
+     *
+     * @return array<string, array<int, array<string, mixed>>>
+     */
+    private function loadTagsForArticles(array $articleIds): array
+    {
+        if (empty($articleIds)) {
+            return [];
+        }
+
+        $tagsData = $this->connection->fetchAllAssociative(
+            'SELECT t.*, at.article_id 
+             FROM tags t
+             INNER JOIN article_tags at ON t.id = at.tag_id
+             WHERE at.article_id IN (?)
+             ORDER BY t.name ASC',
+            [$articleIds],
+            [\Doctrine\DBAL\ArrayParameterType::STRING]
+        );
+
+        $tagsByArticle = [];
+        foreach ($tagsData as $tag) {
+            $tagsByArticle[$tag['article_id']][] = $tag;
+        }
+
+        return $tagsByArticle;
+    }
+
+    /**
      * Batch hydration with preloaded categories and tags to avoid N+1 queries.
+     * Uses IN clause queries for efficient batch loading.
      *
      * @param array<int, array<string, mixed>> $rows
      *
@@ -265,7 +329,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
         $articleIds = array_column($rows, 'id');
         $categoryIds = array_filter(array_unique(array_column($rows, 'category_id')));
 
-        // Load all categories at once
+        // Load all categories at once using IN clause
         $categories = [];
         if (!empty($categoryIds)) {
             $categoriesData = $this->connection->fetchAllAssociative(
@@ -278,24 +342,8 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
             }
         }
 
-        // Load all tags for these articles at once
-        $tagsData = [];
-        if (!empty($articleIds)) {
-            $tagsData = $this->connection->fetchAllAssociative(
-                'SELECT t.*, at.article_id
-                 FROM tags t
-                 INNER JOIN article_tags at ON t.id = at.tag_id
-                 WHERE at.article_id IN (?)
-                 ORDER BY t.name ASC',
-                [$articleIds],
-                [\Doctrine\DBAL\ArrayParameterType::INTEGER]
-            );
-        }
-
-        $tagsByArticle = [];
-        foreach ($tagsData as $tag) {
-            $tagsByArticle[$tag['article_id']][] = $tag;
-        }
+        // Load all tags at once using optimized method
+        $tagsByArticle = $this->loadTagsForArticles($articleIds);
 
         // Hydrate with preloaded data
         return array_map(function ($row) use ($categories, $tagsByArticle) {
