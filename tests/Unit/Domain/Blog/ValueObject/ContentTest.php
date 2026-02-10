@@ -52,7 +52,7 @@ final class ContentTest extends TestCase
     {
         $content = Content::fromString('Krátky text.');
 
-        $this->assertSame('Krátky text.', $content->excerpt(100));
+        $this->assertSame('Krátky text.', $content->getExcerpt(100));
     }
 
     public function test_excerpt_truncates_long_text(): void
@@ -60,7 +60,7 @@ final class ContentTest extends TestCase
         $longText = str_repeat('Lorem ipsum dolor sit amet. ', 10);
         $content = Content::fromString($longText);
 
-        $excerpt = $content->excerpt(50);
+        $excerpt = $content->getExcerpt(50);
 
         $this->assertLessThanOrEqual(53, mb_strlen($excerpt)); // 50 + "..."
         $this->assertStringEndsWith('...', $excerpt);

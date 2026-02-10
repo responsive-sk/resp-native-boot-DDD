@@ -28,7 +28,7 @@ final class ArticleTest extends TestCase
         $this->assertSame('Môj článok', $article->title()->toString());
         $this->assertSame('Toto je obsah článku.', $article->content()->getRaw());
         $this->assertSame('00000000-0000-0000-0000-000000000001', $article->authorId()->toString());
-        $this->assertSame('draft', $article->status()->toString());
+        $this->assertSame('draft', $article->getStatus()->value);
     }
 
     public function test_updates_article_title_and_content(): void
@@ -56,11 +56,11 @@ final class ArticleTest extends TestCase
             AuthorId::fromString('00000000-0000-0000-0000-000000000001')
         );
 
-        $this->assertSame('draft', $article->status()->toString());
+        $this->assertSame('draft', $article->getStatus()->value);
 
         $article->publish();
 
-        $this->assertSame('published', $article->status()->toString());
+        $this->assertSame('published', $article->getStatus()->value);
     }
 
     public function test_archives_published_article(): void
@@ -74,7 +74,7 @@ final class ArticleTest extends TestCase
         $article->publish();
         $article->archive();
 
-        $this->assertSame('archived', $article->status()->toString());
+        $this->assertSame('archived', $article->getStatus()->value);
     }
 
     public function test_is_owned_by_returns_true_for_author(): void
@@ -118,7 +118,7 @@ final class ArticleTest extends TestCase
 
         $this->assertSame(1, $article->id()->toInt());
         $this->assertSame('Môj článok', $article->title()->toString());
-        $this->assertSame('published', $article->status()->toString());
+        $this->assertSame('published', $article->getStatus()->value);
         $this->assertSame('2024-01-01 10:00:00', $article->createdAt()->format('Y-m-d H:i:s'));
         $this->assertSame('2024-01-02 15:30:00', $article->updatedAt()->format('Y-m-d H:i:s'));
     }
