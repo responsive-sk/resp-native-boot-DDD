@@ -7,7 +7,7 @@ namespace Blog\Application\Blog;
 use Blog\Core\BaseUseCase;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 
-final readonly class SearchArticles extends BaseUseCase
+final class SearchArticles extends BaseUseCase
 {
     public function __construct(
         private ArticleRepository $articles

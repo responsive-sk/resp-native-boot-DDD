@@ -8,7 +8,7 @@ use Blog\Core\BaseUseCase;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Domain\Blog\ValueObject\Slug;
 
-final readonly class GetArticleBySlug extends BaseUseCase
+final class GetArticleBySlug extends BaseUseCase
 {
     public function __construct(
         private ArticleRepository $articles

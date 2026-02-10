@@ -8,7 +8,7 @@ use Blog\Core\BaseUseCase;
 use Blog\Domain\Blog\Entity\Article;
 use Blog\Domain\Blog\Repository\ArticleRepository;
 
-final readonly class GetAllArticles extends BaseUseCase
+final class GetAllArticles extends BaseUseCase
 {
     public function __construct(
         private ArticleRepository $articles,
