@@ -25,8 +25,11 @@ return [
     ),
 
     GetAllArticles::class => fn(ContainerInterface $c) => new GetAllArticles(
-        $c->get(ArticleRepository::class)
+        $c->get(ArticleRepository::class),
+        $c->get(\Blog\Application\Blog\ArticleResponseMapper::class)
     ),
+
+    \Blog\Application\Blog\ArticleResponseMapper::class => fn() => new \Blog\Application\Blog\ArticleResponseMapper(),
 
     UpdateArticle::class => fn(ContainerInterface $c) => new UpdateArticle(
         $c->get(ArticleRepository::class)
@@ -47,6 +50,11 @@ return [
 
     SearchArticles::class => fn(ContainerInterface $c) => new SearchArticles(
         $c->get(ArticleRepository::class)
+    ),
+
+    \Blog\Application\Blog\GetArticleById::class => fn(ContainerInterface $c) => new \Blog\Application\Blog\GetArticleById(
+        $c->get(ArticleRepository::class),
+        $c->get(\Blog\Application\Blog\ArticleResponseMapper::class)
     ),
 
     \Blog\Application\Blog\GetArticleBySlug::class => fn(ContainerInterface $c) => new \Blog\Application\Blog\GetArticleBySlug(
