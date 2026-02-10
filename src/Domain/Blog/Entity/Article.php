@@ -80,22 +80,22 @@ final class Article
     public function getPublishedAt(): ?DateTimeValue { return $this->publishedAt; }
     public function getScheduledAt(): ?DateTimeValue { return $this->scheduledAt; }
 
-    // Alias methods for test compatibility
-    public function id(): ArticleId { return $this->id; }
-    public function title(): Title { return $this->title; }
-    public function content(): MarkdownContent { return $this->content; }
-    public function slug(): Slug { return $this->slug; }
-    public function status(): ArticleStatus { return $this->status; }
-    public function authorId(): AuthorId { return $this->authorId; }
-    public function category(): ?Category { return $this->category; }
-    public function excerpt(): string { return $this->excerpt ?? $this->content->getExcerpt(200); }
-    public function featuredImage(): ?string { return $this->featuredImage; }
-    public function metaDescription(): ?string { return $this->metaDescription; }
-    public function viewCount(): int { return $this->viewCount; }
-    public function createdAt(): DateTimeValue { return $this->createdAt; }
-    public function updatedAt(): DateTimeValue { return $this->updatedAt; }
-    public function publishedAt(): ?DateTimeValue { return $this->publishedAt; }
-    public function scheduledAt(): ?DateTimeValue { return $this->scheduledAt; }
+    // Domain-style accessors - delegate to getters to avoid duplication
+    public function id(): ArticleId { return $this->getId(); }
+    public function title(): Title { return $this->getTitle(); }
+    public function content(): MarkdownContent { return $this->getContent(); }
+    public function slug(): Slug { return $this->getSlug(); }
+    public function status(): ArticleStatus { return $this->getStatus(); }
+    public function authorId(): AuthorId { return $this->getAuthorId(); }
+    public function category(): ?Category { return $this->getCategory(); }
+    public function excerpt(): string { return $this->getExcerpt(); }
+    public function featuredImage(): ?string { return $this->getFeaturedImage(); }
+    public function metaDescription(): ?string { return $this->getMetaDescription(); }
+    public function viewCount(): int { return $this->getViewCount(); }
+    public function createdAt(): DateTimeValue { return $this->getCreatedAt(); }
+    public function updatedAt(): DateTimeValue { return $this->getUpdatedAt(); }
+    public function publishedAt(): ?DateTimeValue { return $this->getPublishedAt(); }
+    public function scheduledAt(): ?DateTimeValue { return $this->getScheduledAt(); }
     
     public function isOwnedBy(AuthorId $authorId): bool
     {
