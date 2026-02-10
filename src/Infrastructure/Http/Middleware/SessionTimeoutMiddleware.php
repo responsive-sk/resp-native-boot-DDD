@@ -20,7 +20,7 @@ class SessionTimeoutMiddleware implements MiddlewareInterface
     public function __construct(?array $config = null, ?Paths $paths = null, ?\Blog\Security\SecurityLogger $logger = null)
     {
         $this->paths = $paths ?? new Paths(__DIR__ . '/../../../../');
-        $this->config = $config ?? require $this->paths->getPath('config') . '/session.php';
+        $this->config = $config ?? require $this->paths->getPath('config') . '/app/session.php';
         $this->logger = $logger ?? new \Blog\Security\SecurityLogger($this->paths->getPath('data') . '/logs/security.log');
     }
 

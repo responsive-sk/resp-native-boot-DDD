@@ -10,7 +10,7 @@ use ResponsiveSk\Slim4Session\SessionInterface;
 
 return [
     SessionInterface::class => function (ContainerInterface $c) {
-        $config = require __DIR__ . '/../session.php';
+        $config = require __DIR__ . '/../app/session.php';
 
         // Add database connection for database storage
         if ($config['storage'] === 'database') {

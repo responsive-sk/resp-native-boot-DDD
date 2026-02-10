@@ -17,8 +17,8 @@ php -r "
 // 1. Test session config
 echo '📋 Session config test:\n';
 try {
-    \$session = require 'config/session.php';
-    echo '✅ config/session.php načítaný\n';
+\$session = require 'config/app/session.php';
+    echo '✅ config/app/session.php načítaný\n';
     echo '   - Timeout default: ' . (\$session['timeout']['default'] ?? 'N/A') . 's\n';
     echo '   - Timeout mark: ' . (\$session['timeout']['mark'] ?? 'N/A') . 's\n';
     echo '   - Fingerprint: ' . (\$session['fingerprint']['enabled'] ? 'enabled' : 'disabled') . '\n';
@@ -87,7 +87,7 @@ echo ""
 echo "3. 🔍 RÝCHLA MANUÁLNA KONTROLA:"
 echo "================================"
 echo "Skontroluj nasledovné súbory:"
-echo "  - config/session.php (secure cookie setting)"
+echo "  - config/app/session.php (secure cookie setting)"
 echo "  - .env súbor (ak existuje)"
 echo ""
 echo "Ak nemáš .env súbor, vytvor ho:"

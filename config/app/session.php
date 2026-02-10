@@ -1,13 +1,15 @@
 <?php
 
-// config/session.php
+declare(strict_types=1);
+
+// Session configuration (moved from config/session.php)
 return [
     // === CORE SESSION SETTINGS ===
     'name' => $_ENV['SESSION_NAME'] ?? 'app_session', // Session cookie name
 
     // === STORAGE CONFIGURATION ===
     'storage' => $_ENV['SESSION_STORAGE'] ?? 'database', // 'file' or 'database'
-    'save_path' => $_ENV['SESSION_SAVE_PATH'] ?? __DIR__ . '/../data/sessions', // For file storage
+    'save_path' => $_ENV['SESSION_SAVE_PATH'] ?? __DIR__ . '/../../data/sessions', // For file storage
 
     // Cookie settings (pre slim4-session)
     'cookie_params' => [
@@ -58,3 +60,4 @@ return [
         'sid_bits_per_character' => 6,
     ],
 ];
+

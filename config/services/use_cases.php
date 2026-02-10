@@ -45,7 +45,7 @@ return [
 
     RegisterUser::class => fn(ContainerInterface $c) => new RegisterUser(
         $c->get(UserRepositoryInterface::class),
-        require __DIR__ . '/../password_strength.php'
+        require __DIR__ . '/../app/password_strength.php'
     ),
 
     SearchArticles::class => fn(ContainerInterface $c) => new SearchArticles(

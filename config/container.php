@@ -11,16 +11,15 @@ return function (): ContainerInterface {
 
     // Configuration
     $services['config'] = function () {
-        return [
-            'debugbar' => require __DIR__ . '/debugbar.php',
-            'session' => require __DIR__ . '/session.php',
-            'pages' => require __DIR__ . '/pages.php',
-            'paths' => require __DIR__ . '/paths.php',
-            'cloudinary' => require __DIR__ . '/cloudinary.php',
-            'database' => require __DIR__ . '/database.php',
-            'ratelimit' => require __DIR__ . '/ratelimit.php',
-            'password_strength' => require __DIR__ . '/password_strength.php',
-        ];
+        $appConfig = require __DIR__ . '/app.php';
+
+        return array_merge(
+            $appConfig,
+            [
+                'cloudinary' => require __DIR__ . '/cloudinary.php',
+                'database' => require __DIR__ . '/database.php',
+            ]
+        );
     };
 
     return new class ($services) implements ContainerInterface {

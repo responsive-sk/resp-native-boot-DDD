@@ -50,7 +50,7 @@ return [
             $c->get(PlatesRenderer::class),
             $c->has('pages.config')
             ? $c->get('pages.config')
-            : require __DIR__ . '/../pages.php'
+            : require __DIR__ . '/../app/pages.php'
         );
     },
 ];

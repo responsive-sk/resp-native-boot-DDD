@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+// Rate limiting configuration (moved from config/ratelimit.php)
 return [
     'enabled' => filter_var($_ENV['RATE_LIMIT_ENABLED'] ?? 'true', FILTER_VALIDATE_BOOLEAN),
 
@@ -26,3 +27,4 @@ return [
         // 'lockout' not typically used for default
     ],
 ];
+

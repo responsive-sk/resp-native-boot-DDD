@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 return [
     'debugbar' => [
         'enabled' => ($_ENV['APP_ENV'] ?? 'development') === 'development',
@@ -55,3 +54,4 @@ return [
         ],
     ],
 ];
+

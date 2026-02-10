@@ -3,17 +3,13 @@
 declare(strict_types=1);
 
 /**
- * Path Configuration
+ * Path Configuration (moved from config/paths.php)
  *
  * This file defines custom path mappings for the application.
  * Paths are auto-detected from environment or use defaults.
- *
- * You can override paths via environment variables:
- * - APP_BASE_PATH
- * - APP_DATA_PATH
  */
 
-$basePath = dirname(__DIR__);
+$basePath = dirname(__DIR__, 2);
 
 return [
     'base' => $basePath,
@@ -36,3 +32,4 @@ return [
     'db.users' => $basePath . '/data/users.db',
     'db.forms' => $basePath . '/data/forms.db',
 ];
+

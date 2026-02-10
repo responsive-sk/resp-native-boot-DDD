@@ -30,7 +30,7 @@ return [
 
     UserRepositoryInterface::class => fn(ContainerInterface $c) => new DoctrineUserRepository(
         DatabaseManager::getConnection('users'),
-        require __DIR__ . '/../password_strength.php'
+        require __DIR__ . '/../app/password_strength.php'
     ),
 
     \Blog\Domain\Form\Repository\FormRepositoryInterface::class => fn() => new \Blog\Infrastructure\Persistence\Doctrine\DoctrineFormRepository(

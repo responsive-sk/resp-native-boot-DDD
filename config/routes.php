@@ -24,7 +24,7 @@ return function (ContainerInterface $c): Router {
     $router->get('/debug/error', 'debug.error', fn($req) => $c->get(DebugController::class)->error($req));
 
     // === DEBUGBAR ASSETS ROUTE (MUSÍ BYŤ PRVÁ!) ===
-    $debugbarConfig = require __DIR__ . '/debugbar.php';
+    $debugbarConfig = require __DIR__ . '/app/debugbar.php';
     if ($debugbarConfig['debugbar']['enabled'] ?? false) {
         $router->get('/debugbar/{file:.+}', 'debugbar.assets', function ($req, $file) use ($c) {
             // Toto je placeholder, reálny handler je v middleware

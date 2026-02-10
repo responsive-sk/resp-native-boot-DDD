@@ -1,6 +1,8 @@
 <?php
 
-// config/pages.php - ROZŠÍRENÁ VERZIA
+declare(strict_types=1);
+
+// Page metadata configuration (moved from config/pages.php)
 return [
     // === PUBLIC ROUTES ===
     'home' => [
@@ -125,3 +127,4 @@ return [
         'template' => 'resp-front::mark/categories/edit',
     ],
 ];
+
