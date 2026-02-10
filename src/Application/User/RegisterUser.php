@@ -17,10 +17,8 @@ final class RegisterUser extends BaseUseCase
         private array $passwordStrengthConfig
     ) {}
 
-    public function execute(array $input): array
+    protected function handle(array $input): array
     {
-        $this->validate($input);
-
         $email = $input['email'];
         $password = $input['password'];
 

@@ -20,10 +20,8 @@ final class CreateArticle extends BaseUseCase
     ) {
     }
 
-    public function execute(array $input): array
+    protected function handle(array $input): array
     {
-        $this->validate($input);
-
         $title = $input['title'];
         $content = $input['content'];
         $authorId = $input['author_id'];

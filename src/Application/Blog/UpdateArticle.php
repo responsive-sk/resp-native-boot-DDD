@@ -19,10 +19,8 @@ final class UpdateArticle extends BaseUseCase
         private ArticleRepository $articles
     ) {}
 
-    public function execute(array $input): array
+    protected function handle(array $input): array
     {
-        $this->validate($input);
-
         $articleId = ArticleId::fromInt((int) $input['article_id']);
         $title = Title::fromString($input['title']);
         $content = new MarkdownContent($input['content']);

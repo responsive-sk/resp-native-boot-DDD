@@ -15,10 +15,8 @@ final class UpdateUserRole extends BaseUseCase
         private UserRepositoryInterface $users
     ) {}
 
-    public function execute(array $input): array
+    protected function handle(array $input): array
     {
-        $this->validate($input);
-
         $userId = UserId::fromString($input['user_id']);
         $newRole = UserRole::fromString($input['role']);
 

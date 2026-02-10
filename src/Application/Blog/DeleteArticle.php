@@ -14,10 +14,8 @@ final class DeleteArticle extends BaseUseCase
         private ArticleRepository $articles
     ) {}
 
-    public function execute(array $input): array
+    protected function handle(array $input): array
     {
-        $this->validate($input);
-
         $articleId = ArticleId::fromInt((int) $input['article_id']);
 
         // 1. Skontrolovať, či článok existuje
