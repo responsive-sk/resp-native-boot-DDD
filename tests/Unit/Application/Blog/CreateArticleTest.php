@@ -6,7 +6,7 @@ namespace Tests\Unit\Application\Blog;
 
 use Blog\Application\Blog\CreateArticle;
 use Blog\Domain\Blog\Entity\Article;
-use Blog\Domain\Blog\Repository\ArticleRepositoryInterface;
+use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Domain\Blog\ValueObject\ArticleId;
 use Blog\Domain\Blog\ValueObject\Content;
 use Blog\Domain\Blog\ValueObject\Slug;
@@ -21,7 +21,7 @@ final class CreateArticleTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->articleRepository = $this->createMock(ArticleRepositoryInterface::class);
+        $this->articleRepository = $this->createMock(ArticleRepository::class);
         $this->useCase = new CreateArticle($this->articleRepository);
     }
 

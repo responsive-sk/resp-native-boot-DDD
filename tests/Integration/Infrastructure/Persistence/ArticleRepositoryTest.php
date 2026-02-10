@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Integration\Infrastructure\Persistence;
 
 use Blog\Domain\Blog\Entity\Article;
-use Blog\Domain\Blog\Repository\ArticleRepositoryInterface;
+use Blog\Domain\Blog\Repository\ArticleRepository;
 use Blog\Domain\Blog\ValueObject\ArticleId;
 use Blog\Domain\Blog\ValueObject\Content;
 use Blog\Domain\Blog\ValueObject\Slug;
@@ -15,13 +15,13 @@ use PHPUnit\Framework\TestCase;
 
 final class ArticleRepositoryTest extends TestCase
 {
-    private ArticleRepositoryInterface $repository;
+    private ArticleRepository $repository;
 
     protected function setUp(): void
     {
-        // In a real integration test, you'd set up a test database
-        // For this example, we'll focus on the interface contract
-        $this->repository = $this->createMock(ArticleRepositoryInterface::class);
+        // This is a mock test, but should be converted to real integration test
+        // with actual database operations for proper testing
+        $this->repository = $this->createMock(ArticleRepository::class);
     }
 
     public function test_save_and_find_article(): void
