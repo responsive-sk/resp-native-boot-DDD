@@ -162,24 +162,26 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
 
         $markdownContent = new \Blog\Domain\Shared\Markdown\MarkdownContent($row['content']);
 
-        return Article::reconstitute(
-            ArticleId::fromString((string) $row['id']),
-            \Blog\Domain\Blog\ValueObject\Title::fromString($row['title']),
-            $markdownContent,
-            \Blog\Domain\Blog\ValueObject\AuthorId::fromString($row['author_id']),
-            \Blog\Domain\Blog\ValueObject\ArticleStatus::fromString($row['status']),
-            new \DateTimeImmutable($row['created_at']),
-            new \DateTimeImmutable($row['updated_at']),
-            $row['slug'] ? \Blog\Domain\Blog\ValueObject\Slug::fromString($row['slug']) : null,
-            $category,
-            null, // excerpt - would need to be hydrated from database if available
-            null, // featuredImage - would need to be hydrated from database if available
-            null, // metaDescription - would need to be hydrated from database if available
-            0, // viewCount - would need to be hydrated from database if available
-            isset($row['published_at']) && $row['published_at'] ? new \DateTimeImmutable($row['published_at']) : null,
-            null, // scheduledAt - would need to be hydrated from database if available
-            $tagsData // Use already hydrated tags
+        $data = new \Blog\Domain\Blog\ValueObject\ArticleReconstitutionData(
+            id: ArticleId::fromString((string) $row['id']),
+            title: \Blog\Domain\Blog\ValueObject\Title::fromString($row['title']),
+            content: $markdownContent,
+            authorId: \Blog\Domain\Blog\ValueObject\AuthorId::fromString($row['author_id']),
+            status: \Blog\Domain\Blog\ValueObject\ArticleStatus::fromString($row['status']),
+            createdAt: new \DateTimeImmutable($row['created_at']),
+            updatedAt: new \DateTimeImmutable($row['updated_at']),
+            slug: $row['slug'] ? \Blog\Domain\Blog\ValueObject\Slug::fromString($row['slug']) : null,
+            category: $category,
+            excerpt: null, // would need to be hydrated from database if available
+            featuredImage: null, // would need to be hydrated from database if available
+            metaDescription: null, // would need to be hydrated from database if available
+            viewCount: 0, // would need to be hydrated from database if available
+            publishedAt: isset($row['published_at']) && $row['published_at'] ? new \DateTimeImmutable($row['published_at']) : null,
+            scheduledAt: null, // would need to be hydrated from database if available
+            tagIds: $tagsData
         );
+
+        return Article::reconstitute($data);
     }
 
     public function search(string $query): array

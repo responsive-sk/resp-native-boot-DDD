@@ -6,6 +6,7 @@ namespace Tests\Unit\Domain\Blog\Entity;
 
 use Blog\Domain\Blog\Entity\Article;
 use Blog\Domain\Blog\ValueObject\ArticleId;
+use Blog\Domain\Blog\ValueObject\ArticleReconstitutionData;
 use Blog\Domain\Blog\ValueObject\ArticleStatus;
 use Blog\Domain\Shared\Markdown\MarkdownContent;
 use Blog\Domain\Blog\ValueObject\Title;
@@ -103,15 +104,17 @@ final class ArticleTest extends TestCase
 
     public function test_reconstitute_creates_article_from_persistence(): void
     {
-        $article = Article::reconstitute(
-            ArticleId::fromInt(1),
-            Title::fromString('Môj článok'),
-            new MarkdownContent('Toto je obsah článku.'),
-            AuthorId::fromString('00000000-0000-0000-0000-000000000001'),
-            ArticleStatus::fromString('published'),
-            new \DateTimeImmutable('2024-01-01 10:00:00'),
-            new \DateTimeImmutable('2024-01-02 15:30:00')
+        $data = new ArticleReconstitutionData(
+            id: ArticleId::fromInt(1),
+            title: Title::fromString('Môj článok'),
+            content: new MarkdownContent('Toto je obsah článku.'),
+            authorId: AuthorId::fromString('00000000-0000-0000-0000-000000000001'),
+            status: ArticleStatus::fromString('published'),
+            createdAt: new \DateTimeImmutable('2024-01-01 10:00:00'),
+            updatedAt: new \DateTimeImmutable('2024-01-02 15:30:00')
         );
+
+        $article = Article::reconstitute($data);
 
         $this->assertSame(1, $article->id()->toInt());
         $this->assertSame('Môj článok', $article->title()->toString());

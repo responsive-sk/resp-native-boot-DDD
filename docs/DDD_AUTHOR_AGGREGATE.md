@@ -123,16 +123,20 @@ $article = Article::create($title, $content, $authorId);
 
 ### Repository Hydration
 ```php
-// Loading article with author reference
-$article = Article::reconstitute(
-    ArticleId::fromInt(1),
-    Title::fromString('Article Title'),
-    Content::fromString('Content...'),
-    AuthorId::fromString('40000000-0000-0000-0000-000000000001'),
-    ArticleStatus::published(),
-    new DateTimeImmutable('2024-01-15'),
-    new DateTimeImmutable('2024-01-15')
+use Blog\Domain\Blog\ValueObject\ArticleReconstitutionData;
+
+// Loading article with author reference using DTO
+$data = new ArticleReconstitutionData(
+    id: ArticleId::fromInt(1),
+    title: Title::fromString('Article Title'),
+    content: Content::fromString('Content...'),
+    authorId: AuthorId::fromString('40000000-0000-0000-0000-000000000001'),
+    status: ArticleStatus::published(),
+    createdAt: new DateTimeImmutable('2024-01-15'),
+    updatedAt: new DateTimeImmutable('2024-01-15')
 );
+
+$article = Article::reconstitute($data);
 ```
 
 ## Migration Strategy

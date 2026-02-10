@@ -239,57 +239,42 @@ final class Article
     }
 
     /**
-     * @param array<int> $tagIds
+     * Factory method for reconstituting an Article from persistence.
+     * Uses ArticleReconstitutionData DTO to avoid excessive parameter count.
      */
-    public static function reconstitute(
-        ArticleId $id,
-        Title $title,
-        MarkdownContent $content,
-        AuthorId $authorId,
-        ArticleStatus $status,
-        DateTimeImmutable $createdAt,
-        DateTimeImmutable $updatedAt,
-        ?Slug $slug = null,
-        ?Category $category = null,
-        ?string $excerpt = null,
-        ?string $featuredImage = null,
-        ?string $metaDescription = null,
-        int $viewCount = 0,
-        ?DateTimeImmutable $publishedAt = null,
-        ?DateTimeImmutable $scheduledAt = null,
-        array $tagIds = []
-    ): self {
+    public static function reconstitute(\Blog\Domain\Blog\ValueObject\ArticleReconstitutionData $data): self
+    {
         $article = new self(
-            $id,
-            $title,
-            $content,
-            $slug ?? Slug::fromString($title->value),
-            $authorId,
-            $status,
-            $category,
-            $featuredImage,
-            $metaDescription,
-            $viewCount,
-            $tagIds,
-            $createdAt,
-            $updatedAt,
-            $publishedAt,
-            $scheduledAt
+            $data->id,
+            $data->title,
+            $data->content,
+            $data->slug ?? Slug::fromString($data->title->value),
+            $data->authorId,
+            $data->status,
+            $data->category,
+            $data->featuredImage,
+            $data->metaDescription,
+            $data->viewCount,
+            $data->tagIds,
+            $data->createdAt,
+            $data->updatedAt,
+            $data->publishedAt,
+            $data->scheduledAt
         );
 
-        $article->updatedAt = DateTimeValue::fromString($updatedAt->format('Y-m-d H:i:s'));
-        $article->featuredImage = $featuredImage;
-        $article->metaDescription = $metaDescription;
-        $article->viewCount = $viewCount;
-        $article->tagIds = $tagIds;
-        $article->excerpt = $excerpt;
+        $article->updatedAt = DateTimeValue::fromString($data->updatedAt->format('Y-m-d H:i:s'));
+        $article->featuredImage = $data->featuredImage;
+        $article->metaDescription = $data->metaDescription;
+        $article->viewCount = $data->viewCount;
+        $article->tagIds = $data->tagIds;
+        $article->excerpt = $data->excerpt;
 
-        if ($publishedAt) {
-            $article->publishedAt = DateTimeValue::fromString($publishedAt->format('Y-m-d H:i:s'));
+        if ($data->publishedAt) {
+            $article->publishedAt = DateTimeValue::fromString($data->publishedAt->format('Y-m-d H:i:s'));
         }
 
-        if ($scheduledAt) {
-            $article->scheduledAt = DateTimeValue::fromString($scheduledAt->format('Y-m-d H:i:s'));
+        if ($data->scheduledAt) {
+            $article->scheduledAt = DateTimeValue::fromString($data->scheduledAt->format('Y-m-d H:i:s'));
         }
 
         return $article;
