@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Blog\Core;
 
-abstract readonly class BaseUseCase implements UseCaseInterface
+abstract class BaseUseCase implements UseCaseInterface
 {
     /**
      * Execute the use case with validation
