@@ -23,22 +23,25 @@ final class ApiAuthMiddleware implements MiddlewareInterface
         RequestHandlerInterface $handler
     ): ResponseInterface {
         $path = $request->getUri()->getPath();
+        $method = strtoupper($request->getMethod());
 
         // Add user to request attributes (can be null if not authenticated)
         $request = $request->withAttribute('user', $this->authorization->getUser());
 
-        // API endpoints that require authentication
+        // API endpoints that require authentication (write operations only)
         $protectedApiPrefixes = [
-            '/api/articles',  // All article CRUD operations
+            '/api/articles',  // Article write operations
         ];
 
         // Check if this is a protected API endpoint
         $isProtectedApi = false;
-        foreach ($protectedApiPrefixes as $prefix) {
-            if (str_starts_with($path, $prefix)) {
-                $isProtectedApi = true;
-
-                break;
+        // Only non-GET methods are protected (POST/PUT/PATCH/DELETE)
+        if (in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'], true)) {
+            foreach ($protectedApiPrefixes as $prefix) {
+                if (str_starts_with($path, $prefix)) {
+                    $isProtectedApi = true;
+                    break;
+                }
             }
         }
 

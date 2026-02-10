@@ -73,4 +73,12 @@ return [
             $c->get(\Blog\Application\Audit\AuditLogger::class)
         );
     },
+
+    // === API AUTH ===
+    \Blog\Middleware\ApiAuthMiddleware::class => function (ContainerInterface $c) {
+        return new \Blog\Middleware\ApiAuthMiddleware(
+            $c->get(\Blog\Security\AuthorizationService::class),
+            $c->get(\Blog\Application\Audit\AuditLogger::class)
+        );
+    },
 ];
