@@ -26,17 +26,38 @@ interface ArticleRepository
     /** @return T|null */
     public function getBySlug(Slug $slug): ?Article;
     
-    /** @return array<T> */
+    /**
+     * Get all articles without filtering.
+     * Business logic filtering should be done in use cases.
+     *
+     * @return array<T>
+     */
     public function getAll(): array;
-    
+
+    /**
+     * Find only published articles.
+     * Use case: Public article listings.
+     *
+     * @return array<T>
+     */
+    public function findPublished(): array;
+
+    /**
+     * Find articles by status.
+     * Use case: Admin dashboards, filtered views.
+     *
+     * @return array<T>
+     */
+    public function findByStatus(string $status): array;
+
     /** @return array<T> */
     public function search(string $query): array;
-    
+
     /** @return array<T> */
     public function getByCategory(CategoryId $categoryId): array;
-    
+
     /** @return array<T> */
     public function getRecentArticles(int $limit = 10): array;
-    
+
     public function count(array $filters = []): int;
 }

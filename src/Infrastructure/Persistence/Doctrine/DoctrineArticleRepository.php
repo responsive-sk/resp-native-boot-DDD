@@ -92,58 +92,33 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
 
     public function getAll(): array
     {
-        // Fetch only published articles from database
+        // Fetch ALL articles - no business logic filtering in repository
+        $rows = $this->connection->fetchAllAssociative(
+            "SELECT * FROM articles ORDER BY created_at DESC"
+        );
+
+        return $this->hydrateBatch($rows);
+    }
+
+    public function findPublished(): array
+    {
+        // Specific query for published articles - filtering done in SQL
         $rows = $this->connection->fetchAllAssociative(
             "SELECT * FROM articles WHERE status = 'published' ORDER BY created_at DESC"
         );
 
-        if (empty($rows)) {
-            return [];
-        }
+        return $this->hydrateBatch($rows);
+    }
 
-        $articleIds = array_column($rows, 'id');
-        $categoryIds = array_filter(array_unique(array_column($rows, 'category_id')));
+    public function findByStatus(string $status): array
+    {
+        // Specific query for articles by status - filtering done in SQL
+        $rows = $this->connection->fetchAllAssociative(
+            "SELECT * FROM articles WHERE status = ? ORDER BY created_at DESC",
+            [$status]
+        );
 
-        // 2. Load all categories at once
-        $categories = [];
-        if (!empty($categoryIds)) {
-            $categoriesData = $this->connection->fetchAllAssociative(
-                'SELECT * FROM categories WHERE id IN (?)',
-                [$categoryIds],
-                [\Doctrine\DBAL\ArrayParameterType::STRING]
-            );
-            foreach ($categoriesData as $cat) {
-                $categories[$cat['id']] = $cat;
-            }
-        }
-
-        // 3. Load all tags for these articles at once
-        $tagsData = [];
-        if (!empty($articleIds)) {
-            $tagsData = $this->connection->fetchAllAssociative(
-                'SELECT t.*, at.article_id 
-                 FROM tags t
-                 INNER JOIN article_tags at ON t.id = at.tag_id
-                 WHERE at.article_id IN (?)
-                 ORDER BY t.name ASC',
-                [$articleIds],
-                [\Doctrine\DBAL\ArrayParameterType::INTEGER]
-            );
-        }
-
-        $tagsByArticle = [];
-        foreach ($tagsData as $tag) {
-            $tagsByArticle[$tag['article_id']][] = $tag;
-        }
-
-        // 4. Hydrate with preloaded data
-        return array_map(function ($row) use ($categories, $tagsByArticle) {
-            return $this->hydrateWithPreloadedData(
-                $row,
-                $categories[$row['category_id'] ?? ''] ?? null,
-                $tagsByArticle[$row['id']] ?? []
-            );
-        }, $rows);
+        return $this->hydrateBatch($rows);
     }
 
     private function hydrateWithPreloadedData(array $row, ?array $categoryData, array $tagsData): Article
@@ -267,55 +242,11 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
         return [];
     }
 
-    private function loadTagsForArticle(string $articleId): array
-    {
-        try {
-            $qb = $this->connection->createQueryBuilder();
-            $results = $qb
-                ->select('t.*')
-                ->from('tags', 't')
-                ->innerJoin('t', 'article_tags', 'at', 't.id = at.tag_id')
-                ->where('at.article_id = :article_id')
-                ->setParameter('article_id', $articleId)
-                ->orderBy('t.name', 'ASC')
-                ->fetchAllAssociative();
-
-            return array_map([$this, 'hydrateTag'], $results);
-        } catch (\Exception $e) {
-            // Ak tabuľka neexistuje alebo iná chyba, vráť prázdne pole
-            return [];
-        }
-    }
-
-    private function hydrateTag(array $data): \Blog\Domain\Blog\Entity\Tag
-    {
-        return \Blog\Domain\Blog\Entity\Tag::reconstitute(
-            \Blog\Domain\Blog\ValueObject\TagId::fromString($data['id']),
-            \Blog\Domain\Blog\ValueObject\TagName::fromString($data['name']),
-            \Blog\Domain\Blog\ValueObject\TagSlug::fromString($data['slug']),
-            new \DateTimeImmutable($data['created_at'])
-        );
-    }
-
     private function hydrate(array $row): Article
     {
-        // Single article hydration - still requires individual queries for category/tags
-        // This is acceptable for single-article lookups (getById, getBySlug)
-        // For bulk operations, use hydrateBatch instead
-        $category = null;
-        $tags = [];
-
-        if (!empty($row['category_id'])) {
-            $categoryData = $this->connection->fetchAssociative(
-                'SELECT * FROM categories WHERE id = ?',
-                [$row['category_id']]
-            );
-            $category = $categoryData ?: null;
-        }
-
-        $tags = $this->loadTagsForArticle((string) $row['id']);
-
-        return $this->hydrateWithPreloadedData($row, $category, $tags);
+        // Single article hydration with preloaded category/tags
+        // Uses IN clause with single item to reuse batch loading logic
+        return $this->hydrateBatch([$row])[0] ?? throw new \RuntimeException('Failed to hydrate article');
     }
 
     /**
