@@ -57,12 +57,7 @@ final class AuthorizationService
 
     public function isMark(): bool
     {
-        // Check mark session flag first
-        if ($this->session->has('mark_session') && $this->session->get('mark_session') === true) {
-            return true;
-        }
-
-        // Fallback to role check
+        // Only check user role, never trust session flags for authorization
         return $this->hasRole('mark') || $this->hasRole('ROLE_MARK');
     }
 
@@ -91,13 +86,16 @@ final class AuthorizationService
         }
     }
 
+    // Deprecated: Session-based mark flags are insecure
     public function setMarkSession(bool $isMark): void
     {
-        $this->session->set('mark_session', $isMark);
+        // This method is deprecated and insecure - do not use
+        throw new \RuntimeException('Session-based mark authorization is disabled for security reasons');
     }
 
     public function clearMarkSession(): void
     {
-        $this->session->remove('mark_session');
+        // This method is deprecated and insecure - do not use
+        throw new \RuntimeException('Session-based mark authorization is disabled for security reasons');
     }
 }

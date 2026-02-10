@@ -217,7 +217,7 @@ abstract class BaseController
         if (isset($parsedUrl['scheme'])) {
             // Only allow same-origin redirects or relative URLs
             $host = $parsedUrl['host'] ?? '';
-            $serverHost = $_SERVER['HTTP_HOST'] ?? '';
+            $serverHost = ''; // Do not trust HTTP_HOST header for security
 
             // If host is different, it's potentially malicious
             if ($host !== $serverHost && $host !== '') {
@@ -236,8 +236,9 @@ abstract class BaseController
         }
 
         // For absolute URLs, ensure they're same-origin
-        if (isset($parsedUrl['host']) && $parsedUrl['host'] === $_SERVER['HTTP_HOST']) {
-            return $this->redirect($url);
+        // Do not trust HTTP_HOST header - only allow relative URLs for security
+        if (isset($parsedUrl['host'])) {
+            return $this->redirect('/');
         }
 
         // Default to safe redirect
@@ -261,11 +262,8 @@ abstract class BaseController
 
         // Only allow relative URLs or same-origin URLs
         if (isset($parsedUrl['scheme']) || isset($parsedUrl['host'])) {
-            // If it has scheme or host, it must be same-origin
-            $host = $parsedUrl['host'] ?? '';
-            $serverHost = $_SERVER['HTTP_HOST'] ?? '';
-
-            if ($host !== $serverHost || $host === '') {
+            // If it has scheme or host, reject for security (Host header can be spoofed)
+            if (isset($parsedUrl['host'])) {
                 return $default;
             }
 

@@ -12,7 +12,7 @@ parameters:
     inferPrivatePropertyTypeFromConstructor: true
     reportUnmatchedIgnoredErrors: false
     treatPhpDocTypesAsCertain: true
-    usePhpDocParserWithoutContext: false
+    
     parallel:
         maximumNumberOfProcesses: 4
     scanFiles:

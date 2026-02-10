@@ -19,7 +19,8 @@ class CsrfMiddleware implements MiddlewareInterface
 
     public function __construct(
         private readonly \Blog\Security\CsrfProtection $csrfProtection,
-        private readonly \Blog\Security\SecurityLogger $logger
+        private readonly \Blog\Security\SecurityLogger $logger,
+        private readonly \ResponsiveSk\Slim4Session\SessionInterface $session
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -49,8 +50,8 @@ class CsrfMiddleware implements MiddlewareInterface
             $token = $body['csrf_token'] ?? $request->getHeaderLine('X-CSRF-Token');
 
             if (!$this->csrfProtection->validateToken($token ?? '')) {
-                // Get user ID from session for logging
-                $userId = $_SESSION['user_id'] ?? null;
+                // Get user ID from session for logging (using session interface)
+                $userId = $this->session->get('user_id');
                 $ip = $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown';
 
                 // Log CSRF failure with proper format

@@ -22,4 +22,10 @@ return [
     CsrfProtection::class => fn(ContainerInterface $c) => new CsrfProtection(
         $c->get(SessionInterface::class)
     ),
+
+    Blog\Infrastructure\Http\Middleware\CsrfMiddleware::class => fn(ContainerInterface $c) => new Blog\Infrastructure\Http\Middleware\CsrfMiddleware(
+        $c->get(CsrfProtection::class),
+        $c->get(Blog\Security\SecurityLogger::class),
+        $c->get(SessionInterface::class)
+    ),
 ];

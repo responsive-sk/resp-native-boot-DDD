@@ -37,6 +37,11 @@ return [
             }
         }
 
+        // 3. Input Sanitization Middleware (after session, before CSRF)
+        if ($c->has(\Blog\Infrastructure\Http\Middleware\InputSanitizationMiddleware::class)) {
+            $middlewares[] = $c->get(\Blog\Infrastructure\Http\Middleware\InputSanitizationMiddleware::class);
+        }
+
         // 3. HTMX Middleware (pred routerom)
         if ($c->has(\Blog\Middleware\HtmxMiddleware::class)) {
             $middlewares[] = $c->get(\Blog\Middleware\HtmxMiddleware::class);

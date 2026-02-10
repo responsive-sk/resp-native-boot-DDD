@@ -92,19 +92,10 @@ final readonly class DoctrineArticleRepository implements ArticleRepository
 
     public function getAll(): array
     {
-        // Debug DB path
-        $params = $this->connection->getParams();
-
-        // Fetch ALL articles first to debug the filtering issue
-        // Temporarily fetching all because the WHERE clause was failing mysteriously
+        // Fetch only published articles from database
         $rows = $this->connection->fetchAllAssociative(
-            "SELECT * FROM articles ORDER BY created_at DESC"
+            "SELECT * FROM articles WHERE status = 'published' ORDER BY created_at DESC"
         );
-
-        // Filter in PHP
-        $rows = array_filter($rows, function ($row) {
-            return trim($row['status'] ?? '') === 'published';
-        });
 
         if (empty($rows)) {
             return [];

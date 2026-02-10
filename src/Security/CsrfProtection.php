@@ -13,8 +13,7 @@ class CsrfProtection
     private int $tokenLength = 32;
 
     public function __construct(
-        private readonly SessionInterface $session,
-        private readonly bool $enabled = true
+        private readonly SessionInterface $session
     ) {}
 
     public function generateToken(): string
@@ -24,10 +23,6 @@ class CsrfProtection
 
     public function validateToken(string $token): bool
     {
-        if (!$this->enabled) {
-            return true;
-        }
-
         if (!$this->session->has($this->tokenName)) {
             return false;
         }
@@ -37,10 +32,6 @@ class CsrfProtection
 
     public function getToken(): string
     {
-        if (!$this->enabled) {
-            return '';
-        }
-
         if (!$this->session->has($this->tokenName)) {
             $this->session->set($this->tokenName, $this->generateToken());
         }
@@ -50,9 +41,7 @@ class CsrfProtection
 
     public function regenerateToken(): void
     {
-        if ($this->enabled) {
-            $this->session->set($this->tokenName, $this->generateToken());
-        }
+        $this->session->set($this->tokenName, $this->generateToken());
     }
 
     /**
@@ -65,8 +54,5 @@ class CsrfProtection
         }
     }
 
-    public function isEnabled(): bool
-    {
-        return $this->enabled;
-    }
+
 }
