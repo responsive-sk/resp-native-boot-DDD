@@ -46,7 +46,7 @@ final class CreateArticleTest extends TestCase
             ->method('add')
             ->with($this->callback(function ($article) {
                 return $article instanceof Article
-                       && $article->slug()->toString() === 'test-article';
+                       && $article->getSlug()->toString() === 'test-article';
             }));
 
         $result = $this->useCase->execute($input);
@@ -64,27 +64,38 @@ final class CreateArticleTest extends TestCase
             'author_id' => '123e4567-e89b-12d3-a456-426614174000',
         ];
 
-        // Mock repository to simulate duplicate slug
+        // Track call count to return different values
+        $callCount = 0;
         $this->articleRepository->expects($this->exactly(2))
             ->method('getBySlug')
-            ->withConsecutive(
-                [$this->callback(function ($slug) {
-                    return $slug->toString() === 'test-article';
-                })],
-                [$this->callback(function ($slug) {
-                    return $slug->toString() === 'test-article-1';
-                })]
-            )
-            ->willReturnOnConsecutiveCalls(
-                new Article(ArticleId::generate(), UserId::generate(), Title::fromString('Existing'), Content::fromString('Content'), new Slug('test-article')), // First call returns existing article
-                null // Second call returns null (unique)
-            );
+            ->willReturnCallback(function ($slug) use (&$callCount) {
+                $callCount++;
+                $slugStr = $slug->toString();
+                
+                // First call with 'test-article' returns existing article
+                if ($callCount === 1 && $slugStr === 'test-article') {
+                    return new Article(
+                        ArticleId::generate(),
+                        UserId::generate(),
+                        Title::fromString('Existing'),
+                        Content::fromString('Content'),
+                        new Slug('test-article')
+                    );
+                }
+                
+                // Second call with 'test-article-1' returns null (unique)
+                if ($callCount === 2 && $slugStr === 'test-article-1') {
+                    return null;
+                }
+                
+                return null;
+            });
 
         $this->articleRepository->expects($this->once())
             ->method('add')
             ->with($this->callback(function ($article) {
                 return $article instanceof Article
-                       && $article->slug()->toString() === 'test-article-1';
+                       && $article->getSlug()->toString() === 'test-article-1';
             }));
 
         $result = $this->useCase->execute($input);
@@ -101,31 +112,44 @@ final class CreateArticleTest extends TestCase
             'author_id' => '123e4567-e89b-12d3-a456-426614174000',
         ];
 
-        // Mock repository to simulate multiple duplicates
+        // Track call count to return different values
+        $callCount = 0;
         $this->articleRepository->expects($this->exactly(3))
             ->method('getBySlug')
-            ->withConsecutive(
-                [$this->callback(function ($slug) {
-                    return $slug->toString() === 'test-article';
-                })],
-                [$this->callback(function ($slug) {
-                    return $slug->toString() === 'test-article-1';
-                })],
-                [$this->callback(function ($slug) {
-                    return $slug->toString() === 'test-article-2';
-                })]
-            )
-            ->willReturnOnConsecutiveCalls(
-                new Article(ArticleId::generate(), UserId::generate(), Title::fromString('Existing'), Content::fromString('Content'), new Slug('test-article')),
-                new Article(ArticleId::generate(), UserId::generate(), Title::fromString('Existing'), Content::fromString('Content'), new Slug('test-article-1')),
-                null // Third call returns null (unique)
-            );
+            ->willReturnCallback(function ($slug) use (&$callCount) {
+                $callCount++;
+                $slugStr = $slug->toString();
+                
+                // First two calls return existing articles
+                if ($callCount === 1 && $slugStr === 'test-article') {
+                    return new Article(
+                        ArticleId::generate(),
+                        UserId::generate(),
+                        Title::fromString('Existing'),
+                        Content::fromString('Content'),
+                        new Slug('test-article')
+                    );
+                }
+                
+                if ($callCount === 2 && $slugStr === 'test-article-1') {
+                    return new Article(
+                        ArticleId::generate(),
+                        UserId::generate(),
+                        Title::fromString('Existing'),
+                        Content::fromString('Content'),
+                        new Slug('test-article-1')
+                    );
+                }
+                
+                // Third call returns null (unique)
+                return null;
+            });
 
         $this->articleRepository->expects($this->once())
             ->method('add')
             ->with($this->callback(function ($article) {
                 return $article instanceof Article
-                       && $article->slug()->toString() === 'test-article-2';
+                       && $article->getSlug()->toString() === 'test-article-2';
             }));
 
         $result = $this->useCase->execute($input);
