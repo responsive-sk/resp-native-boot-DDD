@@ -232,48 +232,7 @@ final class Article
     {
         return $this->status->canEdit();
     }
-    
-    // PHP 8.4: Named arguments in array
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->id->toString(),
-            'title' => $this->title->toString(),
-            'slug' => $this->slug->toString(),
-            'content' => $this->content->toString(),
-            'excerpt' => $this->getExcerpt(),
-            'status' => $this->status->value,
-            'author_id' => $this->authorId->toString(),
-            'category_id' => $this->category?->getId()->toString(),
-            'category_name' => $this->category?->getName()->toString(),
-            'featured_image' => $this->featuredImage,
-            'meta_description' => $this->metaDescription,
-            'view_count' => $this->viewCount,
-            'tag_ids' => $this->tagIds,
-            'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
-            'published_at' => $this->publishedAt?->format('Y-m-d H:i:s'),
-            'scheduled_at' => $this->scheduledAt?->format('Y-m-d H:i:s'),
-            'can_edit' => $this->canEdit(),
-        ];
-    }
-    
-    public function toSummaryArray(): array
-    {
-        return [
-            'id' => $this->id->getValue(),
-            'title' => $this->title->getValue(),
-            'slug' => $this->slug->getValue(),
-            'excerpt' => $this->getExcerpt(),
-            'status' => $this->status->value,
-            'author_id' => $this->authorId->toString(),
-            'featured_image' => $this->featuredImage,
-            'view_count' => $this->viewCount,
-            'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
-            'published_at' => $this->publishedAt?->format('Y-m-d H:i:s'),
-        ];
-    }
-    
+
     public function __toString(): string
     {
         return sprintf('[Article %s] %s', $this->id->getValue(), $this->title->getValue());

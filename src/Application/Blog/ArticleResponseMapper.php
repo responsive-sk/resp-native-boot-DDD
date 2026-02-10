@@ -8,6 +8,52 @@ use Blog\Domain\Blog\Entity\Article;
 
 class ArticleResponseMapper
 {
+    /**
+     * Full article representation (replaces Article::toArray())
+     */
+    public function toArray(Article $article): array
+    {
+        return [
+            'id' => $article->getId()->toString(),
+            'title' => $article->getTitle()->toString(),
+            'slug' => $article->getSlug()->toString(),
+            'content' => $article->getContent()->toString(),
+            'excerpt' => $article->getExcerpt(),
+            'status' => $article->getStatus()->value,
+            'author_id' => $article->getAuthorId()->toString(),
+            'category_id' => $article->getCategory()?->getId()->toString(),
+            'category_name' => $article->getCategory()?->getName()->toString(),
+            'featured_image' => $article->getFeaturedImage(),
+            'meta_description' => $article->getMetaDescription(),
+            'view_count' => $article->getViewCount(),
+            'tag_ids' => $article->getTagIds(),
+            'created_at' => $article->getCreatedAt()->format('Y-m-d H:i:s'),
+            'updated_at' => $article->getUpdatedAt()->format('Y-m-d H:i:s'),
+            'published_at' => $article->getPublishedAt()?->format('Y-m-d H:i:s'),
+            'scheduled_at' => $article->getScheduledAt()?->format('Y-m-d H:i:s'),
+            'can_edit' => $article->canEdit(),
+        ];
+    }
+
+    /**
+     * Summary article representation (replaces Article::toSummaryArray())
+     */
+    public function toSummaryArray(Article $article): array
+    {
+        return [
+            'id' => $article->getId()->getValue(),
+            'title' => $article->getTitle()->getValue(),
+            'slug' => $article->getSlug()->getValue(),
+            'excerpt' => $article->getExcerpt(),
+            'status' => $article->getStatus()->value,
+            'author_id' => $article->getAuthorId()->toString(),
+            'featured_image' => $article->getFeaturedImage(),
+            'view_count' => $article->getViewCount(),
+            'created_at' => $article->getCreatedAt()->format('Y-m-d H:i:s'),
+            'published_at' => $article->getPublishedAt()?->format('Y-m-d H:i:s'),
+        ];
+    }
+
     public function map(Article $article): array
     {
         return [

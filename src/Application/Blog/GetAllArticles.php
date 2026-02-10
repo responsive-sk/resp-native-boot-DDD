@@ -11,15 +11,19 @@ use Blog\Domain\Blog\Repository\ArticleRepository;
 final readonly class GetAllArticles extends BaseUseCase
 {
     public function __construct(
-        private ArticleRepository $articles
+        private ArticleRepository $articles,
+        private ArticleResponseMapper $mapper
     ) {}
 
     protected function handle(array $input): array
     {
         $articles = $this->articles->getAll();
-        
-        $articlesData = array_map(fn(Article $article) => $article->toArray(), $articles ?? []);
-        
+
+        $articlesData = array_map(
+            fn(Article $article) => $this->mapper->toArray($article),
+            $articles ?? []
+        );
+
         return $this->success([
             'articles' => $articlesData,
             'count' => count($articlesData),

@@ -11,7 +11,8 @@ use Blog\Domain\Blog\ValueObject\ArticleId;
 final readonly class GetArticleById extends BaseUseCase
 {
     public function __construct(
-        private ArticleRepository $articles
+        private ArticleRepository $articles,
+        private ArticleResponseMapper $mapper
     ) {
     }
 
@@ -29,7 +30,7 @@ final readonly class GetArticleById extends BaseUseCase
         }
 
         return $this->success([
-            'article' => $article->toArray(),
+            'article' => $this->mapper->toArray($article),
             'author_id' => $article->getAuthorId()->toString()
         ]);
     }
