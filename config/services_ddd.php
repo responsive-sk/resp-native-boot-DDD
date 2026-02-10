@@ -7,6 +7,7 @@ $cloudinaryServices = require __DIR__ . '/services/cloudinary.php';
 $controllerServices = require __DIR__ . '/services/controllers.php';
 $coreServices = require __DIR__ . '/services/core.php';
 $imageServices = require __DIR__ . '/services/image.php';
+$sharedServices = require __DIR__ . '/shared_services.php';
 $repositoryServices = require __DIR__ . '/services/repositories.php';
 $securityServices = require __DIR__ . '/services/security.php';
 $sessionServices = require __DIR__ . '/services/session.php';
@@ -22,6 +23,7 @@ $allServices = array_merge(
     $controllerServices,
     $coreServices,
     $imageServices,
+    $sharedServices,
     $repositoryServices,
     $securityServices,
     $sessionServices,
