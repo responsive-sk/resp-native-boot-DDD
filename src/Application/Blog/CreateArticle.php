@@ -65,11 +65,13 @@ final class CreateArticle extends BaseUseCase
      */
     private function findUniqueSlug(string $baseSlug, int &$suffix): string
     {
+        // Normalizuj slug: odstráň diakritiku, medzery -> pomlčky, lowercase
+        $normalizedSlug = $this->normalizeSlug($baseSlug);
         $maxAttempts = 100; // Ochrana proti infinite loop
         $attempt = 0;
 
         while ($attempt < $maxAttempts) {
-            $candidateSlug = $attempt === 0 ? $baseSlug : $baseSlug . '-' . $suffix;
+            $candidateSlug = $attempt === 0 ? $normalizedSlug : $normalizedSlug . '-' . $suffix;
 
             if ($this->articles->getBySlug(new Slug($candidateSlug)) === null) {
                 return $candidateSlug;
@@ -80,6 +82,32 @@ final class CreateArticle extends BaseUseCase
         }
 
         throw new \RuntimeException('Unable to generate unique slug after ' . $maxAttempts . ' attempts');
+    }
+
+    /**
+     * Normalizuje string na validný slug formát
+     */
+    private function normalizeSlug(string $string): string
+    {
+        // Preveď na lowercase
+        $string = mb_strtolower($string, 'UTF-8');
+        
+        // Odstráň diakritiku (preveď na ASCII)
+        $string = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $string);
+        
+        // Nahraď medzery a podčiarkovníky pomlčkami
+        $string = preg_replace('/[\s_]+/', '-', $string);
+        
+        // Odstráň všetky znaky okrem písmen, čísel a pomlčiek
+        $string = preg_replace('/[^a-z0-9-]/', '', $string);
+        
+        // Odstráň viaceré pomlčky za sebou
+        $string = preg_replace('/-+/', '-', $string);
+        
+        // Odstráň pomlčky na začiatku a konci
+        $string = trim($string, '-');
+        
+        return $string;
     }
 
     protected function validate(array $input): void

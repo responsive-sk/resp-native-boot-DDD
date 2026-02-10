@@ -74,10 +74,8 @@ final class CreateArticleTest extends TestCase
                 
                 // First call with 'test-article' returns existing article
                 if ($callCount === 1 && $slugStr === 'test-article') {
-                    // Return mock article - we don't care about its properties
-                    // just that it exists (not null)
-                    $article = $this->createMock(Article::class);
-                    return $article;
+                    // Return true (any non-null value means article exists)
+                    return true;
                 }
                 
                 // Second call with 'test-article-1' returns null (unique)
@@ -119,11 +117,11 @@ final class CreateArticleTest extends TestCase
                 
                 // First two calls return existing articles
                 if ($callCount === 1 && $slugStr === 'test-article') {
-                    return $this->createMock(Article::class);
+                    return true;
                 }
                 
                 if ($callCount === 2 && $slugStr === 'test-article-1') {
-                    return $this->createMock(Article::class);
+                    return true;
                 }
                 
                 // Third call returns null (unique)
@@ -153,7 +151,7 @@ final class CreateArticleTest extends TestCase
         // Mock repository to always return existing articles (simulate infinite duplicates)
         $this->articleRepository->expects($this->exactly(100))
             ->method('getBySlug')
-            ->willReturn($this->createMock(Article::class));
+            ->willReturn(true);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Unable to generate unique slug after 100 attempts');
